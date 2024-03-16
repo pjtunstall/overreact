@@ -1,8 +1,14 @@
 # Overreact: A framework for Tense Times
 
+## The state of play
+
+We have a functioning, but very basic framework, and have used it to make a complete TodoMVC app. How sophisticated the framework should be is not clear from the instructions, but it would be good to improve on some points, as listed in the next section.
+
 ## Todo
 
 - Separate app into modules and MVC folder structure.
+
+- Use Jason Yu's virtual DOM functions for more sophisticated virtual DOM.
 
 - Implement a more sophisticated state management, e.g.,
 
