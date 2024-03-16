@@ -1,6 +1,6 @@
-import renderElement from "./renderElement.js";
+import render from "./render.js";
 
-export default (vOldNode, vNewNode) => {
+export const diff = (vOldNode, vNewNode) => {
   if (vNewNode === undefined) {
     return ($node) => {
       $node.remove();
@@ -11,7 +11,7 @@ export default (vOldNode, vNewNode) => {
   if (typeof vOldNode === "string" || typeof vNewNode === "string") {
     if (vOldNode !== vNewNode) {
       return ($node) => {
-        const $newNode = renderElement(vNewNode);
+        const $newNode = render(vNewNode);
         $node.replaceWith($newNode);
         return $newNode;
       };
@@ -22,7 +22,7 @@ export default (vOldNode, vNewNode) => {
 
   if (vOldNode.tagName !== vNewNode.tagName) {
     return ($node) => {
-      const $newNode = renderElement(vNewNode);
+      const $newNode = render(vNewNode);
       $node.replaceWith();
       return $newNode;
     };
@@ -74,7 +74,7 @@ const diffChildren = (oldChildren, newChildren) => {
   const additionalPatches = [];
   for (const additionalChild of newChildren.slice(oldChildren.length)) {
     additionalPatches.push(($node) => {
-      $node.append(renderElement(additionalChild));
+      $node.append(render(additionalChild));
       return $node;
     });
   }

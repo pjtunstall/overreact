@@ -1,4 +1,4 @@
-export default ({ tagName, attrs, children }) => {
+const renderElement = ({ tagName, attrs, children }) => {
   const $el = document.createElement(tagName);
   for (const [k, v] of Object.entries(attrs)) {
     $el.setAttribute(k, v);
@@ -15,3 +15,5 @@ const render = (vNode) => {
   }
   return renderElement(vNode);
 };
+
+export default render;
