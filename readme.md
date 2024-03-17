@@ -14,13 +14,19 @@ The components will register event listeners and handlers that will tell the vNo
 
 ## Todo
 
-- Separate app into modules and MVC folder structure.
+- Add functions to edit style: add, remove, clear. Parsing and unparsing as needed.
 
-- Use Jason Yu's virtual DOM functions for more thorough virtual DOM, then use it to update the real DOM at frequent intervals according to the virtual DOM. I've transcribed them from his YouTube video. They're in the other files in `overreact`. Look at how he actually uses it in his create app function, and compare how React does it on the TodoMVC site. He makes his updates every second, but we'd want it to be more often. It wouldn't feel resonsive if you had to wait a second to see the effect of clicking on something.
+- Add event listeners to components.
 
 - Incorporate `mount` into `diff`.
 
-- GitHub Copilot suggestsimplementing a more sophisticated state management, e.g.,
+- Add event loop.
+
+- Rename `todoapp.js` as `app.js`, and `todoApp` as `vApp`, and `makeTodoApp` as `makeVApp`. Actually, write the loop first to see what's best.
+
+- REJECTED: Separate app into modules and MVC folder structure.
+
+- REJECTED: GitHub Copilot suggestsimplementing a more sophisticated state management, e.g.,
 
 ```let state = {
     count: 0,
@@ -49,10 +55,10 @@ However, since this is barely more sophisticated, and might be a needless compli
 
 To create elements, next existing elements, and to create events:
 
-```import { createElement, createEvent, nestElements, addAttributes } from "./view.js";
+```import { makeVNode, createEvent, nestElements, addAttributes } from "./view.js";
 
-const div = createElement('div');
-const span = createElement('span', { innerText: 'Hello, world!' });
+const div = makeVNode('div');
+const span = makeVNode('span', { innerText: 'Hello, world!' });
 nestElements(div, span);
 addAttributes(div, { id: 'my-div' });
 
@@ -64,13 +70,13 @@ div.dispatchEvent(event);
 
 To nest elements as they're created:
 
-```const listItem = createElement('li', {},
-createElement('div', { className: 'view' },
-createElement('input', { className: 'toggle', type: 'checkbox' }),
-createElement('label', { innerText: 'New todo item' }),
-createElement('button', { className: 'destroy' })
+```const listItem = makeVNode('li', {},
+makeVNode('div', { className: 'view' },
+makeVNode('input', { className: 'toggle', type: 'checkbox' }),
+makeVNode('label', { innerText: 'New todo item' }),
+makeVNode('button', { className: 'destroy' })
 ),
-createElement('input', { className: 'edit', value: 'New todo item' })
+makeVNode('input', { className: 'edit', value: 'New todo item' })
 );
 ```
 

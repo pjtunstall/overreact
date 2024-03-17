@@ -1,4 +1,4 @@
-const renderElement = ({ tagName, attrs, children }) => {
+function renderElement({ tagName, attrs, children }) {
   const $el = document.createElement(tagName);
   for (const [k, v] of Object.entries(attrs)) {
     $el.setAttribute(k, v);
@@ -7,13 +7,13 @@ const renderElement = ({ tagName, attrs, children }) => {
     $el.append(render(child));
   }
   return $el;
-};
+}
 
-const render = (vNode) => {
+function render(vNode) {
   if (typeof vNode === "string") {
     return document.createTextNode(vNode);
   }
   return renderElement(vNode);
-};
+}
 
 export default render;

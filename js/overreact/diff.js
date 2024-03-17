@@ -1,6 +1,6 @@
 import render from "./render.js";
 
-export const diff = (vOldNode, vNewNode) => {
+export function diff(vOldNode, vNewNode) {
   if (vNewNode === undefined) {
     return ($node) => {
       $node.remove();
@@ -36,9 +36,9 @@ export const diff = (vOldNode, vNewNode) => {
     patchChildren($node);
     return $node;
   };
-};
+}
 
-const diffAttrs = (oldAttrs, newAttrs) => {
+function diffAttrs(oldAttrs, newAttrs) {
   const patches = [];
 
   for (const [k, v] of Object.entries(newAttrs)) {
@@ -62,9 +62,9 @@ const diffAttrs = (oldAttrs, newAttrs) => {
       patch($node);
     }
   };
-};
+}
 
-const diffChildren = (oldChildren, newChildren) => {
+function diffChildren(oldChildren, newChildren) {
   const childPatches = [];
 
   for (const [oldChild, newChild] of zip(oldChildren, newChildren)) {
@@ -90,12 +90,12 @@ const diffChildren = (oldChildren, newChildren) => {
 
     return $parent;
   };
-};
+}
 
-const zip = (xs, ys) => {
+function zip(xs, ys) {
   const zipped = [];
   for (let i = 0; i < Math.max(xs.length, ys.length); i++) {
     zipped.push([xs[i], ys[i]]);
   }
   return zipped;
-};
+}

@@ -1,6 +1,6 @@
 // Create an element
-export function createElement(type, props = {}, ...children) {
-  const element = document.createElement(type);
+export function makeVNode(type, props = {}, ...children) {
+  const element = document.makeVNode(type);
   Object.assign(element, props);
   element.append(
     ...children.map((child) =>
@@ -18,12 +18,6 @@ export function createEvent(name, detail = {}) {
 // Listen for an event
 export function listenEvent(element, eventName, handler) {
   element.addEventListener(eventName, handler);
-}
-
-// Nest elements
-export function nestElements(parent, ...children) {
-  parent.append(...children);
-  return parent;
 }
 
 // Add attributes to an element

@@ -1,5 +1,5 @@
-import { createRouter } from "./overreact/router.js";
-import { createElement, listenEvent } from "./overreact/view.js";
+import { createRouter } from "../overreact/router.js";
+import { makeVNode, listenEvent } from "../overreact/view.js";
 
 let count = 0;
 
@@ -96,24 +96,24 @@ listenEvent(inputField, "keypress", function (e) {
     footerSection.style.display = "block";
 
     // Create the elements
-    const toggle = createElement("input", {
+    const toggle = makeVNode("input", {
       className: "toggle",
       type: "checkbox",
     });
-    const label = createElement("label", { innerText: this.value });
-    const destroy = createElement("button", { className: "destroy" });
-    const view = createElement(
+    const label = makeVNode("label", { innerText: this.value });
+    const destroy = makeVNode("button", { className: "destroy" });
+    const view = makeVNode(
       "div",
       { className: "view" },
       toggle,
       label,
       destroy
     );
-    const edit = createElement("input", {
+    const edit = makeVNode("input", {
       className: "edit",
       value: this.value,
     });
-    const listItem = createElement("li", {}, view, edit);
+    const listItem = makeVNode("li", {}, view, edit);
 
     // Add event listener to the destroy button
     listenEvent(destroy, "click", function () {
