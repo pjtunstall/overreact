@@ -1,39 +1,5 @@
-import { makeHeader } from "./components/header.js";
-import { makeMain } from "./components/main.js";
-import { makeFooter } from "./components/footer.js";
-
-import { makeVNode } from "../overreact/makeVNode.js";
-import { nest } from "../overreact/nest.js";
-import { makeRouter } from "../overreact/router.js";
-import { listenEvent } from "../overreact/view.js";
-import { render } from "../overreact/render.js";
-import { mount } from "../overreact/mount.js";
-import { diff } from "../overreact/diff.js";
-
-let state = {
-  total: 0,
-  active: 0,
-};
-
-function makeTodoApp() {
-  let todoApp = makeVNode("section", { attrs: { class: "todoapp" } });
-
-  let header = makeHeader();
-  let main = makeMain();
-  let footer = makeFooter();
-
-  nest(todoApp, header, main, footer);
-
-  return todoApp;
-}
-
-let vApp = makeTodoApp();
-let vAppOld = JSON.parse(JSON.stringify(vApp));
-
-console.log(vApp);
-
-let app = render(vApp);
-mount(app, document.getElementsByClassName("todoapp")[0]);
+import { makeRouter } from "../../overreact/router.js";
+import { listenEvent } from "../../overreact/view.js";
 
 const allFilter = document.querySelector('a[href="#/"]');
 const activeFilter = document.querySelector('a[href="#/active"]');
@@ -74,13 +40,3 @@ const routes = {
 const router = makeRouter(routes);
 listenEvent(window, "hashchange", router);
 router();
-
-function update() {
-  const patch = diff(vAppOld, vApp);
-  app = patch(app);
-  vAppOld = JSON.parse(JSON.stringify(vApp));
-
-  requestAnimationFrame(update);
-}
-
-requestAnimationFrame(update);

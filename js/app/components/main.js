@@ -1,5 +1,5 @@
-import makeVNode from "../../overreact/makeVNode.js";
-import nest from "../../overreact/nest.js";
+import { makeVNode } from "../../overreact/makeVNode.js";
+import { nest } from "../../overreact/nest.js";
 
 let main;
 let inputToggleAll, labelToggleAll, ulTodoList;
@@ -11,8 +11,7 @@ export function makeMain() {
 }
 
 // child of todoApp
-main = makeVNode({
-  tagName: "section",
+main = makeVNode("section", {
   attrs: {
     class: "main",
     style: "display: none",
@@ -20,8 +19,7 @@ main = makeVNode({
 });
 
 // child of main
-inputToggleAll = makeVNode({
-  tagName: "input",
+inputToggleAll = makeVNode("input", {
   attrs: {
     id: "toggle-all",
     class: "toggle-all",
@@ -30,8 +28,7 @@ inputToggleAll = makeVNode({
 });
 
 // child of main
-labelToggleAll = makeVNode({
-  tagName: "label",
+labelToggleAll = makeVNode("label", {
   attrs: {
     for: "toggle-all",
   },
@@ -39,8 +36,7 @@ labelToggleAll = makeVNode({
 });
 
 // child of main
-ulTodoList = makeVNode({
-  tagName: "ul",
+ulTodoList = makeVNode("ul", {
   attrs: {
     class: "todo-list",
   },

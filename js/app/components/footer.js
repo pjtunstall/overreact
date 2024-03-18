@@ -1,5 +1,5 @@
-import makeVNode from "../../overreact/makeVNode.js";
-import nest from "../../overreact/nest.js";
+import { makeVNode } from "../../overreact/makeVNode.js";
+import { nest } from "../../overreact/nest.js";
 
 let footer;
 let todoCount, ulFilters, clearCompleted;

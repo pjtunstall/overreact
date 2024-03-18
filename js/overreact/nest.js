@@ -1,4 +1,4 @@
-export function nestElements(parent, ...children) {
-  parent.append(...children);
+export function nest(parent, ...children) {
+  parent.children = children;
   return parent;
 }

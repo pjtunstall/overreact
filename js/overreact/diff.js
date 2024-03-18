@@ -1,4 +1,4 @@
-import render from "./render.js";
+import { render } from "./render.js";
 
 export function diff(vOldNode, vNewNode) {
   if (vNewNode === undefined) {

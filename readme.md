@@ -14,13 +14,17 @@ The components will register event listeners and handlers that will tell the vNo
 
 ## Todo
 
+- Add router.
+
+- Test that template (i.e. initial state) is displaying correctly before proceding.
+
+- Add event loop.
+
 - Add functions to edit style: add, remove, clear. Parsing and unparsing as needed.
 
 - Add event listeners to components.
 
 - Incorporate `mount` into `diff`.
-
-- Add event loop.
 
 - Rename `todoapp.js` as `app.js`, and `todoApp` as `vApp`, and `makeTodoApp` as `makeVApp`. Actually, write the loop first to see what's best.
 

@@ -9,11 +9,9 @@ function renderElement({ tagName, attrs, children }) {
   return $el;
 }
 
-function render(vNode) {
+export function render(vNode) {
   if (typeof vNode === "string") {
     return document.createTextNode(vNode);
   }
   return renderElement(vNode);
 }
-
-export default render;
