@@ -1,7 +1,4 @@
-import { makeHeader } from "./components/header.js";
-import { makeMain } from "./components/main.js";
-import { makeFooter } from "./components/footer.js";
-
+import { makeTodoApp } from "./components/todoapp.js";
 import { makeVNode } from "../overreact/makeVNode.js";
 import { nest } from "../overreact/nest.js";
 import { makeRouter } from "../overreact/router.js";
@@ -15,21 +12,8 @@ let state = {
   active: 0,
 };
 
-function makeTodoApp() {
-  let todoApp = makeVNode("section", { attrs: { class: "todoapp" } });
-
-  let header = makeHeader();
-  let main = makeMain();
-  let footer = makeFooter();
-
-  nest(todoApp, header, main, footer);
-
-  return todoApp;
-}
-
 let vApp = makeTodoApp();
 let vAppOld = JSON.parse(JSON.stringify(vApp));
-
 console.log(vApp);
 
 let app = render(vApp);
@@ -75,6 +59,9 @@ const router = makeRouter(routes);
 listenEvent(window, "hashchange", router);
 router();
 
+// So far so good. Now added event handlers.
+
+// We'll only know if this is working after event handlers have been added.
 function update() {
   const patch = diff(vAppOld, vApp);
   app = patch(app);

@@ -1,32 +1,16 @@
 # Overreact: A framework for Tense Times
 
-## The state of play
-
-We have a functioning, but very basic framework (in `router.js` and `view.js`), and have used it to make a complete TodoMVC app. How sophisticated the framework should be is not clear from the instructions, but it would be good to improve on some points.
-
-Specifically, I'd like to rewrite it as follows. The virtual DOM will be remodeled on Jason Yu's [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc), using a slightly modified terminology.
-
-The TodoMVC app will be remodeled to consist of a function `makeVApp` that will build a virtual DOM instance, using a hierarchy of component functions (which in their turn will be built using the framework's `createVNode` and `nestVNode` functions), based on the current state (total number of items, and number of items left) and return its root `vNode` (virtual node, i.e. node of the virtual DOM).
-
-Let's call an instance of the virtual DOM a vApp. `requestAnimationFrame` or `setInterval` will be called to schedule `eventLoop`. The latter function will make a new vApp based on the current state, then update the DOM by calling a `patch` function on DOM Node that is the root of the `app`. A `patch` is the type of function returned by `diff`. `diff` defines a particular `patch` recursively based on old and new values of `vApp`. The `patch` function makes use of `render` and `mount` to turn a vNode into a Node and attach it to the actual DOM.
-
-The components will register event listeners and handlers that will tell the vNode returned by the component how to change in response to user input, given the current state, and change the state if needed. Depending on needs and taste, a developer can choose to have event handlers do more of the work of changing the vNode directly, or set up a more complex state and let the event handlers affect vNodes indirectly via makeVApp. I suppose the former is simpler when the change affects the vNode itself, and the latter when the change affects other vNodes.
-
 ## Todo
 
-- Add router.
+- Event handlers.
 
-- Test that template (i.e. initial state) is displaying correctly before proceding.
+- Functions to edit style: add, remove, clear. Parsing and unparsing as needed.
 
-- Add event loop.
-
-- Add functions to edit style: add, remove, clear. Parsing and unparsing as needed.
-
-- Add event listeners to components.
+- Consider module structure.
 
 - Incorporate `mount` into `diff`.
 
-- Rename `todoapp.js` as `app.js`, and `todoApp` as `vApp`, and `makeTodoApp` as `makeVApp`. Actually, write the loop first to see what's best.
+- Import from Overreact in a way that I prefix names of imports with Overreact?
 
 - REJECTED: Separate app into modules and MVC folder structure.
 
