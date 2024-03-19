@@ -1,6 +1,13 @@
 import { vApp, app } from "./components/todoapp.js";
 import "./routes.js";
 import { diff } from "../overreact/diff.js";
+import { htmlToVNode } from "../overreact/htmlToVNode.js";
+
+// Usage:
+const hello = "Hello";
+const vnode = htmlToVNode`<div class="my-div" id="main-div"><p style="color: red;">${hello}, <span class="highlight" style="background-color: yellow;">world!</span></p><ul><li>Item 1</li><li>Item 2</li></ul></div>`;
+console.log(vnode);
+console.log(vnode.attrs);
 
 let state = {
   total: 0,
