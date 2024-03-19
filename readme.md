@@ -2,6 +2,8 @@
 
 ## Todo
 
+- Move routes into their own module. Import the already-made vApp from makeVApp before importing routes.
+
 - Event handlers.
 
 - Functions to edit style: add, remove, clear. Parsing and unparsing as needed.
