@@ -4,53 +4,39 @@ export function htmlToVNode(strings, ...values) {
     return result + string + (values[i] || "");
   }, "");
 
-  console.log("HTML string:", htmlString); // Add logging here
-
   // Split the HTML string into tags and text nodes
   const parts = htmlString.split(/(<[^>]+>)/g).filter(Boolean);
-
-  console.log("Parts:", parts); // Add logging here
 
   // Create a stack to keep track of the current parent node
   const stack = [];
   let rootNode = null;
 
   // Process each part
-  for (let [i, part] of parts.entries()) {
-    console.log(i);
-    console.log("Processing part:", part); // Add logging here
-    console.log("Stack:", stack); // Add logging here
-    console.log(parts[parts.length - i - 1]); // Add logging here
+  for (let part of parts) {
     if (part.startsWith("<")) {
       // This part is a tag
       const isClosingTag = part.startsWith("</");
+      const isSelfClosingTag = part.endsWith("/>");
       const tagName = part.match(/<\/?(\w+)/)[1];
 
-      console.log("Processing tag:", tagName, "Is closing tag:", isClosingTag); // Add logging here
-
       if (isClosingTag) {
-        // This is a closing tag, so pop the current node off the stack
-        // Add atributes to the current node
-        const currentNode = stack.pop();
-        if (currentNode) {
-          const array = parts[parts.length - i - 1]
-            .replaceAll("<", "")
-            .replaceAll(">", "")
-            .trimStart()
-            .split(" ");
-          array.shift();
-          console.log(array); // Add logging here
-          if (array) {
-            for (let i = 1; i < array.length; i++) {
-              const attr = array[i];
-              const [name, value] = attr.split("=");
-              currentNode.attrs[name] = value?.replace(/["']/g, "");
-            }
+        stack.pop();
+      } else {
+        // This part is an opening tag, so create a new node
+        const node = { tagName, attrs: {}, children: [] };
+
+        // Parse attributes
+        const attrString = part.match(/<\w+([^>]*)>/)[1];
+        const attrArray = attrString.match(
+          /(\w+)=["']?((?:.(?!["']?\s+(?:\S+)=|[>"']))+.)["']?/g
+        );
+        if (attrArray) {
+          for (let attr of attrArray) {
+            const [name, value] = attr.split("=");
+            node.attrs[name] = value.replace(/["']/g, "");
           }
         }
-      } else {
-        // This is an opening tag, so create a new node and push it onto the stack
-        const node = { tagName, attrs: {}, children: [] };
+
         if (stack.length > 0) {
           // If there's a parent node, add this node to its children
           const parentNode = stack[stack.length - 1];
@@ -58,7 +44,11 @@ export function htmlToVNode(strings, ...values) {
         } else {
           rootNode = node;
         }
-        stack.push(node);
+
+        if (!isSelfClosingTag) {
+          // Add this node to the stack
+          stack.push(node);
+        }
       }
     } else {
       // This part is a text node, so add it to the current node's children
@@ -67,12 +57,22 @@ export function htmlToVNode(strings, ...values) {
         parentNode.children.push(part.trim());
       }
     }
-  } // Add logging here
+  }
 
   return rootNode;
 }
 
-// // Rewrite to not use the DOMParser API. Make our own parser.
+// // Usage:
+// const hello = "Hello";
+// const vnode = htmlToVNode`<div class="my-div">${hello}, <span>world!</span></div>`;
+// console.log(vnode);
+
+// // Usage:
+// const hello = "Hello";
+// const vnode = htmlToVNode`<div class="my-div" id="main-div"><p style="color: red;">${hello}, <span class="highlight" style="background-color: yellow;">world!</span></p><ul><li>Item 1</li><li>Item 2</li></ul></div>`;
+// console.log(vnode);
+
+// // Old version that used  the DOMParser API.
 // export function htmlToVNode(strings, ...values) {
 //   // Combine the strings and values to create the HTML string
 //   const htmlString = strings.reduce((result, string, i) => {
@@ -118,8 +118,3 @@ export function htmlToVNode(strings, ...values) {
 //   // Create and return the root vnode
 //   return createVNode(root);
 // }
-
-// // Usage:
-// const hello = "Hello";
-// const vnode = htmlToVNode`<div class="my-div">${hello}, <span>world!</span></div>`;
-// console.log(vnode);
