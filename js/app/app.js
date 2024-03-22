@@ -13,11 +13,11 @@ let state = {
 let vAppOld = JSON.parse(JSON.stringify(vApp));
 let $app = app;
 
-console.log(vApp);
-console.log($app);
+// console.log(vApp);
+// console.log($app);
 
-console.log(eventHandlersRecord);
-console.log(nodeVNodeMap);
+// console.log(eventHandlersRecord);
+// console.log(nodeVNodeMap);
 
 // So far so good. Now added event handlers.
 
