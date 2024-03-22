@@ -2,6 +2,10 @@ import { render } from "./render.js";
 import { makeRouter } from "./router.js";
 import { updateEventListenersOnRootNode } from "./events.js";
 import { diff } from "./diff.js";
+import { addAttribute, removeAttribute } from "./attributes.js";
+import { listenEvent, unlistenEvent } from "./events.js";
+import { addStyle, removeStyle } from "./style.js";
+import { nest } from "./nest.js";
 
 export class App {
   constructor(vApp, $target) {
@@ -38,5 +42,43 @@ export class App {
         q = q.concat(vNode.children);
       }
     }
+    console.log("No vNode with id,", id, "found");
+    return null;
+  }
+
+  addAttribute(vNode, attribute, value) {
+    addAttribute(vNode, attribute, value);
+  }
+
+  removeAttribute(vNode, attribute) {
+    removeAttribute(vNode, attribute);
+  }
+
+  listenEvent(vNode, eventType, handler) {
+    listenEvent(vNode, eventType, handler);
+  }
+
+  unlistenEvent(vNode, eventType) {
+    unlistenEvent(vNode, eventType);
+  }
+
+  nest(parent, ...children) {
+    nest(parent, ...children);
+  }
+
+  hide(vNode) {
+    addStyle(vNode, display, none);
+  }
+
+  show(vNode) {
+    removeStyle(vNode, display, none);
+  }
+
+  addStyle(vNode, key, value) {
+    addStyle(vNode, key, value);
+  }
+
+  removeStyle(vNode, key) {
+    removeStyle(vNode, key);
   }
 }
