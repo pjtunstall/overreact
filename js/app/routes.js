@@ -1,5 +1,4 @@
 import { makeRouter } from "../overreact/router.js";
-import { listenEvent } from "../overreact/view.js";
 
 const allFilter = document.querySelector('a[href="#/"]');
 const activeFilter = document.querySelector('a[href="#/active"]');
@@ -38,5 +37,4 @@ const routes = {
 };
 
 const router = makeRouter(routes);
-listenEvent(window, "hashchange", router);
 router();

@@ -1,5 +1,5 @@
 export function makeRouter(routes) {
-  return function router() {
+  const router = function () {
     const hash = window.location.hash.slice(2);
     const parts = hash.split("/");
     const route = routes[parts[0]];
@@ -9,4 +9,6 @@ export function makeRouter(routes) {
       console.log("Route not found");
     }
   };
+  window.onhashchange = router;
+  return router;
 }

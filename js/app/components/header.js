@@ -18,6 +18,7 @@ h1 = makeVNode("h1", { attrs: { class: "h1" }, children: ["todos"] });
 // child of header
 input = makeVNode("input", {
   attrs: {
+    name: "newTodo",
     class: "new-todo",
     placeholder: "What needs to be done?",
     autofocus: "",
