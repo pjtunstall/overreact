@@ -11,7 +11,7 @@ export function addAttribute(vNode, attribute, value) {
 
 export function removeAttribute(vNode, attribute) {
   if (vNode.attrs[attribute] === undefined) {
-    console.log("No attribute found for", attribute, "on", vNode);
+    console.log("No attribute found for", attribute, vNode);
     return vNode;
   }
   if (attribute.startsWith("on")) {
@@ -19,30 +19,13 @@ export function removeAttribute(vNode, attribute) {
       eventHandlersRecord.has(attribute) &&
       eventHandlersRecord.get(attribute).has(vNode)
     ) {
-      unlistenEvent(vNode, attribute.slice(2));
+      unlistenEvent(vNode, attribute);
       return vNode;
     } else {
-      console.log("No event handler found for", attribute, "on", vNode);
+      console.log("No event handler found for", attribute, vNode);
       return vNode;
     }
   }
   delete vNode.attrs[attribute];
   return vNode;
-}
-
-export function updateEventAttribuesOnRootVNOde(vNode) {
-  for (const eventType in eventHandlersRecord) {
-    vNode.attrs["on" + eventType] = centralEventHandler;
-  }
-  for (const attribute in vNode.attrs) {
-    if (attribute.startsWith("on") && !eventHandlersRecord.has(attribute)) {
-      delete vNode.attrs[attribute];
-    }
-  }
-}
-
-function centralEventHandler(event) {
-  eventHandlersRecord.forEach(eventType).forEach((vNode) => {
-    eventHandlersRecord.get(eventType).get(vNode)(event);
-  });
 }

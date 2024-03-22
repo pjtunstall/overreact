@@ -19,6 +19,9 @@ function makeTodoApp() {
   return todoApp;
 }
 
+// Encapsulate some of this logic in the framework:
+// pass vApp to a framework function and let it handle the rest,
+// including updating the root node with event handlers.
 const vApp = makeTodoApp();
 const app = render(vApp);
 mount(app, document.getElementsByClassName("todoapp")[0]);

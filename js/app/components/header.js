@@ -22,5 +22,12 @@ input = makeVNode("input", {
     class: "new-todo",
     placeholder: "What needs to be done?",
     autofocus: "",
+    onkeypress: addTodo,
   },
 });
+
+function addTodo(e) {
+  if (e.key === "Enter") {
+    console.log("Add todo");
+  }
+}
