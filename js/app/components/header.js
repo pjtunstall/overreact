@@ -10,14 +10,15 @@ export function makeHeader() {
 }
 
 // child of todoApp
-header = makeVNode("header", { attrs: { class: "header" } });
+header = makeVNode("header", { attrs: { id: "header", class: "header" } });
 
 // child of header
-h1 = makeVNode("h1", { attrs: { class: "h1" }, children: ["todos"] });
+h1 = makeVNode("h1", { attrs: { id: "h1", class: "h1" }, children: ["todos"] });
 
 // child of header
 input = makeVNode("input", {
   attrs: {
+    id: "input",
     name: "newTodo",
     class: "new-todo",
     placeholder: "What needs to be done?",

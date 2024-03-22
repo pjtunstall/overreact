@@ -21,47 +21,56 @@ export function makeFooter() {
 
 // child of todoApp
 footer = makeVNode("footer", {
-  attrs: { class: "footer", style: `display: none;` },
+  attrs: { id: "footer", class: "footer", style: `display: none;` },
 });
 
 // child of footer
-todoCount = makeVNode("span", { attrs: { class: "todo-count" } });
+todoCount = makeVNode("span", {
+  attrs: { id: "todoCount", class: "todo-count" },
+});
 
 // child of footer
-ulFilters = makeVNode("ul", { attrs: { class: "filters" } });
+ulFilters = makeVNode("ul", { attrs: { id: "ulFilters", class: "filters" } });
 
 // child of footer
 clearCompleted = makeVNode("button", {
-  attrs: { class: "clear-completed", style: "display: none;" },
+  attrs: {
+    id: "clearCompleted",
+    class: "clear-completed",
+    style: "display: none;",
+  },
   children: ["Clear completed"],
 });
 
 // child of todoCount
-todoCountNumber = makeVNode("strong", { children: ["0"] });
+todoCountNumber = makeVNode("strong", {
+  attrs: { id: "todoCountNumber" },
+  children: ["0"],
+});
 
 // child of todoCount
 todoCountText = " items left!";
 
 // child of ulFilters
-liAll = makeVNode("li", { children: [] });
+liAll = makeVNode("li", { attrs: { id: "liAll" }, children: [] });
 
 // child of liAll
-aAll = makeVNode("a", { attrs: { href: "#/" }, children: ["All"] });
+aAll = makeVNode("a", { attrs: { id: "aAll", href: "#/" }, children: ["All"] });
 
 // child of ulFilters
-liActive = makeVNode("li", { children: [] });
+liActive = makeVNode("li", { attrs: { id: "liActive" }, children: [] });
 
 // child of liActive
 aActive = makeVNode("a", {
-  attrs: { href: "#/active" },
+  attrs: { id: "aActive", href: "#/active" },
   children: ["Active"],
 });
 
 // child of ulFilters
-liCompleted = makeVNode("li", { children: [] });
+liCompleted = makeVNode("li", { attrs: { id: "liCompleted" }, children: [] });
 
 // child of liCompleted
 aCompleted = makeVNode("a", {
-  attrs: { href: "#/completed" },
+  attrs: { id: "aCompleted", href: "#/completed" },
   children: ["Completed"],
 });

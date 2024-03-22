@@ -2,15 +2,11 @@
 
 ## Todo
 
-- Encapsulate parts of todoapp.js and app.js inside the framework in general initialize() and update() functions.
-
-- Event handlers.
+- Event handlers. As I write the event handler functions for the app, import any functions needed into the `overreact.js` module, such as events and attributes.
 
 - Functions to edit style: add, remove, clear. Parsing and unparsing as needed.
 
-- Incorporate `mount` into `diff`, or wherever it should be.
-
-- Import from Overreact in a way that I prefix names of imports with Overreact? Well, that's optional. If someone wants to do that, they can import everything. Make an Overreact module that imports every overreact module, in case someone wants to do this.
+- Import from Overreact in a way that I prefix names of imports with `overReact`? Well, that's optional. If someone wants to do that, they can import everything. Make an `overReact` module that imports every overreact module, in case someone wants to do this.
 
 ## Getting started
 

@@ -1,10 +1,10 @@
-import { makeRouter } from "../overreact/router.js";
+import { app } from "./app.js";
 
 const allFilter = document.querySelector('a[href="#/"]');
 const activeFilter = document.querySelector('a[href="#/active"]');
 const completedFilter = document.querySelector('a[href="#/completed"]');
 
-const routes = {
+export const routes = {
   "": function () {
     const selectedFilters = document.querySelectorAll(".filters .selected");
     selectedFilters.forEach((filter) => filter.classList.remove("selected"));
@@ -36,5 +36,4 @@ const routes = {
   },
 };
 
-const router = makeRouter(routes);
-router();
+app.setRoutes(routes);

@@ -13,6 +13,7 @@ export function makeMain() {
 // child of todoApp
 main = makeVNode("section", {
   attrs: {
+    id: "main",
     class: "main",
     style: "display: none",
   },
@@ -21,7 +22,7 @@ main = makeVNode("section", {
 // child of main
 inputToggleAll = makeVNode("input", {
   attrs: {
-    id: "toggle-all",
+    id: "inputToggleAll",
     class: "toggle-all",
     type: "checkbox",
   },
@@ -30,7 +31,7 @@ inputToggleAll = makeVNode("input", {
 // child of main
 labelToggleAll = makeVNode("label", {
   attrs: {
-    for: "toggle-all",
+    for: "inputToggleAll",
   },
   children: ["Mark all as complete"],
 });
@@ -38,6 +39,7 @@ labelToggleAll = makeVNode("label", {
 // child of main
 ulTodoList = makeVNode("ul", {
   attrs: {
+    id: "ulToDoList",
     class: "todo-list",
   },
 });
