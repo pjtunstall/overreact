@@ -1,14 +1,20 @@
 export function hide(vNode) {
-  if (vNode.style) {
-    vNode.attrs.style += " display: none;";
+  if (vNode.attrs.style) {
+    vNode.attrs.style = vNode.attrs.style.replace(
+      /display: [^;]*;?/g,
+      "display: none;"
+    );
   } else {
     vNode.attrs.style = "display: none;";
   }
 }
 
 export function show(vNode) {
-  if (vNode.style) {
-    vNode.attrs.style += " display: block;";
+  if (vNode.attrs.style) {
+    vNode.attrs.style = vNode.attrs.style.replace(
+      /display: [^;]*;?/g,
+      "display: block;"
+    );
   } else {
     vNode.attrs.style = "display: block;";
   }

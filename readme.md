@@ -1,4 +1,4 @@
-# Overreact: A framework for Tense Times
+# Overreact: a framework for tense times
 
 ## Todo
 
@@ -8,34 +8,9 @@
 
 - Functions to edit style: add, remove, clear. Parsing and unparsing as needed.
 
-- Consider module structure.
+- Incorporate `mount` into `diff`, or wherever it should be.
 
-- Incorporate `mount` into `diff`.
-
-- Import from Overreact in a way that I prefix names of imports with Overreact?
-
-- REJECTED: Separate app into modules and MVC folder structure.
-
-- REJECTED: GitHub Copilot suggestsimplementing a more sophisticated state management, e.g.,
-
-```let state = {
-    count: 0,
-    remaining: 0,
-    // other state properties...
-};
-
-function getState(key) {
-    return state[key];
-}
-
-function setState(key, value) {
-    state[key] = value;
-}
-```
-
-Then use `getState('count')` and `setState('count', newValue)` to get and set the count. If you want to persist the state across page reloads, you could use the Web Storage API (localStorage or sessionStorage) to store the state.
-
-However, since this is barely more sophisticated, and might be a needless complication since these are the only relevant variables. The idea of storing in the browser might also be not what we want, since it makes it less reactive.
+- Import from Overreact in a way that I prefix names of imports with Overreact? Well, that's optional. If someone wants to do that, they can import everything. Make an Overreact module that imports every overreact module, in case someone wants to do this.
 
 ## Getting started
 
