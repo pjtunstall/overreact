@@ -2,7 +2,7 @@
 
 ## Todo
 
-- Move routes into their own module. Import the already-made vApp from makeVApp before importing routes.
+- Encapsulate parts of todoapp.js and app.js inside the framework in general initialize() and update() functions.
 
 - Event handlers.
 

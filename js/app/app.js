@@ -13,8 +13,6 @@ let state = {
 let vAppOld = JSON.parse(JSON.stringify(vApp));
 let $app = app;
 
-updateEventListenersOnRootNode($app);
-
 console.log(vApp);
 console.log($app);
 
@@ -23,13 +21,15 @@ console.log(nodeVNodeMap);
 
 // So far so good. Now added event handlers.
 
-// // We'll only know if this is working after event handlers have been added.
-// function update() {
-//   const patch = diff(vAppOld, vApp);
-//   $app = patch($app);
-//   vAppOld = JSON.parse(JSON.stringify(vApp));
+// We'll only know if this is working after event handlers have been added.
+function update() {
+  // Put the diffing and patching inside an update function in the fraemwork. That is, encapsulate the diffing and patching inside the framework.
+  const patch = diff(vAppOld, vApp);
+  $app = patch($app);
+  vAppOld = JSON.parse(JSON.stringify(vApp));
+  updateEventListenersOnRootNode($app);
 
-//   requestAnimationFrame(update);
-// }
+  requestAnimationFrame(update);
+}
 
-// requestAnimationFrame(update);
+requestAnimationFrame(update);

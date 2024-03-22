@@ -47,22 +47,22 @@ export function updateEventListenersOnRootNode($root) {
     }
   });
 
-  console.log("rootEventTypes", rootEventTypes);
-  rootEventTypes.forEach((eventType) => {
-    console.log("eventType", eventType);
-    console.log(
-      "eventHandlersRecord.get(eventType)",
-      eventHandlersRecord.get(eventType)
-    );
-  });
+  // console.log("rootEventTypes", rootEventTypes);
+  // rootEventTypes.forEach((eventType) => {
+  //   console.log("eventType", eventType);
+  //   console.log(
+  //     "eventHandlersRecord.get(eventType)",
+  //     eventHandlersRecord.get(eventType)
+  //   );
+  // });
 }
 
 function centralEventHandler(event) {
-  console.log("centralEventHandler called");
-  console.log("event", event);
-  console.log("event.type", event.type);
-  console.log("event.target", event.target);
-  console.log(nodeVNodeMap.get(event.target));
+  // console.log("centralEventHandler called");
+  // console.log("event", event);
+  // console.log("event.type", event.type);
+  // console.log("event.target", event.target);
+  // console.log(nodeVNodeMap.get(event.target));
 
   const eventType = "on" + event.type;
   const vNode = nodeVNodeMap.get(event.target);
