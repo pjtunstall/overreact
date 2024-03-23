@@ -136,6 +136,9 @@ export class App {
     let q = [this.vApp];
     while (q.length > 0) {
       let vNode = q.shift();
+      // if (!vNode.attrs.id) {
+      //   console.log("No id for vNode", vNode);
+      // }
       if (vNode.attrs.id === id) {
         return vNode;
       }
