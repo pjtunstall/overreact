@@ -8,6 +8,12 @@ export function diff(vOldNode, vNewNode) {
     };
   }
 
+  if (vOldNode === undefined) {
+    return ($node) => {
+      return undefined;
+    };
+  }
+
   if (typeof vOldNode === "string" || typeof vNewNode === "string") {
     if (vOldNode !== vNewNode) {
       return ($node) => {
@@ -18,13 +24,6 @@ export function diff(vOldNode, vNewNode) {
     } else {
       return ($node) => undefined;
     }
-  }
-
-  // I added this check to handle the case where a new node is added and there is no old node to compare it to
-  if (!vOldNode) {
-    return ($node) => {
-      return undefined;
-    };
   }
 
   if (vOldNode.tagName !== vNewNode.tagName) {

@@ -30,6 +30,14 @@ function removeEventListenersKeyIfNone(eventType) {
   }
 }
 
+export function clearEventHandlers(vNode) {
+  for (const [k, v] of Object.entries(vNode.attrs)) {
+    if (k.startsWith("on")) {
+      eventHandlersRecord.get(k).delete(vNode);
+    }
+  }
+}
+
 export function updateEventListenersOnRootNode($root) {
   // Add new event listeners and update rootEventTypes
   eventHandlersRecord.forEach((handlers, eventType) => {

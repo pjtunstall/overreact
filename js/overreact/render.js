@@ -14,6 +14,10 @@ function renderElement(vNode) {
   const $node = document.createElement(tagName);
 
   nodeVNodeMap.set($node, vNode);
+  // if (tagName === "li") {
+  //   console.log(vNode);
+  //   console.log($node);
+  // }
 
   for (const [k, v] of Object.entries(attrs)) {
     if (k.startsWith("on")) {

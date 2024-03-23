@@ -6,13 +6,13 @@ const main = app.getNVodeById("main");
 const footer = app.getNVodeById("footer");
 const todoList = app.getNVodeById("todoList");
 
-console.log(newTodo);
+// console.log(newTodo);
 
 newTodo.listenEvent("onkeypress", addTodo);
 
 function addTodo(e) {
   if (e.key === "Enter") {
-    console.log("Add todo: ", e.target.value);
+    // console.log("Add todo: ", e.target.value);
   }
 }
 

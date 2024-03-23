@@ -4,10 +4,11 @@ import {
   listenEvent,
   unlistenEvent,
   updateEventListenersOnRootNode,
+  clearEventHandlers,
 } from "./events.js";
 import { addStyle, removeStyle } from "./style.js";
 
-import { render } from "./render.js";
+import { render, nodeVNodeMap } from "./render.js";
 import { makeRouter } from "./router.js";
 import { diff } from "./diff.js";
 
@@ -45,9 +46,13 @@ export class VNode {
   }
 
   removeChild(...childrenToRemove) {
-    this.children = this.children.filter(
-      (child) => !childrenToRemove.includes(child)
-    );
+    this.children = this.children.filter((child) => {
+      const shouldKeep = !childrenToRemove.includes(child);
+      if (!shouldKeep) {
+        clearEventHandlers(child);
+      }
+      return shouldKeep;
+    });
     return this;
   }
 
@@ -75,6 +80,13 @@ export class VNode {
       this.attrs.class = this.attrs.class.replace(className, "").trim();
     }
     return this;
+  }
+
+  hasClass(className) {
+    if (this.attrs.class) {
+      return this.attrs.class.includes(className);
+    }
+    return false;
   }
 
   listenEvent(onevent, handler) {
@@ -112,6 +124,7 @@ export class App {
   constructor(vApp, $target) {
     this.vApp = vApp;
     this.vAppOld = JSON.parse(JSON.stringify(vApp));
+    this.nodeVNodeMap = nodeVNodeMap;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
   }
@@ -128,17 +141,33 @@ export class App {
   update() {
     const patch = diff(this.vAppOld, this.vApp);
     this.$app = patch(this.$app);
+    // this.$app = patch(this.$app, this.$app.parentNode);
     this.vAppOld = JSON.parse(JSON.stringify(this.vApp));
     updateEventListenersOnRootNode(this.$app);
+  }
+
+  traverse(vNode, callback) {
+    callback(vNode);
+    if (vNode.children) {
+      vNode.children.forEach((child) => this.traverse(child, callback));
+    }
+  }
+
+  remove(vNode) {
+    this.traverse(this.vApp, (vCurr) => {
+      vCurr?.children?.forEach((child) => {
+        if (child?.attrs?.id === vNode.attrs.id) {
+          vNode.removeChild(child);
+          return child;
+        }
+      });
+    });
   }
 
   getVNodeById(id) {
     let q = [this.vApp];
     while (q.length > 0) {
       let vNode = q.shift();
-      // if (!vNode.attrs.id) {
-      //   console.log("No id for vNode", vNode);
-      // }
       if (vNode.attrs.id === id) {
         return vNode;
       }
