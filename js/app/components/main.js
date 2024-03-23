@@ -30,7 +30,7 @@ inputToggleAll = new VNode("input", {
 // child of main
 labelToggleAll = new VNode("label", {
   attrs: {
-    for: "labelToggleAll",
+    for: "inputToggleAll",
   },
   children: ["Mark all as complete"],
 });

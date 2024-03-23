@@ -19,6 +19,8 @@ const footer = app.getVNodeById("footer");
 const inputToggleAll = app.getVNodeById("inputToggleAll");
 
 newTodo.listenEvent("onkeypress", addTodo);
+let editCount = 0;
+let toggleCount = 0;
 
 function addTodo(e) {
   if (e.key === "Enter") {
@@ -31,12 +33,13 @@ function addTodo(e) {
 
     const toggle = new VNode("input", {
       attrs: {
+        id: `toggle-${toggleCount}`,
         class: "toggle",
         type: "checkbox",
       },
     });
     const label = new VNode("label", {
-      attrs: { id: "label" },
+      attrs: { id: "label", for: `toggle-${toggleCount++}` },
       children: [e.target.value],
     });
     const destroy = new VNode("button", {
@@ -48,7 +51,7 @@ function addTodo(e) {
     });
     const edit = new VNode("input", {
       attrs: {
-        id: "edit",
+        id: `edit-${editCount++}`,
         class: "edit",
         value: e.target.value,
       },
@@ -161,6 +164,19 @@ function updateTodoCount() {
     clearCompleted.show();
   } else {
     clearCompleted.hide();
+  }
+}
+
+function removeTodo(todo) {
+  todo.remove();
+  if (!todo.classList.contains("completed")) {
+    count--;
+    updateTodoCount();
+  }
+
+  if (document.querySelectorAll(".todo-list li").length === 0) {
+    mainSection.style.display = "none";
+    footerSection.style.display = "none";
   }
 }
 
