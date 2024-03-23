@@ -20,10 +20,17 @@ export function diff(vOldNode, vNewNode) {
     }
   }
 
+  // I added this check to handle the case where a new node is added and there is no old node to compare it to
+  if (!vOldNode) {
+    return ($node) => {
+      return undefined;
+    };
+  }
+
   if (vOldNode.tagName !== vNewNode.tagName) {
     return ($node) => {
       const $newNode = render(vNewNode);
-      $node.replaceWith();
+      $node.replaceWith($newNode);
       return $newNode;
     };
   }

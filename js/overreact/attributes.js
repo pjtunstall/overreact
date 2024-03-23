@@ -10,10 +10,6 @@ export function addAttribute(vNode, attribute, value) {
 }
 
 export function removeAttribute(vNode, attribute) {
-  if (vNode.attrs[attribute] === undefined) {
-    console.log("No attribute found for", attribute, vNode);
-    return vNode;
-  }
   if (attribute.startsWith("on")) {
     if (
       eventHandlersRecord.has(attribute) &&
@@ -25,6 +21,10 @@ export function removeAttribute(vNode, attribute) {
       console.log("No event handler found for", attribute, vNode);
       return vNode;
     }
+  }
+  if (vNode.attrs[attribute] === undefined) {
+    console.log("No attribute found for", attribute, vNode);
+    return vNode;
   }
   delete vNode.attrs[attribute];
   return vNode;

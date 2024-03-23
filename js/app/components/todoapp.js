@@ -2,11 +2,10 @@ import { makeHeader } from "./header.js";
 import { makeMain } from "./main.js";
 import { makeFooter } from "./footer.js";
 
-import { makeVNode } from "../../overreact/makeVNode.js";
-import { nest } from "../../overreact/nest.js";
+import { VNode } from "../../overreact/overReact.js";
 
 export function makeTodoApp() {
-  let todoApp = makeVNode("section", {
+  let todoApp = new VNode("section", {
     attrs: { id: "todoapp", class: "todoapp" },
   });
 
@@ -14,7 +13,7 @@ export function makeTodoApp() {
   let main = makeMain();
   let footer = makeFooter();
 
-  nest(todoApp, header, main, footer);
+  todoApp.append(header, main, footer);
 
   return todoApp;
 }

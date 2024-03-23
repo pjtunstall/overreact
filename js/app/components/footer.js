@@ -1,5 +1,4 @@
-import { makeVNode } from "../../overreact/makeVNode.js";
-import { nest } from "../../overreact/nest.js";
+import { VNode } from "../../overreact/overReact.js";
 
 let footer;
 let todoCount, ulFilters, clearCompleted;
@@ -7,33 +6,33 @@ let todoCountNumber, todoCountText;
 let liAll, aAll, liActive, aActive, liCompleted, aCompleted;
 
 export function makeFooter() {
-  nest(footer, todoCount, ulFilters, clearCompleted);
+  footer.append(todoCount, ulFilters, clearCompleted);
 
-  nest(todoCount, todoCountNumber, todoCountText);
-  nest(ulFilters, liAll, liActive, liCompleted);
+  todoCount.append(todoCountNumber, todoCountText);
+  ulFilters.append(liAll, liActive, liCompleted);
 
-  nest(liAll, aAll);
-  nest(liActive, aActive);
-  nest(liCompleted, aCompleted);
+  liAll.append(aAll);
+  liActive.append(aActive);
+  liCompleted.append(aCompleted);
 
   return footer;
 }
 
 // child of todoApp
-footer = makeVNode("footer", {
+footer = new VNode("footer", {
   attrs: { id: "footer", class: "footer", style: `display: none;` },
 });
 
 // child of footer
-todoCount = makeVNode("span", {
+todoCount = new VNode("span", {
   attrs: { id: "todoCount", class: "todo-count" },
 });
 
 // child of footer
-ulFilters = makeVNode("ul", { attrs: { id: "ulFilters", class: "filters" } });
+ulFilters = new VNode("ul", { attrs: { id: "ulFilters", class: "filters" } });
 
 // child of footer
-clearCompleted = makeVNode("button", {
+clearCompleted = new VNode("button", {
   attrs: {
     id: "clearCompleted",
     class: "clear-completed",
@@ -43,7 +42,7 @@ clearCompleted = makeVNode("button", {
 });
 
 // child of todoCount
-todoCountNumber = makeVNode("strong", {
+todoCountNumber = new VNode("strong", {
   attrs: { id: "todoCountNumber" },
   children: ["0"],
 });
@@ -52,25 +51,25 @@ todoCountNumber = makeVNode("strong", {
 todoCountText = " items left!";
 
 // child of ulFilters
-liAll = makeVNode("li", { attrs: { id: "liAll" }, children: [] });
+liAll = new VNode("li", { attrs: { id: "liAll" }, children: [] });
 
 // child of liAll
-aAll = makeVNode("a", { attrs: { id: "aAll", href: "#/" }, children: ["All"] });
+aAll = new VNode("a", { attrs: { id: "aAll", href: "#/" }, children: ["All"] });
 
 // child of ulFilters
-liActive = makeVNode("li", { attrs: { id: "liActive" }, children: [] });
+liActive = new VNode("li", { attrs: { id: "liActive" }, children: [] });
 
 // child of liActive
-aActive = makeVNode("a", {
+aActive = new VNode("a", {
   attrs: { id: "aActive", href: "#/active" },
   children: ["Active"],
 });
 
 // child of ulFilters
-liCompleted = makeVNode("li", { attrs: { id: "liCompleted" }, children: [] });
+liCompleted = new VNode("li", { attrs: { id: "liCompleted" }, children: [] });
 
 // child of liCompleted
-aCompleted = makeVNode("a", {
+aCompleted = new VNode("a", {
   attrs: { id: "aCompleted", href: "#/completed" },
   children: ["Completed"],
 });
