@@ -9,7 +9,7 @@ import {
 } from "./events.js";
 import { addStyle, removeStyle } from "./style.js";
 
-import { render, nodeVNodeMap } from "./render.js";
+import { render, nodeVNodeMap, vNodeNodeMap } from "./render.js";
 import { makeRouter } from "./router.js";
 import { diff } from "./diff.js";
 
@@ -41,14 +41,12 @@ export class VNode {
     return this;
   }
 
-  removeChild(...childrenToRemove) {
-    this.children = this.children.filter((child) => {
-      const shouldKeep = !childrenToRemove.includes(child);
-      if (!shouldKeep) {
-        clearEventHandlers(child);
-      }
-      return shouldKeep;
-    });
+  removeChild(childToRemove) {
+    if (this.children.indexOf(childToRemove) === -1) {
+      throw new Error("Child not found");
+    }
+    this.children = this.children.filter((child) => child !== childToRemove);
+    console.log("Removed", childToRemove);
     return this;
   }
 
@@ -121,6 +119,7 @@ export class App {
     this.vApp = vApp;
     this.vAppOld = JSON.parse(JSON.stringify(vApp));
     this.nodeVNodeMap = nodeVNodeMap;
+    this.vNodeNodeMap = vNodeNodeMap;
     this.eventHandlersRecord = eventHandlersRecord;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
@@ -149,14 +148,33 @@ export class App {
     }
   }
 
-  remove(vNode) {
+  remove(vNodeToRemove) {
     this.traverse(this.vApp, (vCurr) => {
-      vCurr?.children?.forEach((child) => {
-        if (child?.attrs?.id === vNode.attrs.id) {
-          vNode.removeChild(child);
-          return child;
+      if (!vCurr.children || vCurr.children.length === 0) {
+        return;
+      }
+      for (let i = 0; i < vCurr.children.length; i++) {
+        const child = vCurr.children[i];
+        if (!child) {
+          console.log("Undefined child", child);
+          continue;
         }
-      });
+        if (
+          (typeof vNodeToRemove === "string" &&
+            typeof child === "string" &&
+            vNodeToRemove === child) ||
+          (child.attrs &&
+            vNodeToRemove.attrs &&
+            child.attrs.id === vNodeToRemove.attrs.id)
+        ) {
+          console.log("Removing", child.attrs.id);
+          vCurr.children.splice(i, 1);
+          vNodeNodeMap.delete(child);
+          nodeVNodeMap.delete(this.nodeVNodeMap.get(child));
+          console.log("Removed", child);
+          break;
+        }
+      }
     });
   }
 

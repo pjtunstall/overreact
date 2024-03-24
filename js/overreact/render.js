@@ -1,7 +1,7 @@
 import { eventHandlersRecord } from "../overreact/events.js";
-import { vApp } from "../app/app.js";
 
 export const nodeVNodeMap = new Map();
+export const vNodeNodeMap = new Map();
 
 export function render(vNode) {
   if (typeof vNode === "string") {
@@ -32,6 +32,10 @@ function renderElement(vNode) {
   }
 
   nodeVNodeMap.set($node, vNode);
+  vNodeNodeMap.set(vNode, $node);
+
+  // nodeVNodeMap.set($node.id, vNode.attrs.id);
+  // vNodeNodeMap.set(vNode.attrs.id, $node.id);
 
   return $node;
 }

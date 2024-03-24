@@ -1,7 +1,6 @@
 import { makeTodoApp } from "./components/todoapp.js";
 import { App, VNode } from "../overreact/overReact.js";
-import { vNodeToHtml as h } from "../overreact/vNodeToHtml.js";
-import { render } from "../overreact/render.js";
+import { vNodeNodeMap } from "../overreact/render.js";
 
 const state = {
   total: 0,
@@ -13,7 +12,6 @@ let $target = document.getElementsByClassName("todoapp")[0];
 let app = new App(vApp, $target);
 app.setState(state);
 
-// console.log(vApp);
 const todoList = app.getVNodeById("todoList");
 const todoCount = app.getVNodeById("todoCount");
 const newTodo = app.getVNodeById("newTodo");
@@ -23,15 +21,20 @@ const inputToggleAll = app.getVNodeById("inputToggleAll");
 const clearCompleted = app.getVNodeById("clearCompleted");
 
 newTodo.listenEvent("onkeypress", addTodo);
-let editCount = 0;
-let toggleCount = 0;
-let labelCount = 0;
-let destroyCount = 0;
-let viewCount = 0;
-let listItemCount = 0;
+
+function* counterMaker() {
+  let count = 0;
+  while (true) {
+    yield count++;
+  }
+}
+
+const counter = counterMaker();
 
 function addTodo(e) {
   if (e.key === "Enter") {
+    app.state.total++;
+
     e.preventDefault();
     app.state.count++;
     app.state.active++;
@@ -39,76 +42,119 @@ function addTodo(e) {
     main.show();
     footer.show();
 
+    const count = counter.next().value;
+
     const toggle = new VNode("input", {
       attrs: {
-        id: `toggle-${toggleCount}`,
+        id: `toggle-${count}`,
         class: "toggle",
         type: "checkbox",
       },
     });
     const label = new VNode("label", {
-      attrs: { id: `label-${labelCount++}`, for: `toggle-${toggleCount++}` },
+      attrs: { id: `label-${count}`, for: `toggle-${count}` },
       children: [e.target.value],
     });
     const destroy = new VNode("button", {
-      attrs: { id: `destroy-${destroyCount++}`, class: "destroy" },
+      attrs: { id: `destroy-${count}`, class: "destroy" },
     });
     const view = new VNode("div", {
-      attrs: { id: `view-${viewCount++}`, class: "view" },
+      attrs: { id: `view-${count}`, class: "view" },
       children: [toggle, label, destroy],
     });
     const edit = new VNode("input", {
       attrs: {
-        id: `edit-${editCount++}`,
+        id: `edit-${count}`,
         class: "edit",
         value: e.target.value,
       },
     });
     const listItem = new VNode("li", {
-      attrs: { id: `listItem-${listItemCount++}` },
+      attrs: { id: `listItem-${count}` },
       children: [view, edit],
     });
 
     // Add event listener to the destroy button
     destroy.listenEvent("onclick", (e) => {
+      app.state.total--;
+
       const listItem = app.nodeVNodeMap.get(e.target.closest("li"));
       app.remove(listItem);
-      app.state.total--;
       if (!listItem.hasClass("completed")) {
         app.state.active--;
         updateTodoCount();
       }
 
-      // Hide the .main and .footer sections if there are no todos left
-      if (app.state.total === 0 && app.state.active === 0) {
+      if (app.state.total === 0) {
         main.hide();
         footer.hide();
       }
+
+      if (app.state.active === app.state.total) {
+        clearCompleted.hide();
+      }
+    });
+
+    // Add event listener to the checkbox
+    // Must used addClass and removeClass instead of class = "" and class = "completed",
+    // but in the toggle all function, class = "" and class = "completed" must be used.
+    // At least, this seems to work. I don't know why. Other, more rational combinations
+    // have, so far, failed.
+    toggle.listenEvent("onchange", (e) => {
+      const listItem = app.nodeVNodeMap.get(e.target.closest("li"));
+      const toggle = listItem.children[0].children[0];
+      if (e.target.checked) {
+        app.state.active--;
+        listItem.addClass("completed");
+        // listItem.class = "completed";
+        toggle.attrs.checked = "";
+        clearCompleted.show();
+      } else {
+        app.state.active++;
+        listItem.removeClass("completed");
+        // listItem.class = "";
+        delete toggle.attrs.checked;
+        if (app.state.active === app.state.total) {
+          clearCompleted.hide();
+        }
+      }
+      updateTodoCount();
     });
 
     inputToggleAll.listenEvent("onclick", () => {
       const todos = todoList.children;
-      const allCompleted = Array.from(todos).every(
-        (todo) => (todo.attrs.checked = "true")
-      );
+      console.log(todos);
 
-      if (allCompleted) {
-        count = 0;
-        todos.forEach((todo) => {
-          todo.removeClass("completed");
-          todo.attrs.checked = "false";
-          app.state.active++;
+      if (app.state.active === 0) {
+        const completed = todos.filter((todo) => todo.hasClass("completed"));
+        const $completed = [];
+        completed.forEach((todo) => {
+          const toggle = todo.children[0].children[0];
+          $completed.push(vNodeNodeMap.get(toggle));
         });
+        check($completed);
+        app.state.active = app.state.total;
+        completed.forEach((todo) => {
+          const toggle = todo.children[0].children[0];
+          delete toggle.attrs.checked;
+          todo.class = "";
+          // todo.removeClass("completed");
+        });
+        app.state.active = app.state.total;
+        clearCompleted.hide();
       } else {
-        clearCompleted.show();
-        todos.forEach((todo) => {
-          const toggle = todo.querySelector(".toggle");
-          if (!toggle.checked) {
-            toggle.checked = true;
-            todo.addClass("completed");
-            app.state.active--;
-          }
+        const active = todos.filter((todo) => !todo.hasClass("completed"));
+        const $active = [];
+        active.forEach((todo) => {
+          const toggle = todo.children[0].children[0];
+          $active.push(vNodeNodeMap.get(toggle));
+          toggle.attrs.checked = "";
+          todo.class = "completed";
+          // todo.addClass("completed");
         });
+        check($active);
+        app.state.active = 0;
+        clearCompleted.show();
       }
 
       updateTodoCount();
@@ -119,13 +165,11 @@ function addTodo(e) {
       todos.forEach((todo) => {
         if (todo.hasClass("completed")) {
           app.remove(todo);
+          app.state.total--;
         }
-        // if (todo.querySelector(".toggle").checked) {
-        //   removeTodo(todo);
-        // }
       });
 
-      if (todos.length === 0) {
+      if (app.state.total === 0) {
         main.hide();
         footer.hide();
       }
@@ -133,27 +177,11 @@ function addTodo(e) {
       clearCompleted.hide();
     });
 
-    // Add event listener to the checkbox
-    toggle.listenEvent("onchange", (e) => {
-      const listItem = app.nodeVNodeMap.get(e.target.closest("li"));
-      if (e.target.checked) {
-        clearCompleted.show();
-        app.state.active--;
-        listItem.addClass("completed");
-        listItem.attrs.checked = true;
-      } else {
-        app.state.active++;
-        listItem.removeClass("completed");
-        listItem.attrs.checked = false;
-      }
-      updateTodoCount();
-    });
-
     // // Add event listener for double click
-    // listItem.listenEvent("ondblclick", () => {
+    // listItem.listenEvent("ondblclick", (e) => {
     //   listItem.addClass("editing");
-    //   // Somehow communicate that the $node should be focused
-    //   // edit.focus();
+    //   const $edit = e.target.closest("li").querySelector(".edit");
+    //   $edit.focus();
     // });
 
     // // Add event listener for 'Enter' keypress on edit field
@@ -198,3 +226,14 @@ function update() {
 }
 
 requestAnimationFrame(update);
+
+function check(checkboxes) {
+  checkboxes.forEach((checkbox) => {
+    checkbox.checked = !checkbox.checked;
+    const event = new Event("change", {
+      bubbles: true,
+      cancelable: true,
+    });
+    checkbox.dispatchEvent(event);
+  });
+}

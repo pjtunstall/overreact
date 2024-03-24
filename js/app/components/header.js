@@ -26,5 +26,6 @@ input = new VNode("input", {
     placeholder: "What needs to be done?",
     autofocus: "",
     autocomplete: "off",
+    required: "",
   },
 });

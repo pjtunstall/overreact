@@ -4,6 +4,7 @@ const allFilter = document.querySelector('a[href="#/"]');
 const activeFilter = document.querySelector('a[href="#/active"]');
 const completedFilter = document.querySelector('a[href="#/completed"]');
 
+// Modify change of "selected" class to use virtual nodes so that they won't be reset.
 export const routes = {
   "": function () {
     const selectedFilters = document.querySelectorAll(".filters .selected");

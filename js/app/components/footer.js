@@ -54,7 +54,10 @@ todoCountText = " items left!";
 liAll = new VNode("li", { attrs: { id: "liAll" }, children: [] });
 
 // child of liAll
-aAll = new VNode("a", { attrs: { id: "aAll", href: "#/" }, children: ["All"] });
+aAll = new VNode("a", {
+  attrs: { id: "aAll", href: "#/", class: "selected" },
+  children: ["All"],
+});
 
 // child of ulFilters
 liActive = new VNode("li", { attrs: { id: "liActive" }, children: [] });
