@@ -2,7 +2,11 @@
 
 ## Todo
 
-- Event handlers. As I write the event handler functions for the app, import any functions needed into the `overreact.js` module, such as events and attributes, unless I make them accessible only via methods in the App class.
+- Event handlers: switch to using ids in maps to avoid problem of actual DOM re-using references.
+
+- Toggle class mystery.
+
+- SWitch to using virtual DOM for changing class of filters, so that they don't get immediately reset by the update.
 
 - Functions to edit style: add, remove, clear. Parsing and unparsing as needed.
 
