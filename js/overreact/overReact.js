@@ -5,6 +5,7 @@ import {
   unlistenEvent,
   updateEventListenersOnRootNode,
   clearEventHandlers,
+  eventHandlersRecord,
 } from "./events.js";
 import { addStyle, removeStyle } from "./style.js";
 
@@ -37,11 +38,6 @@ export class VNode {
 
   append(...children) {
     this.children.push(...children);
-    return this;
-  }
-
-  prepend(...children) {
-    this.children.unshift(...children);
     return this;
   }
 
@@ -125,6 +121,7 @@ export class App {
     this.vApp = vApp;
     this.vAppOld = JSON.parse(JSON.stringify(vApp));
     this.nodeVNodeMap = nodeVNodeMap;
+    this.eventHandlersRecord = eventHandlersRecord;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
   }
@@ -141,7 +138,6 @@ export class App {
   update() {
     const patch = diff(this.vAppOld, this.vApp);
     this.$app = patch(this.$app);
-    // this.$app = patch(this.$app, this.$app.parentNode);
     this.vAppOld = JSON.parse(JSON.stringify(this.vApp));
     updateEventListenersOnRootNode(this.$app);
   }

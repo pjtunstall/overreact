@@ -1,12 +1,14 @@
 import { makeTodoApp } from "./components/todoapp.js";
 import { App, VNode } from "../overreact/overReact.js";
+import { vNodeToHtml as h } from "../overreact/vNodeToHtml.js";
+import { render } from "../overreact/render.js";
 
 const state = {
   total: 0,
   active: 0,
 };
 
-let vApp = makeTodoApp();
+export let vApp = makeTodoApp();
 let $target = document.getElementsByClassName("todoapp")[0];
 let app = new App(vApp, $target);
 app.setState(state);
@@ -52,7 +54,7 @@ function addTodo(e) {
       attrs: { id: `destroy-${destroyCount++}`, class: "destroy" },
     });
     const view = new VNode("div", {
-      attrs: { id: `view-${viewCount}`, class: "view" },
+      attrs: { id: `view-${viewCount++}`, class: "view" },
       children: [toggle, label, destroy],
     });
     const edit = new VNode("input", {
@@ -66,25 +68,16 @@ function addTodo(e) {
       attrs: { id: `listItem-${listItemCount++}` },
       children: [view, edit],
     });
-    // console.log(listItem);
 
     // Add event listener to the destroy button
     destroy.listenEvent("onclick", (e) => {
-      // console.log(e.target.closest("li"));
       const listItem = app.nodeVNodeMap.get(e.target.closest("li"));
-      // console.log(listItem);
       app.remove(listItem);
       app.state.total--;
       if (!listItem.hasClass("completed")) {
         app.state.active--;
         updateTodoCount();
       }
-
-      // console.log(
-      //   app.state.total,
-      //   app.state.active,
-      //   listItem.hasClass("completed")
-      // );
 
       // Hide the .main and .footer sections if there are no todos left
       if (app.state.total === 0 && app.state.active === 0) {
@@ -94,17 +87,17 @@ function addTodo(e) {
     });
 
     inputToggleAll.listenEvent("onclick", () => {
-      const todos = document.querySelectorAll(".todo-list li");
+      const todos = todoList.children;
       const allCompleted = Array.from(todos).every(
-        (todo) => todo.querySelector(".toggle").checked
+        (todo) => (todo.attrs.checked = "true")
       );
 
       if (allCompleted) {
         count = 0;
         todos.forEach((todo) => {
           todo.removeClass("completed");
-          todo.querySelector(".toggle").checked = false;
-          count++;
+          todo.attrs.checked = "false";
+          app.state.active++;
         });
       } else {
         clearCompleted.show();
@@ -124,6 +117,9 @@ function addTodo(e) {
     clearCompleted.listenEvent("onclick", () => {
       const todos = todoList.children;
       todos.forEach((todo) => {
+        if (todo.hasClass("completed")) {
+          app.remove(todo);
+        }
         // if (todo.querySelector(".toggle").checked) {
         //   removeTodo(todo);
         // }
@@ -176,8 +172,7 @@ function addTodo(e) {
     //   listItem.removeClass("editing");
     // });
 
-    todoList.prepend(listItem);
-    // console.log(app.vApp, app.$app);
+    todoList.append(listItem);
 
     // Clear the input field
     e.target.value = "";
@@ -197,23 +192,8 @@ function updateTodoCount() {
   }
 }
 
-function removeTodo(todo) {
-  app.remove(todo);
-  app.state.total--;
-  if (!todo.hasClass("completed")) {
-    app.state.active--;
-    updateTodoCount();
-  }
-
-  if (app.state.total === 0 && app.state.active === 0) {
-    main.hide();
-    footer.hide();
-  }
-}
-
 function update() {
   app.update();
-  // console.log(app.vApp, app.$app);
   requestAnimationFrame(update);
 }
 

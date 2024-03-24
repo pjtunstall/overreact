@@ -1,4 +1,5 @@
 import { eventHandlersRecord } from "../overreact/events.js";
+import { vApp } from "../app/app.js";
 
 export const nodeVNodeMap = new Map();
 
@@ -13,12 +14,6 @@ function renderElement(vNode) {
   const { tagName, attrs, children } = vNode;
   const $node = document.createElement(tagName);
 
-  nodeVNodeMap.set($node, vNode);
-  // if (tagName === "li") {
-  //   console.log(vNode);
-  //   console.log($node);
-  // }
-
   for (const [k, v] of Object.entries(attrs)) {
     if (k.startsWith("on")) {
       // Create a new Map for this event type if it doesn't exist
@@ -31,8 +26,12 @@ function renderElement(vNode) {
       $node.setAttribute(k, v);
     }
   }
+
   for (const child of children) {
     $node.append(render(child));
   }
+
+  nodeVNodeMap.set($node, vNode);
+
   return $node;
 }

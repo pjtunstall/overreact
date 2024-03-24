@@ -1,4 +1,4 @@
-import { render } from "./render.js";
+import { render, nodeVNodeMap } from "./render.js";
 
 export function diff(vOldNode, vNewNode) {
   if (vNewNode === undefined) {
@@ -13,6 +13,14 @@ export function diff(vOldNode, vNewNode) {
       return undefined;
     };
   }
+
+  // if (vOldNode === undefined) {
+  //   return ($node, $parent) => {
+  //     const $newNode = render(vNewNode);
+  //     $parent.appendChild($newNode);
+  //     return $newNode;
+  //   };
+  // }
 
   if (typeof vOldNode === "string" || typeof vNewNode === "string") {
     if (vOldNode !== vNewNode) {
