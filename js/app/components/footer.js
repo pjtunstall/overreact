@@ -3,7 +3,8 @@ import { VNode } from "../../overreact/overReact.js";
 let footer;
 let todoCount, ulFilters, clearCompleted;
 let todoCountNumber, todoCountText;
-export let liAll, aAll, liActive, aActive, liCompleted, aCompleted;
+export let aAll, aActive, aCompleted;
+let liAll, liActive, liCompleted;
 
 export function makeFooter() {
   footer.append(todoCount, ulFilters, clearCompleted);

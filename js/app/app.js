@@ -114,6 +114,13 @@ function addTodo(e) {
       children: [view, edit],
     });
 
+    const hash = window.location.hash.slice(2);
+    const parts = hash.split("/");
+    const route = parts[0];
+    if (route === "completed") {
+      listItem.hide();
+    }
+
     // Add event listener to the destroy button
     destroy.listenEvent("onclick", (e) => {
       app.state.total--;

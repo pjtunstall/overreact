@@ -4,11 +4,7 @@
 
 - Event handlers: switch to using ids in maps to avoid problem of actual DOM re-using references.
 
-- All, active, and completed visibilities should depend on state, not transition to state.
-
 - Edit.
-
-- The require mystery.
 
 - Toggle class mystery.
 
