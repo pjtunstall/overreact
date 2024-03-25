@@ -2,11 +2,13 @@
 
 ## Todo
 
-- Edit.
+- Fix editing.
+
+- Less proflicate state management, e.g. custom event fired on change to either property of state, and only update then. Or pass update as a callback to the app's update method, and have it pass it to central event handler to be called when any event triggers that.
 
 - Switch to id map for event handler map.
 
-- Toggle checked mysteries. Can we do better than hack.
+- Checkbox mysteries. Can we do better than hack?
 
 - Appending new items is ok (their framework examples do it), but also figure out how to prepend (as in their JS example).
 

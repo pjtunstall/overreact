@@ -224,28 +224,45 @@ function addTodo(e) {
     label.listenEvent("ondblclick", (e) => {
       const $edit = e.target;
       $edit.focus();
-      const $todo = edit.closest("li");
+      const $todo = $edit.closest("li");
       const todoId = nodeVNodeMap.get($todo.id);
       const todo = app.getVNodeById(todoId);
       todo.addClass("editing");
     });
 
-    // // Add event listener for 'Enter' keypress on edit field
-    // // If empty, remove it.
-    // edit.listenEvent("onkeypress", (e) => {
-    //   if (e.key === "Enter") {
-    //     // Update label text and remove 'editing' class
-    //     label.children = [e.target.value];
-    //     listItem.removeClass("editing");
-    //   }
-    // });
+    // Add event listener for 'Enter' keypress on edit field
+    // If empty, remove it.
+    edit.listenEvent("onkeypress", (e) => {
+      if (e.key === "Enter") {
+        if (e.target.value === "") {
+          app.remove(listItem);
+          if (--app.state.total === 0) {
+            main.hide();
+            footer.hide();
+          }
+          updateTodoCount();
+        } else {
+          label.children = [e.target.value];
+        }
+        listItem.removeClass("editing");
+      }
+    });
 
-    // // Add event listener for 'blur' event on edit field
-    // edit.listenEvent("onblur", (e) => {
-    //   // Update label text and remove 'editing' class
-    //   label.children = [e.target.value];
-    //   listItem.removeClass("editing");
-    // });
+    // Add event listener for 'blur' event on edit field
+    edit.listenEvent("onblur", (e) => {
+      // Update label text and remove 'editing' class
+      if (e.target.value === "") {
+        app.remove(listItem);
+        if (--app.state.total === 0) {
+          main.hide();
+          footer.hide();
+        }
+        updateTodoCount();
+      } else {
+        label.children = [e.target.value];
+      }
+      listItem.removeClass("editing");
+    });
 
     todoList.append(listItem);
 
