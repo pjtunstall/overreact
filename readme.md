@@ -2,9 +2,11 @@
 
 ## Todo
 
-- Fix editing.
+- Fix editing: enter and blur.
 
-- Less proflicate state management, e.g. custom event fired on change to either property of state, and only update then. Or pass update as a callback to the app's update method, and have it pass it to central event handler to be called when any event triggers that.
+- Update on state change.
+
+- Make sure event handling is really bypassing the native way. Try again to do it with data- prefix.
 
 - Switch to id map for event handler map.
 

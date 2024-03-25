@@ -92,7 +92,7 @@ function addTodo(e) {
       },
     });
     const label = new VNode("label", {
-      attrs: { id: `label-${count}`, for: `toggle-${count}` },
+      attrs: { id: `label-${count}` },
       children: [e.target.value],
     });
     const destroy = new VNode("button", {
@@ -124,10 +124,9 @@ function addTodo(e) {
     // Add event listener to the destroy button
     destroy.listenEvent("onclick", (e) => {
       const $todo = e.target.closest("li");
-
       const listItemId = app.nodeVNodeMap.get($todo.id);
       const listItem = app.getVNodeById(listItemId);
-      // const listItem = app.nodeVNodeMap.get(e.target.closest("li"));
+
       if (--app.state.total === 0) {
         main.hide();
         footer.hide();
@@ -235,15 +234,25 @@ function addTodo(e) {
     edit.listenEvent("onkeypress", (e) => {
       if (e.key === "Enter") {
         if (e.target.value === "") {
-          app.remove(listItem);
+          const $todo = e.target.closest("li");
+          const listItemId = app.nodeVNodeMap.get($todo.id);
+          const listItem = app.getVNodeById(listItemId);
           if (--app.state.total === 0) {
             main.hide();
             footer.hide();
           }
-          updateTodoCount();
-        } else {
-          label.children = [e.target.value];
+          if (!listItem.hasClass("completed")) {
+            app.state.active--;
+            updateTodoCount();
+          }
+
+          if (app.state.active === app.state.total) {
+            clearCompleted.hide();
+          }
+
+          app.remove(listItem);
         }
+        label.children = [e.target.value];
         listItem.removeClass("editing");
       }
     });
@@ -251,16 +260,25 @@ function addTodo(e) {
     // Add event listener for 'blur' event on edit field
     edit.listenEvent("onblur", (e) => {
       // Update label text and remove 'editing' class
-      if (e.target.value === "") {
-        app.remove(listItem);
-        if (--app.state.total === 0) {
-          main.hide();
-          footer.hide();
-        }
-        updateTodoCount();
-      } else {
-        label.children = [e.target.value];
-      }
+      // if (e.target.value === "") {
+      //   app.remove(listItem);
+
+      //   if (--app.state.total === 0) {
+      //     main.hide();
+      //     footer.hide();
+      //   }
+
+      //   if (!listItem.hasClass("completed")) {
+      //     app.state.active--;
+      //     updateTodoCount();
+      //   }
+
+      //   if (app.state.active === app.state.total) {
+      //     clearCompleted.hide();
+      //   }
+      // } else {
+      // }
+      label.children = [e.target.value];
       listItem.removeClass("editing");
     });
 
