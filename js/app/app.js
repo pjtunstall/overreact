@@ -124,7 +124,8 @@ function addTodo(e) {
     // Add event listener to the destroy button
     destroy.listenEvent("onclick", (e) => {
       app.state.total--;
-
+      // const listItemId = app.nodeVNodeMap.get(e.target.closest("li").id);
+      // const listItem = app.getVNodeById(listItemId);
       const listItem = app.nodeVNodeMap.get(e.target.closest("li"));
       app.remove(listItem);
       if (!listItem.hasClass("completed")) {
@@ -146,6 +147,8 @@ function addTodo(e) {
     // Must use addClass and removeClass instead of class = "" and class = "completed",
     // but in the toggle all function, I mustn't do anything to the class or it breaks.
     toggle.listenEvent("onchange", (e) => {
+      // const listItemId = app.nodeVNodeMap.get(e.target.closest("li").id);
+      // const listItem = app.getVNodeById(listItemId);
       const listItem = app.nodeVNodeMap.get(e.target.closest("li"));
       const toggle = listItem.children[0].children[0];
       if (e.target.checked) {

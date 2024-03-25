@@ -2,7 +2,7 @@
 
 ## Todo
 
-- Event handlers: switch to using ids in maps to avoid problem of actual DOM re-using references.
+- Event handlers: switch to using ids in maps to avoid problem of actual DOM re-using references. In the case of text nodes, use the text itself as an id.
 
 - Edit.
 

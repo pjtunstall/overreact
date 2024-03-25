@@ -171,6 +171,9 @@ export class App {
           vCurr.children.splice(i, 1);
           vNodeNodeMap.delete(child);
           nodeVNodeMap.delete(this.nodeVNodeMap.get(child));
+          // const nodeId = vNodeNodeMap.get(child.attrs.id);
+          // vNodeNodeMap.delete(child.attrs.id);
+          // nodeVNodeMap.delete(nodeId);
           console.log("Removed", child);
           break;
         }
