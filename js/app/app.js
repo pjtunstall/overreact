@@ -1,6 +1,6 @@
 import { makeTodoApp } from "./components/todoapp.js";
 import { App, VNode } from "../overreact/overReact.js";
-import { vNodeNodeMap } from "../overreact/render.js";
+import { nodeVNodeMap, vNodeNodeMap } from "../overreact/render.js";
 import { aAll, aActive, aCompleted } from "./components/footer.js";
 
 const state = {
@@ -123,44 +123,41 @@ function addTodo(e) {
 
     // Add event listener to the destroy button
     destroy.listenEvent("onclick", (e) => {
-      app.state.total--;
-      const listItemId = app.nodeVNodeMap.get(e.target.closest("li").id);
+      const $todo = e.target.closest("li");
+
+      const listItemId = app.nodeVNodeMap.get($todo.id);
       const listItem = app.getVNodeById(listItemId);
       // const listItem = app.nodeVNodeMap.get(e.target.closest("li"));
-      app.remove(listItem);
+      if (--app.state.total === 0) {
+        main.hide();
+        footer.hide();
+      }
       if (!listItem.hasClass("completed")) {
         app.state.active--;
         updateTodoCount();
       }
 
-      if (app.state.total === 0) {
-        main.hide();
-        footer.hide();
-      }
-
       if (app.state.active === app.state.total) {
         clearCompleted.hide();
       }
+
+      app.remove(listItem);
     });
 
     // Add event listener to the checkbox
-    // Must use addClass and removeClass instead of class = "" and class = "completed",
-    // but in the toggle all function, I mustn't do anything to the class or it breaks.
+    // Must use addClass and removeClass instead of class = "" and class = "completed" here, but in the toggle all function, I can't do anything to the class attribute or it breaks.
     toggle.listenEvent("onchange", (e) => {
       const listItemId = app.nodeVNodeMap.get(e.target.closest("li").id);
       const listItem = app.getVNodeById(listItemId);
-      // const listItem = app.nodeVNodeMap.get(e.target.closest("li"));
       const toggle = listItem.children[0].children[0];
       if (e.target.checked) {
         app.state.active--;
         listItem.addClass("completed");
-        // listItem.class = "completed";
         toggle.attrs.checked = "";
         clearCompleted.show();
       } else {
         app.state.active++;
         listItem.removeClass("completed");
-        // listItem.class = "";
         delete toggle.attrs.checked;
         if (app.state.active === app.state.total) {
           clearCompleted.hide();
@@ -177,15 +174,15 @@ function addTodo(e) {
         const $completed = [];
         completed.forEach((todo) => {
           const toggle = todo.children[0].children[0];
-          $completed.push(vNodeNodeMap.get(toggle));
+          const $completedId = vNodeNodeMap.get(toggle.attrs.id);
+          const $completedItem = document.getElementById($completedId);
+          $completed.push($completedItem);
         });
         check($completed);
         app.state.active = app.state.total;
         completed.forEach((todo) => {
           const toggle = todo.children[0].children[0];
           delete toggle.attrs.checked;
-          // All but ineffectual attempts to remove the 'completed' class
-          // break it.
         });
         app.state.active = app.state.total;
         clearCompleted.hide();
@@ -194,10 +191,10 @@ function addTodo(e) {
         const $active = [];
         active.forEach((todo) => {
           const toggle = todo.children[0].children[0];
-          $active.push(vNodeNodeMap.get(toggle));
+          const $activeId = vNodeNodeMap.get(toggle.attrs.id);
+          const $activeItem = document.getElementById($activeId);
+          $active.push($activeItem);
           toggle.attrs.checked = "";
-          // All but ineffectual attempts to add the 'completed' class
-          // break it.
         });
         check($active);
         app.state.active = 0;
@@ -208,13 +205,13 @@ function addTodo(e) {
     });
 
     clearCompleted.listenEvent("onclick", () => {
-      const todos = todoList.children;
-      todos.forEach((todo) => {
-        if (todo.hasClass("completed")) {
-          app.remove(todo);
-          app.state.total--;
-        }
+      const completed = todoList.children.filter((todo) =>
+        todo.hasClass("completed")
+      );
+      completed.forEach((todo) => {
+        app.remove(todo);
       });
+      app.state.total -= completed.length;
 
       if (app.state.total === 0) {
         main.hide();
@@ -224,14 +221,17 @@ function addTodo(e) {
       clearCompleted.hide();
     });
 
-    // // Add event listener for double click
-    // listItem.listenEvent("ondblclick", (e) => {
-    //   listItem.addClass("editing");
-    //   const $edit = e.target.closest("li").querySelector(".edit");
-    //   $edit.focus();
-    // });
+    label.listenEvent("ondblclick", (e) => {
+      const $edit = e.target;
+      $edit.focus();
+      const $todo = edit.closest("li");
+      const todoId = nodeVNodeMap.get($todo.id);
+      const todo = app.getVNodeById(todoId);
+      todo.addClass("editing");
+    });
 
     // // Add event listener for 'Enter' keypress on edit field
+    // // If empty, remove it.
     // edit.listenEvent("onkeypress", (e) => {
     //   if (e.key === "Enter") {
     //     // Update label text and remove 'editing' class
@@ -267,13 +267,6 @@ function updateTodoCount() {
   }
 }
 
-function update() {
-  app.update();
-  requestAnimationFrame(update);
-}
-
-requestAnimationFrame(update);
-
 function check(checkboxes) {
   checkboxes.forEach((checkbox) => {
     checkbox.checked = !checkbox.checked;
@@ -284,3 +277,25 @@ function check(checkboxes) {
     checkbox.dispatchEvent(event);
   });
 }
+
+function update() {
+  const checkedOld = document.querySelectorAll(".toggle");
+  const checkedIds = [];
+  checkedOld.forEach((checkbox) => {
+    if (checkbox.checked) {
+      checkedIds.push(checkbox.id);
+    }
+  });
+  app.update();
+  const checkedNew = document.querySelectorAll(".toggle");
+  checkedNew.forEach((checkbox) => {
+    if (checkedIds.includes(checkbox.id)) {
+      checkbox.checked = true;
+    } else {
+      checkbox.checked = false;
+    }
+  });
+  requestAnimationFrame(update);
+}
+
+requestAnimationFrame(update);

@@ -41,6 +41,11 @@ export class VNode {
     return this;
   }
 
+  prepend(...child) {
+    this.children.unshift(...child);
+    return this;
+  }
+
   removeChild(childToRemove) {
     if (this.children.indexOf(childToRemove) === -1) {
       throw new Error("Child not found");
@@ -166,13 +171,15 @@ export class App {
             vNodeToRemove.attrs &&
             child.attrs.id === vNodeToRemove.attrs.id)
         ) {
-          vCurr.children.splice(i, 1);
+          vCurr.children = vCurr.children
+            .slice(0, i)
+            .concat(vCurr.children.slice(i + 1));
           // vNodeNodeMap.delete(child);
           // nodeVNodeMap.delete(this.nodeVNodeMap.get(child));
           const nodeId = vNodeNodeMap.get(child.attrs.id);
           vNodeNodeMap.delete(child.attrs.id);
           nodeVNodeMap.delete(nodeId);
-          console.log("Removed", child);
+          // console.log("Removed", child);
           break;
         }
       }

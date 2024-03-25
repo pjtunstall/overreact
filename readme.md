@@ -2,11 +2,15 @@
 
 ## Todo
 
-- Event handlers: switch to using ids in maps to avoid problem of actual DOM re-using references. In the case of text nodes, use the text itself as an id.
-
 - Edit.
 
-- Toggle class mystery.
+- Switch to id map for event handler map.
+
+- Toggle checked mysteries. Can we do better than hack.
+
+- Appending new items is ok (their framework examples do it), but also figure out how to prepend (as in their JS example).
+
+- I see their JS example uses a data-id attribute.
 
 ## Getting started
 
