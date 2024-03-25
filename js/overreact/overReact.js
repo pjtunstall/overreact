@@ -46,7 +46,6 @@ export class VNode {
       throw new Error("Child not found");
     }
     this.children = this.children.filter((child) => child !== childToRemove);
-    console.log("Removed", childToRemove);
     return this;
   }
 
@@ -167,13 +166,12 @@ export class App {
             vNodeToRemove.attrs &&
             child.attrs.id === vNodeToRemove.attrs.id)
         ) {
-          console.log("Removing", child.attrs.id);
           vCurr.children.splice(i, 1);
-          vNodeNodeMap.delete(child);
-          nodeVNodeMap.delete(this.nodeVNodeMap.get(child));
-          // const nodeId = vNodeNodeMap.get(child.attrs.id);
-          // vNodeNodeMap.delete(child.attrs.id);
-          // nodeVNodeMap.delete(nodeId);
+          // vNodeNodeMap.delete(child);
+          // nodeVNodeMap.delete(this.nodeVNodeMap.get(child));
+          const nodeId = vNodeNodeMap.get(child.attrs.id);
+          vNodeNodeMap.delete(child.attrs.id);
+          nodeVNodeMap.delete(nodeId);
           console.log("Removed", child);
           break;
         }
@@ -185,6 +183,12 @@ export class App {
     let q = [this.vApp];
     while (q.length > 0) {
       let vNode = q.shift();
+      if (typeof vNode === "string") {
+        if (vNode === id) {
+          return vNode;
+        }
+        continue;
+      }
       if (vNode.attrs.id === id) {
         return vNode;
       }

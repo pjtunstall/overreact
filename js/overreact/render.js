@@ -34,17 +34,17 @@ function renderElement(vNode) {
   nodeVNodeMap.set($node, vNode);
   vNodeNodeMap.set(vNode, $node);
 
-  // let id = vNode.attrs.id;
-  // let $id = $node.id;
-  // if (typeof vNode === "string") {
-  //   id = vNode;
-  // }
-  // if (typeof $node === "string") {
-  //   $id = $node;
-  // }
+  let id = vNode.attrs.id;
+  let $id = $node.id;
+  if (typeof vNode === "string") {
+    id = vNode;
+  }
+  if (typeof $node === "string") {
+    $id = $node;
+  }
 
-  // nodeVNodeMap.set($node.id, vNode.attrs.id);
-  // vNodeNodeMap.set(vNode.attrs.id, $node.id);
+  nodeVNodeMap.set($id, id);
+  vNodeNodeMap.set(id, id);
 
   return $node;
 }
