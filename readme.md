@@ -4,11 +4,13 @@
 
 - Event handlers: switch to using ids in maps to avoid problem of actual DOM re-using references.
 
+- All, active, and completed visibilities should depend on state, not transition to state.
+
+- Edit.
+
+- The require mystery.
+
 - Toggle class mystery.
-
-- SWitch to using virtual DOM for changing class of filters, so that they don't get immediately reset by the update.
-
-- Functions to edit style: add, remove, clear. Parsing and unparsing as needed.
 
 ## Getting started
 

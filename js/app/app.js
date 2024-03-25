@@ -1,6 +1,7 @@
 import { makeTodoApp } from "./components/todoapp.js";
 import { App, VNode } from "../overreact/overReact.js";
 import { vNodeNodeMap } from "../overreact/render.js";
+import { aAll, aActive, aCompleted } from "./components/footer.js";
 
 const state = {
   total: 0,
@@ -20,6 +21,44 @@ const footer = app.getVNodeById("footer");
 const inputToggleAll = app.getVNodeById("inputToggleAll");
 const clearCompleted = app.getVNodeById("clearCompleted");
 
+const routes = {
+  "": function () {
+    aAll.addClass("selected");
+    aActive.removeClass("selected");
+    aCompleted.removeClass("selected");
+    todoList.children.forEach((todo) => {
+      todo.show();
+    });
+  },
+  active: function () {
+    aAll.removeClass("selected");
+    aActive.addClass("selected");
+    aCompleted.removeClass("selected");
+
+    todoList.children.forEach((todo) => {
+      if (todo.hasClass("completed")) {
+        todo.hide();
+      } else {
+        todo.show();
+      }
+    });
+  },
+  completed: function () {
+    aAll.removeClass("selected");
+    aActive.removeClass("selected");
+    aCompleted.addClass("selected");
+    todoList.children.forEach((todo) => {
+      if (todo.hasClass("completed")) {
+        todo.show();
+      } else {
+        todo.hide();
+      }
+    });
+  },
+};
+
+app.setRoutes(routes);
+
 newTodo.listenEvent("onkeypress", addTodo);
 
 function* counterMaker() {
@@ -33,10 +72,11 @@ const counter = counterMaker();
 
 function addTodo(e) {
   if (e.key === "Enter") {
-    app.state.total++;
-
     e.preventDefault();
-    app.state.count++;
+    if (e.target.value === "") {
+      return;
+    }
+    app.state.total++;
     app.state.active++;
     updateTodoCount();
     main.show();
@@ -96,10 +136,8 @@ function addTodo(e) {
     });
 
     // Add event listener to the checkbox
-    // Must used addClass and removeClass instead of class = "" and class = "completed",
-    // but in the toggle all function, class = "" and class = "completed" must be used.
-    // At least, this seems to work. I don't know why. Other, more rational combinations
-    // have, so far, failed.
+    // Must use addClass and removeClass instead of class = "" and class = "completed",
+    // but in the toggle all function, I mustn't do anything to the class or it breaks.
     toggle.listenEvent("onchange", (e) => {
       const listItem = app.nodeVNodeMap.get(e.target.closest("li"));
       const toggle = listItem.children[0].children[0];
@@ -123,7 +161,6 @@ function addTodo(e) {
 
     inputToggleAll.listenEvent("onclick", () => {
       const todos = todoList.children;
-      console.log(todos);
 
       if (app.state.active === 0) {
         const completed = todos.filter((todo) => todo.hasClass("completed"));
@@ -137,8 +174,8 @@ function addTodo(e) {
         completed.forEach((todo) => {
           const toggle = todo.children[0].children[0];
           delete toggle.attrs.checked;
-          todo.class = "";
-          // todo.removeClass("completed");
+          // All but ineffectual attempts to remove the 'completed' class
+          // break it.
         });
         app.state.active = app.state.total;
         clearCompleted.hide();
@@ -149,8 +186,8 @@ function addTodo(e) {
           const toggle = todo.children[0].children[0];
           $active.push(vNodeNodeMap.get(toggle));
           toggle.attrs.checked = "";
-          todo.class = "completed";
-          // todo.addClass("completed");
+          // All but ineffectual attempts to add the 'completed' class
+          // break it.
         });
         check($active);
         app.state.active = 0;

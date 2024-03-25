@@ -3,7 +3,7 @@ import { VNode } from "../../overreact/overReact.js";
 let footer;
 let todoCount, ulFilters, clearCompleted;
 let todoCountNumber, todoCountText;
-let liAll, aAll, liActive, aActive, liCompleted, aCompleted;
+export let liAll, aAll, liActive, aActive, liCompleted, aCompleted;
 
 export function makeFooter() {
   footer.append(todoCount, ulFilters, clearCompleted);
@@ -20,7 +20,7 @@ export function makeFooter() {
 
 // child of todoApp
 footer = new VNode("footer", {
-  attrs: { id: "footer", class: "footer", style: `display: none;` },
+  attrs: { id: "footer", class: "footer", style: "display: none;" },
 });
 
 // child of footer

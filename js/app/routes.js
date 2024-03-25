@@ -1,40 +1,49 @@
-import { app } from "./app.js";
+// import { app } from "./app.js";
 
-const allFilter = document.querySelector('a[href="#/"]');
-const activeFilter = document.querySelector('a[href="#/active"]');
-const completedFilter = document.querySelector('a[href="#/completed"]');
+// const aAll = app.getVNodeById("aAll");
+// const aActive = app.getVNodeById("aActive");
+// const aCompleted = app.getVNodeById("aCompleted");
 
-// Modify change of "selected" class to use virtual nodes so that they won't be reset.
-export const routes = {
-  "": function () {
-    const selectedFilters = document.querySelectorAll(".filters .selected");
-    selectedFilters.forEach((filter) => filter.classList.remove("selected"));
-    allFilter.classList.add("selected");
-    const todos = document.querySelectorAll(".todo-list li");
-    todos.forEach((todo) => {
-      todo.style.display = "";
-    });
-  },
-  active: function () {
-    const selectedFilters = document.querySelectorAll(".filters .selected");
-    selectedFilters.forEach((filter) => filter.classList.remove("selected"));
-    activeFilter.classList.add("selected");
-    const todos = document.querySelectorAll(".todo-list li");
-    todos.forEach((todo) => {
-      const isCompleted = todo.querySelector(".toggle").checked;
-      todo.style.display = isCompleted ? "none" : "";
-    });
-  },
-  completed: function () {
-    const selectedFilters = document.querySelectorAll(".filters .selected");
-    selectedFilters.forEach((filter) => filter.classList.remove("selected"));
-    completedFilter.classList.add("selected");
-    const todos = document.querySelectorAll(".todo-list li");
-    todos.forEach((todo) => {
-      const isCompleted = todo.querySelector(".toggle").checked;
-      todo.style.display = isCompleted ? "" : "none";
-    });
-  },
-};
+// const todoList = app.getVNodeById("todoList");
+// const todos = todoList.children;
 
-app.setRoutes(routes);
+// export const routes = {
+//   "": function () {
+//     console.log("all");
+//     aAll.addClass("selected");
+//     aActive.removeClass("selected");
+//     aCompleted.removeClass("selected");
+//     todos.forEach((todo) => {
+//       todo.show();
+//     });
+//   },
+//   active: function () {
+//     console.log("active");
+//     aAll.removeClass("selected");
+//     aActive.addClass("selected");
+//     aCompleted.removeClass("selected");
+
+//     todos.forEach((todo) => {
+//       if (todo.hasClass("completed")) {
+//         todo.hide();
+//       } else {
+//         todo.show();
+//       }
+//     });
+//   },
+//   completed: function () {
+//     console.log("completed");
+//     aAll.removeClass("selected");
+//     aActive.removeClass("selected");
+//     aCompleted.addClass("selected");
+//     todos.forEach((todo) => {
+//       if (todo.hasClass("completed")) {
+//         todo.show();
+//       } else {
+//         todo.hide();
+//       }
+//     });
+//   },
+// };
+
+// app.setRoutes(routes);
