@@ -1,7 +1,8 @@
 import { VNode } from "../../overreact/overReact.js";
 
 let main;
-let inputToggleAll, labelToggleAll, todoList;
+let inputToggleAll, labelToggleAll;
+export let todoList;
 
 export function makeMain() {
   main.append(inputToggleAll, labelToggleAll, todoList);

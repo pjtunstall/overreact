@@ -8,7 +8,7 @@ const state = {
   active: 0,
 };
 
-export let vApp = makeTodoApp();
+let vApp = makeTodoApp();
 let $target = document.getElementsByClassName("todoapp")[0];
 let app = new App(vApp, $target);
 app.setState(state);

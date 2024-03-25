@@ -1,15 +1,10 @@
-// import { app } from "./app.js";
+// import { aAll, aActive, aCompleted } from "./components/footer.js";
+// import { todoList } from "./components/main.js";
 
-// const aAll = app.getVNodeById("aAll");
-// const aActive = app.getVNodeById("aActive");
-// const aCompleted = app.getVNodeById("aCompleted");
-
-// const todoList = app.getVNodeById("todoList");
 // const todos = todoList.children;
 
 // export const routes = {
 //   "": function () {
-//     console.log("all");
 //     aAll.addClass("selected");
 //     aActive.removeClass("selected");
 //     aCompleted.removeClass("selected");
@@ -18,7 +13,6 @@
 //     });
 //   },
 //   active: function () {
-//     console.log("active");
 //     aAll.removeClass("selected");
 //     aActive.addClass("selected");
 //     aCompleted.removeClass("selected");
@@ -32,7 +26,6 @@
 //     });
 //   },
 //   completed: function () {
-//     console.log("completed");
 //     aAll.removeClass("selected");
 //     aActive.removeClass("selected");
 //     aCompleted.addClass("selected");
@@ -45,5 +38,3 @@
 //     });
 //   },
 // };
-
-// app.setRoutes(routes);
