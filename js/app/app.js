@@ -233,8 +233,8 @@ function addTodo(e) {
     });
 
     edit.listenEvent("onkeypress", (e) => {
-      e.preventDefault();
       if (e.key === "Enter") {
+        e.preventDefault();
         enterPressed = true;
         if (e.target.value === "") {
           const $todo = e.target.closest("li");

@@ -135,7 +135,7 @@ export class App {
         }
         state[key] = value;
         console.log("Setting", key, "to", value);
-        // this.onChange();
+        Reflect.apply(this.onChange, this, []);
         return true;
       },
     });
