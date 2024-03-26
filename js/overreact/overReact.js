@@ -4,7 +4,6 @@ import {
   listenEvent,
   unlistenEvent,
   updateEventListenersOnRootNode,
-  clearEventHandlers,
   eventHandlersRecord,
 } from "./events.js";
 import { addStyle, removeStyle } from "./style.js";
@@ -41,10 +40,10 @@ export class VNode {
     return this;
   }
 
-  prepend(...child) {
-    this.children.unshift(...child);
-    return this;
-  }
+  // prepend(...child) {
+  //   this.children.unshift(...child);
+  //   return this;
+  // }
 
   removeChild(childToRemove) {
     if (this.children.indexOf(childToRemove) === -1) {

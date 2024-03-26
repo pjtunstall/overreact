@@ -21,6 +21,8 @@ const footer = app.getVNodeById("footer");
 const inputToggleAll = app.getVNodeById("inputToggleAll");
 const clearCompleted = app.getVNodeById("clearCompleted");
 
+let enterPressed = false;
+
 const routes = {
   "": function () {
     aAll.addClass("selected");
@@ -229,14 +231,15 @@ function addTodo(e) {
       todo.addClass("editing");
     });
 
-    // Add event listener for 'Enter' keypress on edit field
-    // If empty, remove it.
     edit.listenEvent("onkeypress", (e) => {
+      e.preventDefault();
       if (e.key === "Enter") {
+        enterPressed = true;
         if (e.target.value === "") {
           const $todo = e.target.closest("li");
           const listItemId = app.nodeVNodeMap.get($todo.id);
           const listItem = app.getVNodeById(listItemId);
+
           if (--app.state.total === 0) {
             main.hide();
             footer.hide();
@@ -251,35 +254,41 @@ function addTodo(e) {
           }
 
           app.remove(listItem);
+        } else {
+          label.children = [e.target.value];
+          listItem.removeClass("editing");
         }
-        label.children = [e.target.value];
-        listItem.removeClass("editing");
       }
     });
 
-    // Add event listener for 'blur' event on edit field
     edit.listenEvent("onblur", (e) => {
-      // Update label text and remove 'editing' class
-      // if (e.target.value === "") {
-      //   app.remove(listItem);
+      if (enterPressed) {
+        enterPressed = false;
+        return;
+      }
+      if (e.target.value === "") {
+        const $todo = e.target.closest("li");
+        const listItemId = app.nodeVNodeMap.get($todo.id);
+        const listItem = app.getVNodeById(listItemId);
 
-      //   if (--app.state.total === 0) {
-      //     main.hide();
-      //     footer.hide();
-      //   }
+        if (--app.state.total === 0) {
+          main.hide();
+          footer.hide();
+        }
+        if (!listItem.hasClass("completed")) {
+          app.state.active--;
+          updateTodoCount();
+        }
 
-      //   if (!listItem.hasClass("completed")) {
-      //     app.state.active--;
-      //     updateTodoCount();
-      //   }
+        if (app.state.active === app.state.total) {
+          clearCompleted.hide();
+        }
 
-      //   if (app.state.active === app.state.total) {
-      //     clearCompleted.hide();
-      //   }
-      // } else {
-      // }
-      label.children = [e.target.value];
-      listItem.removeClass("editing");
+        app.remove(listItem);
+      } else {
+        label.children = [e.target.value];
+        listItem.removeClass("editing");
+      }
     });
 
     todoList.append(listItem);

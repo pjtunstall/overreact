@@ -15,14 +15,7 @@ function renderElement(vNode) {
   const $node = document.createElement(tagName);
 
   for (const [k, v] of Object.entries(attrs)) {
-    if (k.startsWith("on")) {
-      // // Create a new Map for this event type if it doesn't exist
-      // if (!eventHandlersRecord.has(k)) {
-      //   eventHandlersRecord.set(k, new Map());
-      // }
-      // // Set the handler for this vNode in the Map for this event type
-      // eventHandlersRecord.get(k).set(vNode, v);
-    } else {
+    if (!k.startsWith("on")) {
       $node.setAttribute(k, v);
     }
   }

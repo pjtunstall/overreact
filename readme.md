@@ -2,13 +2,7 @@
 
 ## Todo
 
-- Fix editing: enter and blur.
-
 - Update on state change.
-
-- Make sure event handling is really bypassing the native way. Try again to do it with data- prefix.
-
-- Switch to id map for event handler map.
 
 - Checkbox mysteries. Can we do better than hack?
 
