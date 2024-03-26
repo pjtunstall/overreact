@@ -1,5 +1,9 @@
 # Overreact: a framework for tense times
 
+## 0. Context
+
+The [mini-framework](https://learn.01founders.co/git/root/public/src/branch/master/subjects/mini-framework) project for 01Founders, part of the 01 Edu network of coding bootcamps.
+
 ## 1. Getting started
 
 Clone this repo and install the dependencies with [npm](https://npmjs.com) by running: `npm install`.
