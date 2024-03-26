@@ -6,6 +6,12 @@ Clone this repo and install the dependencies with [npm](https://npmjs.com) by ru
 
 ## 2. Features
 
+- Virtual DOM: diffing and patching
+- Routing system: build a single-page application
+- State management: choose your own update schedule
+- Event handling: central event handler
+- Templating: HTML to virtual nodes, virtual nodes to HTML
+
 ## 3. How it works
 
 ### Abstracting the DOM
