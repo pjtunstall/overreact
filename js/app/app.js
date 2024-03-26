@@ -4,14 +4,13 @@ import { nodeVNodeMap, vNodeNodeMap } from "../overreact/render.js";
 import { aAll, aActive, aCompleted } from "./components/footer.js";
 
 const state = {
-  total: 0,
+  total: 1,
   active: 0,
 };
 
 let vApp = makeTodoApp();
 let $target = document.getElementsByClassName("todoapp")[0];
-let app = new App(vApp, $target);
-app.setState(state);
+let app = new App(vApp, $target, state, onChange);
 
 const todoList = app.getVNodeById("todoList");
 const todoCount = app.getVNodeById("todoCount");
@@ -322,7 +321,7 @@ function check(checkboxes) {
   });
 }
 
-function update() {
+function onChange() {
   const checkedOld = document.querySelectorAll(".toggle");
   const checkedIds = [];
   checkedOld.forEach((checkbox) => {
@@ -330,7 +329,9 @@ function update() {
       checkedIds.push(checkbox.id);
     }
   });
+
   app.update();
+
   const checkedNew = document.querySelectorAll(".toggle");
   checkedNew.forEach((checkbox) => {
     if (checkedIds.includes(checkbox.id)) {
@@ -339,7 +340,8 @@ function update() {
       checkbox.checked = false;
     }
   });
-  requestAnimationFrame(update);
+
+  requestAnimationFrame(onChange);
 }
 
-requestAnimationFrame(update);
+requestAnimationFrame(onChange);

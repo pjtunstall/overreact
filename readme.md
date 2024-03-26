@@ -2,6 +2,8 @@
 
 ## Todo
 
+- Fix: glitch that lets you leave editing an empty item if you double click elsewhere, apparently bypassing blur.
+
 - Update on state change.
 
 - Checkbox mysteries. Can we do better than hack?

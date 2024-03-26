@@ -118,7 +118,7 @@ export class VNode {
 }
 
 export class App {
-  constructor(vApp, $target) {
+  constructor(vApp, $target, state, onChange) {
     this.vApp = vApp;
     this.vAppOld = JSON.parse(JSON.stringify(vApp));
     this.nodeVNodeMap = nodeVNodeMap;
@@ -126,6 +126,9 @@ export class App {
     this.eventHandlersRecord = eventHandlersRecord;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
+    this.state = state;
+    this.onChange = onChange;
+    // this.state = this.createStateObserver(state, onChange);
   }
 
   setRoutes(routes) {
@@ -133,9 +136,18 @@ export class App {
     router();
   }
 
-  setState(state) {
-    this.state = state;
-  }
+  // createStateObserver(state, onChange) {
+  //   return new Proxy(state, {
+  //     set(target, property, value) {
+  //       if (target[property] !== value) {
+  //         target[property] = value;
+  //         onChange();
+  //         return true;
+  //       }
+  //       return false;
+  //     },
+  //   });
+  // }
 
   update() {
     const patch = diff(this.vAppOld, this.vApp);
