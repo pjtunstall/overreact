@@ -4,7 +4,7 @@ import { nodeVNodeMap, vNodeNodeMap } from "../overreact/render.js";
 import { aAll, aActive, aCompleted } from "./components/footer.js";
 
 const state = {
-  total: 1,
+  total: 0,
   active: 0,
 };
 
@@ -144,8 +144,6 @@ function addTodo(e) {
       app.remove(listItem);
     });
 
-    // Add event listener to the checkbox
-    // Must use addClass and removeClass instead of class = "" and class = "completed" here, but in the toggle all function, I can't do anything to the class attribute or it breaks.
     toggle.listenEvent("onchange", (e) => {
       const listItemId = app.nodeVNodeMap.get(e.target.closest("li").id);
       const listItem = app.getVNodeById(listItemId);
@@ -222,6 +220,10 @@ function addTodo(e) {
     });
 
     label.listenEvent("ondblclick", (e) => {
+      todoList.children.forEach((todo) => {
+        todo.removeClass("editing");
+      });
+
       const $edit = e.target;
       $edit.focus();
       const $todo = $edit.closest("li");
@@ -292,7 +294,6 @@ function addTodo(e) {
 
     todoList.append(listItem);
 
-    // Clear the input field
     e.target.value = "";
   }
 }
@@ -340,6 +341,7 @@ function onChange() {
       checkbox.checked = false;
     }
   });
+  app.changesMade = false;
 
   requestAnimationFrame(onChange);
 }

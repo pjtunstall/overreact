@@ -1,5 +1,3 @@
-import { eventHandlersRecord } from "../overreact/events.js";
-
 export const nodeVNodeMap = new Map();
 export const vNodeNodeMap = new Map();
 

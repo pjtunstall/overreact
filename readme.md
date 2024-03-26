@@ -2,9 +2,7 @@
 
 ## Todo
 
-- Fix: glitch that lets you leave editing an empty item if you double click elsewhere, apparently bypassing blur.
-
-- Update on state change.
+- Update when state changes, either using a custom event, or setting app.state equal to a proxy object, or by adding a call to onChange in the central event handler. I'm having no luck yet with proxies.
 
 - Checkbox mysteries. Can we do better than hack?
 

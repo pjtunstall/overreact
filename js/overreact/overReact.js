@@ -126,28 +126,25 @@ export class App {
     this.eventHandlersRecord = eventHandlersRecord;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
-    this.state = state;
+    // this.state = state;
     this.onChange = onChange;
-    // this.state = this.createStateObserver(state, onChange);
+    this.state = new Proxy(state, {
+      set: (state, key, value) => {
+        if (state[key] === value) {
+          return false;
+        }
+        state[key] = value;
+        console.log("Setting", key, "to", value);
+        // this.onChange();
+        return true;
+      },
+    });
   }
 
   setRoutes(routes) {
     const router = makeRouter(routes);
     router();
   }
-
-  // createStateObserver(state, onChange) {
-  //   return new Proxy(state, {
-  //     set(target, property, value) {
-  //       if (target[property] !== value) {
-  //         target[property] = value;
-  //         onChange();
-  //         return true;
-  //       }
-  //       return false;
-  //     },
-  //   });
-  // }
 
   update() {
     const patch = diff(this.vAppOld, this.vApp);
