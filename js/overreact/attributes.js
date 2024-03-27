@@ -1,8 +1,12 @@
 import { eventHandlersRecord, unlistenEvent } from "./events.js";
 
 export function addAttribute(vNode, attribute, value) {
-  if (attribute.startsWith("on") && eventHandlersRecord.has(attribute)) {
-    eventHandlersRecord.get(attribute).set(vNode, value);
+  if (attribute.startsWith("on")) {
+    if (eventHandlersRecord.has(attribute)) {
+      eventHandlersRecord.get(attribute).set(vNode, value);
+    } else {
+      eventHandlersRecord.set(attribute, new Map([[vNode, value]]));
+    }
   } else {
     vNode.attrs[attribute] = value;
   }

@@ -126,20 +126,20 @@ export class App {
     this.eventHandlersRecord = eventHandlersRecord;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
-    this.state = state;
+    // this.state = state;
 
-    // this.state = new Proxy(state, {
-    //   set: (state, key, value) => {
-    //     if (state[key] === value) {
-    //       console.log("No change");
-    //       return false;
-    //     }
-    //     state[key] = value;
-    //     console.log("Setting", key, "to", value);
-    //     requestAnimationFrame(() => this.update());
-    //     return true;
-    //   },
-    // });
+    this.state = new Proxy(state, {
+      set: (state, key, value) => {
+        if (state[key] === value) {
+          console.log("No change");
+          return false;
+        }
+        state[key] = value;
+        console.log("Setting", key, "to", value);
+        requestAnimationFrame(() => this.update());
+        return true;
+      },
+    });
   }
 
   setRoutes(routes) {

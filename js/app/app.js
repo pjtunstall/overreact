@@ -3,6 +3,8 @@ import { App, VNode } from "../overreact/overReact.js";
 import { nodeVNodeMap, vNodeNodeMap } from "../overreact/render.js";
 import { aAll, aActive, aCompleted } from "./components/footer.js";
 
+location.hash = "";
+
 let state = {
   total: 0,
   active: 0,
@@ -30,6 +32,7 @@ const routes = {
     todoList.children.forEach((todo) => {
       todo.show();
     });
+    app.update();
   },
   active: function () {
     aAll.removeClass("selected");
@@ -43,6 +46,7 @@ const routes = {
         todo.show();
       }
     });
+    app.update();
   },
   completed: function () {
     aAll.removeClass("selected");
@@ -55,6 +59,7 @@ const routes = {
         todo.hide();
       }
     });
+    app.update();
   },
 };
 
@@ -62,15 +67,12 @@ app.setRoutes(routes);
 
 newTodo.listenEvent("onkeypress", addTodo);
 
-// Initial update to add the event listeners
-app.update();
+// function change() {
+//   app.update();
+//   requestAnimationFrame(change);
+// }
 
-function change() {
-  app.update();
-  requestAnimationFrame(change);
-}
-
-requestAnimationFrame(change);
+// requestAnimationFrame(change);
 
 function* counterMaker() {
   let count = 0;
@@ -117,6 +119,7 @@ function addTodo(e) {
       attrs: {
         id: `edit-${count}`,
         class: "edit",
+        // style: "display: none",
         value: e.target.value,
       },
     });
@@ -229,6 +232,7 @@ function addTodo(e) {
     });
 
     label.listenEvent("ondblclick", (e) => {
+      console.log("Double click");
       todoList.children.forEach((todo) => {
         todo.removeClass("editing");
       });
@@ -239,6 +243,8 @@ function addTodo(e) {
       const todoId = nodeVNodeMap.get($todo.id);
       const todo = app.getVNodeById(todoId);
       todo.addClass("editing");
+
+      app.update();
     });
 
     edit.listenEvent("onkeypress", (e) => {
@@ -268,6 +274,8 @@ function addTodo(e) {
           label.children = [e.target.value];
           listItem.removeClass("editing");
         }
+
+        app.update();
       }
     });
 
@@ -299,6 +307,8 @@ function addTodo(e) {
         label.children = [e.target.value];
         listItem.removeClass("editing");
       }
+
+      app.update();
     });
 
     todoList.append(listItem);
@@ -330,3 +340,6 @@ function check(checkboxes) {
     checkbox.dispatchEvent(event);
   });
 }
+
+// Initial update to add the event listeners
+app.update();
