@@ -28,7 +28,7 @@ Give the framework an object associating hashes with functions for how your page
 
 ### State management
 
-Give the framework an object containing initial state variables for your app. Tell the framework how and when you'd like it to perform updates: at regular intervals or on state changes. It supplies the logic for how to compare the virtual DOM with how it was on the last update, then renders and attaches anything that's new.
+Tell the framework the initial state of your app. The framework creates a proxy object which triggers an update when the state changes. It supplies the logic for how to compare the virtual DOM with how it was on the last update, then renders and attaches anything that's new.
 
 ### Event handling
 

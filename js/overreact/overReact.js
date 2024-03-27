@@ -118,7 +118,7 @@ export class VNode {
 }
 
 export class App {
-  constructor(vApp, $target, state, onChange) {
+  constructor(vApp, $target, state) {
     this.vApp = vApp;
     this.vAppOld = JSON.parse(JSON.stringify(vApp));
     this.nodeVNodeMap = nodeVNodeMap;
@@ -126,19 +126,20 @@ export class App {
     this.eventHandlersRecord = eventHandlersRecord;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
-    // this.state = state;
-    this.onChange = onChange;
-    this.state = new Proxy(state, {
-      set: (state, key, value) => {
-        if (state[key] === value) {
-          return false;
-        }
-        state[key] = value;
-        console.log("Setting", key, "to", value);
-        Reflect.apply(this.onChange, this, []);
-        return true;
-      },
-    });
+    this.state = state;
+
+    // this.state = new Proxy(state, {
+    //   set: (state, key, value) => {
+    //     if (state[key] === value) {
+    //       console.log("No change");
+    //       return false;
+    //     }
+    //     state[key] = value;
+    //     console.log("Setting", key, "to", value);
+    //     requestAnimationFrame(() => this.update());
+    //     return true;
+    //   },
+    // });
   }
 
   setRoutes(routes) {
@@ -147,10 +148,30 @@ export class App {
   }
 
   update() {
+    console.log("Updating");
+
+    let checked = document.querySelectorAll(".toggle");
+    let checkedIds = [];
+    checked.forEach((checkbox) => {
+      if (checkbox.checked) {
+        checkedIds.push(checkbox.id);
+      }
+    });
+
+    document.dispatchEvent(new CustomEvent("changed", { detail: false }));
     const patch = diff(this.vAppOld, this.vApp);
     this.$app = patch(this.$app);
     this.vAppOld = JSON.parse(JSON.stringify(this.vApp));
     updateEventListenersOnRootNode(this.$app);
+
+    checked = document.querySelectorAll(".toggle");
+    checked.forEach((checkbox) => {
+      if (checkedIds.includes(checkbox.id)) {
+        checkbox.checked = true;
+      } else {
+        checkbox.checked = false;
+      }
+    });
   }
 
   traverse(vNode, callback) {

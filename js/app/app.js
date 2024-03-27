@@ -3,14 +3,14 @@ import { App, VNode } from "../overreact/overReact.js";
 import { nodeVNodeMap, vNodeNodeMap } from "../overreact/render.js";
 import { aAll, aActive, aCompleted } from "./components/footer.js";
 
-const state = {
+let state = {
   total: 0,
   active: 0,
 };
 
 let vApp = makeTodoApp();
 let $target = document.getElementsByClassName("todoapp")[0];
-let app = new App(vApp, $target, state, onChange);
+let app = new App(vApp, $target, state);
 
 const todoList = app.getVNodeById("todoList");
 const todoCount = app.getVNodeById("todoCount");
@@ -61,6 +61,16 @@ const routes = {
 app.setRoutes(routes);
 
 newTodo.listenEvent("onkeypress", addTodo);
+
+// Initial update to add the event listeners
+app.update();
+
+function change() {
+  app.update();
+  requestAnimationFrame(change);
+}
+
+requestAnimationFrame(change);
 
 function* counterMaker() {
   let count = 0;
@@ -122,7 +132,6 @@ function addTodo(e) {
       listItem.hide();
     }
 
-    // Add event listener to the destroy button
     destroy.listenEvent("onclick", (e) => {
       const $todo = e.target.closest("li");
       const listItemId = app.nodeVNodeMap.get($todo.id);
@@ -321,29 +330,3 @@ function check(checkboxes) {
     checkbox.dispatchEvent(event);
   });
 }
-
-function onChange() {
-  const checkedOld = document.querySelectorAll(".toggle");
-  const checkedIds = [];
-  checkedOld.forEach((checkbox) => {
-    if (checkbox.checked) {
-      checkedIds.push(checkbox.id);
-    }
-  });
-
-  app.update();
-
-  const checkedNew = document.querySelectorAll(".toggle");
-  checkedNew.forEach((checkbox) => {
-    if (checkedIds.includes(checkbox.id)) {
-      checkbox.checked = true;
-    } else {
-      checkbox.checked = false;
-    }
-  });
-  app.changesMade = false;
-
-  requestAnimationFrame(onChange);
-}
-
-requestAnimationFrame(onChange);
