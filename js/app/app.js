@@ -67,13 +67,6 @@ app.setRoutes(routes);
 
 newTodo.listenEvent("onkeypress", addTodo);
 
-// function change() {
-//   app.update();
-//   requestAnimationFrame(change);
-// }
-
-// requestAnimationFrame(change);
-
 function* counterMaker() {
   let count = 0;
   while (true) {
