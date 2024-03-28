@@ -94,6 +94,7 @@ export function addTodo(e) {
         id: `edit-${count}`,
         class: "edit",
         value: e.target.value,
+        autocomplete: "off",
       },
     });
     const listItem = new VNode("li", {

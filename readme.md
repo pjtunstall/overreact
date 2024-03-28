@@ -197,7 +197,7 @@ newTodo.listenEvent("onkeypress", addTodo);
 
 The first argument is the event type, prefixed with `on`. The second argument is your event handler. Write it just as you would a normal event handler. The framework takes care of the rest.
 
-(Please note that, when the node is rendered, this does not attach on old-fashioned on-event listener. Rather, it skips rendering such an attribute and instead adds your event listener to a register that maps event types to maps from virtual nodes to event handlers. When the state changes, it triggers an update, which, as well as syncing the actual DOM with the virtual one, updates event listeners on the a actual root node, adding any new ones and removing unused ones. The central event handler remains unchanged. It always simply refers events to the relevant individual event handler, which it locates in the register.)
+(Please note that, when the node is rendered, this does not attach on old-fashioned on-event listener. Rather, it skips rendering such an attribute and instead adds your event listener to a register that maps event types to maps from node ids to event handlers. When the state changes, it triggers an update, which, as well as syncing the actual DOM with the virtual one, updates event listeners on the a actual root node, adding any new ones and removing unused ones. The central event handler remains unchanged. It always simply refers events to the relevant individual event handler, which it locates in the register.)
 
 ### Initialize state
 
