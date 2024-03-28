@@ -1,5 +1,3 @@
-import { $NodeToVNodeMap } from "./render.js";
-
 export const eventHandlersRecord = new Map();
 const rootEventTypes = new Set();
 
@@ -8,7 +6,7 @@ export function listenEvent(vNode, eventType, handler) {
     eventHandlersRecord.set(eventType, new Map());
   }
   vNode.attrs[eventType] = handler;
-  eventHandlersRecord.get(eventType).set(vNode, handler);
+  eventHandlersRecord.get(eventType).set(vNode.attrs.id, handler);
 }
 
 export function unlistenEvent(vNode, eventType) {
@@ -17,7 +15,7 @@ export function unlistenEvent(vNode, eventType) {
     return;
   }
   delete vNode.attrs[eventType];
-  eventHandlersRecord.get(eventType).delete(vNode);
+  eventHandlersRecord.get(eventType).delete(vNode.attrs.id);
   removeEventListenersKeyIfNone(eventType);
 }
 
@@ -33,7 +31,7 @@ function removeEventListenersKeyIfNone(eventType) {
 export function clearEventHandlers(vNode) {
   for (const [k, v] of Object.entries(vNode.attrs)) {
     if (k.startsWith("on")) {
-      eventHandlersRecord.get(k).delete(vNode);
+      eventHandlersRecord.get(k).delete(vNode.attrs.id);
     }
   }
 }
@@ -58,10 +56,9 @@ export function updateEventListenersOnRootNode($root) {
 
 function centralEventHandler(event) {
   const eventType = "on" + event.type;
-  const vNode = $NodeToVNodeMap.get(event.target);
   const handlersForType = eventHandlersRecord.get(eventType);
-  if (handlersForType && handlersForType.has(vNode)) {
-    const handler = handlersForType.get(vNode);
+  if (handlersForType && handlersForType.has(event.target.id)) {
+    const handler = handlersForType.get(event.target.id);
     if (typeof handler === "function") {
       handler(event);
     }

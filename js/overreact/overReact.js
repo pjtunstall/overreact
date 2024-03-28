@@ -8,7 +8,7 @@ import {
 } from "./events.js";
 import { addStyle, removeStyle } from "./style.js";
 
-import { render, $NodeToVNodeMap, VNodeTo$NodeMap } from "./render.js";
+import { render } from "./render.js";
 import { makeRouter } from "./router.js";
 import { diff } from "./diff.js";
 
@@ -116,8 +116,6 @@ export class App {
   constructor(vApp, $target, state) {
     this.vApp = vApp;
     this.vAppOld = JSON.parse(JSON.stringify(vApp));
-    this.$NodeToVNodeMap = $NodeToVNodeMap;
-    this.VNodeTo$NodeMap = VNodeTo$NodeMap;
     this.eventHandlersRecord = eventHandlersRecord;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
@@ -200,9 +198,6 @@ export class App {
           vCurr.children = vCurr.children
             .slice(0, i)
             .concat(vCurr.children.slice(i + 1));
-          const nodeId = VNodeTo$NodeMap.get(child.attrs.id);
-          VNodeTo$NodeMap.delete(child.attrs.id);
-          $NodeToVNodeMap.delete(nodeId);
           break;
         }
       }
