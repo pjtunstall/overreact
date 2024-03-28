@@ -1,7 +1,6 @@
 import { app } from "./init.js";
 
 import { VNode } from "../overreact/overReact.js";
-import { $NodeToVNodeMap, VNodeTo$NodeMap } from "../overreact/render.js";
 
 const todoList = app.getVNodeById("todoList");
 const todoCount = app.getVNodeById("todoCount");
@@ -124,9 +123,7 @@ export function addTodo(e) {
 }
 
 export function destroyHandler(e) {
-  const $todo = e.target.closest("li");
-  const listItemId = app.$NodeToVNodeMap.get($todo.id);
-  const listItem = app.getVNodeById(listItemId);
+  const listItem = app.getVNodeById(e.target.closest("li").id);
 
   if (--app.state.total === 0) {
     main.hide();
@@ -145,8 +142,7 @@ export function destroyHandler(e) {
 }
 
 export function toggleHandler(e) {
-  const listItemId = app.$NodeToVNodeMap.get(e.target.closest("li").id);
-  const listItem = app.getVNodeById(listItemId);
+  const listItem = app.getVNodeById(e.target.closest("li").id);
   const toggle = listItem.children[0].children[0];
   if (e.target.checked) {
     app.state.active--;
@@ -172,8 +168,7 @@ export function toggleAllHandler() {
     const $completed = [];
     completed.forEach((todo) => {
       const toggle = todo.children[0].children[0];
-      const $completedId = VNodeTo$NodeMap.get(toggle.attrs.id);
-      const $completedItem = document.getElementById($completedId);
+      const $completedItem = document.getElementById(toggle.attrs.id);
       $completed.push($completedItem);
     });
     check($completed);
@@ -189,8 +184,7 @@ export function toggleAllHandler() {
     const $active = [];
     active.forEach((todo) => {
       const toggle = todo.children[0].children[0];
-      const $activeId = VNodeTo$NodeMap.get(toggle.attrs.id);
-      const $activeItem = document.getElementById($activeId);
+      const $activeItem = document.getElementById(toggle.attrs.id);
       $active.push($activeItem);
       toggle.attrs.checked = "";
     });
@@ -221,18 +215,16 @@ export function clearCompletedHandler() {
 }
 
 export function startEditingHandler(e) {
-  console.log("Double click");
   todoList.children.forEach((todo) => {
     todo.removeClass("editing");
   });
 
   const $edit = e.target;
   $edit.focus();
-  const $todo = $edit.closest("li");
-  const todoId = $NodeToVNodeMap.get($todo.id);
-  const todo = app.getVNodeById(todoId);
-  todo.addClass("editing");
-  currentlyEditing = $todo.querySelector(".edit");
+  const $listItem = $edit.closest("li");
+  const listItem = app.getVNodeById($listItem.id);
+  listItem.addClass("editing");
+  currentlyEditing = $listItem.querySelector(".edit");
 
   app.update();
 }
@@ -242,12 +234,8 @@ export function finishEditingByEnterHandler(e) {
     e.preventDefault();
     enterPressed = true;
 
-    const $listItem = e.target.closest("li");
-    const listItemId = app.$NodeToVNodeMap.get($listItem.id);
-    const listItem = app.getVNodeById(listItemId);
+    const listItem = app.getVNodeById(e.target.closest("li").id);
     const label = listItem.children[0].children[1];
-
-    console.log(e.target.id);
 
     if (e.target.value === "") {
       if (--app.state.total === 0) {
@@ -281,9 +269,7 @@ export function finishEditingByBlurHandler(e) {
     return;
   }
 
-  const $todo = e.target.closest("li");
-  const listItemId = app.$NodeToVNodeMap.get($todo.id);
-  const listItem = app.getVNodeById(listItemId);
+  const listItem = app.getVNodeById(e.target.closest("li").id);
   const label = listItem.children[0].children[1];
 
   if (e.target.value === "") {
