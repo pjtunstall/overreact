@@ -1,4 +1,4 @@
-import { nodeVNodeMap } from "./render.js";
+import { $NodeToVNodeMap } from "./render.js";
 
 export const eventHandlersRecord = new Map();
 const rootEventTypes = new Set();
@@ -58,7 +58,7 @@ export function updateEventListenersOnRootNode($root) {
 
 function centralEventHandler(event) {
   const eventType = "on" + event.type;
-  const vNode = nodeVNodeMap.get(event.target);
+  const vNode = $NodeToVNodeMap.get(event.target);
   const handlersForType = eventHandlersRecord.get(eventType);
   if (handlersForType && handlersForType.has(vNode)) {
     const handler = handlersForType.get(vNode);

@@ -1,4 +1,4 @@
-import { vNodeToHtml } from "./vNodeToHtml.js";
+import { VNodeToHtml } from "./VNodeToHtml.js";
 import { addAttribute, removeAttribute } from "./attributes.js";
 import {
   listenEvent,
@@ -8,7 +8,7 @@ import {
 } from "./events.js";
 import { addStyle, removeStyle } from "./style.js";
 
-import { render, nodeVNodeMap, vNodeNodeMap } from "./render.js";
+import { render, $NodeToVNodeMap, VNodeTo$NodeMap } from "./render.js";
 import { makeRouter } from "./router.js";
 import { diff } from "./diff.js";
 
@@ -32,18 +32,13 @@ export class VNode {
   }
 
   toHtml() {
-    return vNodeToHtml(this);
+    return VNodeToHtml(this);
   }
 
   append(...children) {
     this.children.push(...children);
     return this;
   }
-
-  // prepend(...child) {
-  //   this.children.unshift(...child);
-  //   return this;
-  // }
 
   removeChild(childToRemove) {
     if (this.children.indexOf(childToRemove) === -1) {
@@ -121,8 +116,8 @@ export class App {
   constructor(vApp, $target, state) {
     this.vApp = vApp;
     this.vAppOld = JSON.parse(JSON.stringify(vApp));
-    this.nodeVNodeMap = nodeVNodeMap;
-    this.vNodeNodeMap = vNodeNodeMap;
+    this.$NodeToVNodeMap = $NodeToVNodeMap;
+    this.VNodeTo$NodeMap = VNodeTo$NodeMap;
     this.eventHandlersRecord = eventHandlersRecord;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
@@ -202,9 +197,9 @@ export class App {
           vCurr.children = vCurr.children
             .slice(0, i)
             .concat(vCurr.children.slice(i + 1));
-          const nodeId = vNodeNodeMap.get(child.attrs.id);
-          vNodeNodeMap.delete(child.attrs.id);
-          nodeVNodeMap.delete(nodeId);
+          const nodeId = VNodeTo$NodeMap.get(child.attrs.id);
+          VNodeTo$NodeMap.delete(child.attrs.id);
+          $NodeToVNodeMap.delete(nodeId);
           break;
         }
       }

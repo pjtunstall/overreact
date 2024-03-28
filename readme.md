@@ -11,9 +11,9 @@ Clone this repo and install the dependencies with [npm](https://npmjs.com) by ru
 ## 2. Features
 
 - Virtual DOM: diffing and patching
-- Routing system: build a single-page application
-- State management: choose your own update schedule
-- Event handling: central event handler
+- Routing system: single-page application
+- State management: updates on change of state
+- Event handling: events delegated to a central event handler
 - Templating: HTML to virtual nodes, virtual nodes to HTML
 
 ## 3. How it works
@@ -38,9 +38,57 @@ Events are handled through one central event handler. This is more efficient tha
 
 ### Creating and nesting elements
 
-To create an element, first make a new virtual node. Be sure to give it a unique id. Pass an array of children to the constructor or nest with the `append` method. For example, to create a virtual node `header` with tagName "header", and nest children `h1` and `input`:
+To create an element, first make a new virtual node:
+
+```javascript
+import { VNode } from "../../overreact/overReact.js";
+
+const myVNode = new VNode("div");
+```
+
+The first argument is a tag name. The optional second argument is an object with two properties, `attrs` (attributes) and `children`, either of which can be omitted. Chilren can be element nodes or text nodes. If you want the child to be a text node, make it a string.
+
+```javascript
+const myVNode = new VNode("div", {
+  attrs: {
+    id: "VNode-1"
+    class: "item",
+  },
+  children: [
+    "Hello world!",
+    selfDestructButton
+  ]
+});
 
 ```
+
+To ensure the smooth operation of your app, give each virtual node a unique id.
+
+```javascript
+const myVNode = new VNode("div", { attrs: { id: "VNode-1" } });
+```
+
+You can pass an array of children to the constructor ...
+
+```javascript
+const childVNode1 = new VNode("p", { attrs: { id: "childVNode-1" } });
+const childVNode2 = new VNode("p", { attrs: { id: "childVNode-2" } });
+
+const myVNode = new VNode("div", {
+  attrs: { id: "VNode-1" },
+  children: [childVNode1, childVNode2],
+});
+```
+
+... or nest with the `append` method:
+
+```javascript
+myNode.append(childVNode1, childVNode2);
+```
+
+Here's a more elaborate example of a function that creates a virtual node `header` with tagName "header", and nest children `h1` and `input`. It can be imported and used as a component of another virtual node.
+
+```javascript
 import { VNode } from "../../overreact/overReact.js";
 
 let header;
@@ -78,43 +126,65 @@ input = new VNode("input", {
 
 To build a virtual node from a string of HTML, you can use the tag function `htmlToVNode(strings, ...values)`, which works like a virtual DOMParser:
 
-```
+```javascript
 const hello = "Hello";
-const vnode = htmlToVNode`<div class="my-div">${hello}, <span>world!</span></div>`;
+
+const vNode = htmlToVNode`
+<div class="my-div">
+  ${hello}, <span>world!</span>
+</div>`;
+
 console.log(vnode);
 ```
 
 Nest to your heart's content:
 
-```
+```javascript
 const hello = "Hello";
-const vnode = htmlToVNode`<div class="my-div" id="main-div"><p style="color: red;">${hello}, <span class="highlight" style="background-color: yellow;">world!</span></p><ul><li>Item 1</li><li>Item 2</li></ul></div>`;
-console.log(vnode);
+
+const vNode = htmlToVNode`
+<div class="my-div"
+  id="main-div">
+    <p style="color: red;">
+      ${hello}, <span class="highlight" style="background-color: yellow;">world!</span>
+    </p>
+    <ul>
+      <li>Item 1</li>
+      <li>Item 2</li>
+    </ul>
+</div>
+`;
+
+console.log(vNode);
 ```
+
+The inverse is `VNodeToHtml`.
 
 ### Add an attribute
 
 Add attributes with the `addAttribute` method:
 
-```
-input.addAttribute("placeholder", "Really?");
-
+```javascript
+input.addAttribute("placeholder", "What's on your mind?");
 ```
 
 ### Create an event
 
 Create an event:
 
-```
+```javascript
 newTodo.listenEvent("onkeypress", addTodo);
-
 ```
+
+The first argument is the event type, prefixed with `on`. The second argument is your event handler. Write it just as you would a normal event handler. The framework takes care of the rest.
+
+(Please note that, when the node is rendered, this does not attach on old-fashioned on-event listener. Rather, it skips rendering such an attribute and instead adds your event listener to a register that maps event types to maps from virtual nodes to event handlers. When the state changes, it triggers an update, which, as well as syncing the actual DOM with the virtual one, updates event listeners on the a actual root node, adding any new ones and removing unused ones. The central event handler remains unchanged. It always simply refers events to the relevant individual event handler, which it locates in the register.)
 
 ### Initialize state
 
 Initialize state as an object:
 
-```
+```javascript
 const state = {
   total: 0,
   active: 0,
@@ -125,7 +195,7 @@ const state = {
 
 Build a whole virtual DOM representation of your add, then pass its root node and the placeholder actual DOM node that you want to replace to the App constructor, together with initial state an an update function:
 
-```
+```javascript
 let vApp = makeTodoApp();
 let $target = document.getElementsByClassName("todoapp")[0];
 let app = new App(vApp, $target, state, onChange);
@@ -139,7 +209,7 @@ Your update function (called `onChange` in this example) should call `app.update
 
 Set some routes for a single page application:
 
-```
+```javascript
 const routes = {
   "": function () {
     aAll.addClass("selected");

@@ -17,7 +17,7 @@ const VOID_TAGS = [
   "wbr",
 ];
 
-export function vNodeToHtml(vNode) {
+export function VNodeToHtml(vNode) {
   // Base case: if the vnode is a string, return it
   if (typeof vNode === "string") {
     return vNode;
@@ -37,7 +37,7 @@ export function vNodeToHtml(vNode) {
 
     // Add the children
     for (let child of vNode.children) {
-      html += vNodeToHtml(child);
+      html += VNodeToHtml(child);
     }
 
     // Add the closing tag
@@ -48,5 +48,5 @@ export function vNodeToHtml(vNode) {
 }
 
 //   // Usage:
-//   const html = vNodeToHtml(vNode);
+//   const html = VNodeToHtml(vNode);
 //   console.log(html);

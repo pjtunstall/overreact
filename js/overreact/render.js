@@ -1,5 +1,5 @@
-export const nodeVNodeMap = new Map();
-export const vNodeNodeMap = new Map();
+export const $NodeToVNodeMap = new Map();
+export const VNodeTo$NodeMap = new Map();
 
 export function render(vNode) {
   if (typeof vNode === "string") {
@@ -22,8 +22,8 @@ function renderElement(vNode) {
     $node.append(render(child));
   }
 
-  nodeVNodeMap.set($node, vNode);
-  vNodeNodeMap.set(vNode, $node);
+  $NodeToVNodeMap.set($node, vNode);
+  VNodeTo$NodeMap.set(vNode, $node);
 
   let id = vNode.attrs.id;
   let $id = $node.id;
@@ -34,8 +34,8 @@ function renderElement(vNode) {
     $id = $node;
   }
 
-  nodeVNodeMap.set($id, id);
-  vNodeNodeMap.set(id, id);
+  $NodeToVNodeMap.set($id, id);
+  VNodeTo$NodeMap.set(id, id);
 
   return $node;
 }
