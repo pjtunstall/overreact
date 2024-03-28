@@ -130,7 +130,10 @@ export class App {
         }
         state[key] = value;
         console.log("Setting", key, "to", value);
+
+        // requstAnimation frame is needed here to make sure `update` is called before the repaint that it triggers. Otherwise it may be called after the repaint and the changes will not be visible until repaint is triggered again by the next update.
         requestAnimationFrame(() => this.update());
+
         return true;
       },
     });
