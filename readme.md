@@ -1,10 +1,15 @@
 # Overreact: a framework for tense times
 
 [0. Context](#0-context)
+
 [1. Getting started](#1-getting-started)
+
 [2. Features](#2-features)
+
 [3. How it works](#3-how-it-works)
+
 [4. Usage](#4-usage)
+
 [5. Resources](#resources)
 
 ## 0. Context
