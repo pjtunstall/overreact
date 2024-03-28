@@ -24,15 +24,19 @@ You build a tree of virtual DOM nodes, representing the structure of your app. T
 
 ### Routing system
 
-Give the framework an object associating hashes with functions for how your page should change when passing to a new hash. The
+A routing system handles changes of route, aka hash. Give the framework an object associating hashes, i.e. the part of the URL after a `#` symbol, with functions. These functions tell your page how to change when passing to a new hash. The framework will register each one to be called on the event that the hash changes to the value specified. To change hash when the user clicks on an element, give it a `href` value of `#/myHash`. You can make the key an empty string for the default value `#/`. Any event handlers you add can also access the hash to tailor the appearance and behavior of your app to the URL, allowing you to make a single-page application.
 
 ### State management
 
 Tell the framework the initial state of your app. The framework creates a proxy object which triggers an update when the state changes. It supplies the logic for how to compare the virtual DOM with how it was on the last update, then renders and attaches anything that's new.
 
+In more detail: updates of the actual DOM happen automatically on change of state; that is, when the value of any property of your state object changes. A `diff` function compares the current virtual DOM with how it was on the last update. It returns a `patch` function that tells the actual DOM what to change. Assuming your app is called `app`, the `app.update` method passes your actual root node to the resulting `patch`, which performs the sync, rendering what needs to be rendered and mounting it at at the appropriate place.
+
 ### Event handling
 
-Events are handled through one central event handler. This is more efficient than having many listeners, scattered through the DOM, listening for the same type of event. To regain what might otherwise be lost in terms of readability, the framework offers some syntactic sugar. It lets you attach events to individual nodes as you would normally. Under the hood, though, it instead maintains one event listener on the root node for each event type that you need. These all refer to the same collective handler function, which captures the target. The central event handler looks up the virtual node corresponding to the target, then calls your specific event handler after locating it in a database that links event handlers, types, and potential targets.
+Events are handled through one central event handler. This is more efficient than having many listeners, scattered through the DOM, listening for the same type of event.
+
+To regain what might otherwise be lost in terms of readability, the framework offers some syntactic sugar. It lets you attach events to individual nodes as you would normally. Under the hood, though, it instead maintains one event listener on the root node for each event type that you need. These all refer to the same collective handler function, which captures the target. The central event handler looks up the virtual node corresponding to the target, then calls your specific event handler after locating it in a database that links event handlers, types, and potential targets.
 
 ## 4. Usage
 
@@ -86,7 +90,7 @@ const myVNode = new VNode("div", {
 myNode.append(childVNode1, childVNode2);
 ```
 
-Here's a more elaborate example of a function that creates a virtual node `header` with tagName "header", and nest children `h1` and `input`. It can be imported and used as a component of another virtual node.
+Here's a more elaborate example of a function that creates a virtual node `header` with tagName "header", and nests children `h1` and `input`. It can be imported and used as a component of another virtual node.
 
 ```javascript
 import { VNode } from "../../overreact/overReact.js";
@@ -132,7 +136,8 @@ const hello = "Hello";
 const vNode = htmlToVNode`
 <div class="my-div">
   ${hello}, <span>world!</span>
-</div>`;
+</div>
+`;
 
 console.log(vnode);
 ```
@@ -200,10 +205,6 @@ let vApp = makeTodoApp();
 let $target = document.getElementsByClassName("todoapp")[0];
 let app = new App(vApp, $target, state, onChange);
 ```
-
-### Updates
-
-Your update function (called `onChange` in this example) should call `app.update()` to compare the virtual DOM with how it was the last time it was rendered, and update the actual DOM with any changes.
 
 ### Routes
 

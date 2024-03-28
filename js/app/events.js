@@ -75,7 +75,7 @@ export function addTodo(e) {
       children: [view, edit],
     });
 
-    const hash = window.location.hash.slice(2);
+    const hash = location.hash.slice(2);
     const parts = hash.split("/");
     const route = parts[0];
     if (route === "completed") {
