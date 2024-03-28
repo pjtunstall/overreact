@@ -1,8 +1,15 @@
 # Overreact: a framework for tense times
 
+[0. Context](#0-context)
+[1. Getting started](#1-getting-started)
+[2. Features](#2-features)
+[3. How it works](#3-how-it-works)
+[4. Usage](#4-usage)
+[5. Resources](#resources)
+
 ## 0. Context
 
-The [mini-framework](https://learn.01founders.co/git/root/public/src/branch/master/subjects/mini-framework) project for 01Founders, part of the 01 Edu network of coding bootcamps.
+The [mini-framework](https://learn.01founders.co/git/root/public/src/branch/master/subjects/mini-framework) project for 01Founders, part of the 01 Edu network of coding bootcamps. It consists of making a mini framework with certain features and using it to make a [TodoMVC](https://todomvc.com/)--that is, a simple todo-list app of a standard design that can be used to compare how different frameworks accomplish the same task.
 
 ## 1. Getting started
 
@@ -21,6 +28,8 @@ Clone this repo and install the dependencies with [npm](https://npmjs.com) by ru
 ### Abstracting the DOM
 
 You build a tree of virtual DOM nodes, representing the structure of your app. The framework renders it into actual HTML elements and appends the root to the actual HTML element of your choice.
+
+(Note on notation: a virtual node is an instance of the class `VNode`. Where we think it might help to avoid confusion, we follow the convention of prefixing nodes of the actual DOM with a dollar sign, thus `$Node` for the type, and `$node` versus `vNode` for instances of actual and virtual nodes respectively. In our todo-list app, we use the name `app` for an instance of the framework's `App` class, which encapsulates the whole structure. It has fields `app.vApp` and `app.$app` for the root nodes of the virtual and actual DOMs. See, for example, [Build and mount an app](###build-and-mount-an-app).)
 
 ### Routing system
 
@@ -203,7 +212,7 @@ Build a whole virtual DOM representation of your add, then pass its root node an
 ```javascript
 let vApp = makeTodoApp();
 let $target = document.getElementsByClassName("todoapp")[0];
-let app = new App(vApp, $target, state, onChange);
+let app = new App(vApp, $target, state);
 ```
 
 ### Routes
