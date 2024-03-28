@@ -242,11 +242,14 @@ export function finishEditingByEnterHandler(e) {
     e.preventDefault();
     enterPressed = true;
 
-    if (e.target.value === "") {
-      const $todo = e.target.closest("li");
-      const listItemId = app.$NodeToVNodeMap.get($todo.id);
-      const listItem = app.getVNodeById(listItemId);
+    const $listItem = e.target.closest("li");
+    const listItemId = app.$NodeToVNodeMap.get($listItem.id);
+    const listItem = app.getVNodeById(listItemId);
+    const label = listItem.children[0].children[1];
 
+    console.log(e.target.id);
+
+    if (e.target.value === "") {
       if (--app.state.total === 0) {
         main.hide();
         footer.hide();
@@ -281,8 +284,7 @@ export function finishEditingByBlurHandler(e) {
   const $todo = e.target.closest("li");
   const listItemId = app.$NodeToVNodeMap.get($todo.id);
   const listItem = app.getVNodeById(listItemId);
-  const labelId = app.VNodeTo$NodeMap.get(e.target.id);
-  const label = app.getVNodeById(labelId);
+  const label = listItem.children[0].children[1];
 
   if (e.target.value === "") {
     if (--app.state.total === 0) {
