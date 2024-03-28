@@ -21,6 +21,7 @@ document.addEventListener("click", function (event) {
   }
 });
 
+// To make unique ids for each todo item
 function* counterMaker() {
   let count = 0;
   while (true) {
@@ -30,6 +31,33 @@ function* counterMaker() {
 
 const counter = counterMaker();
 
+// Update the indicator of how many todos are left
+function updateTodoCount() {
+  todoCount.children = [
+    app.state.active +
+      (app.state.active === 1 ? " item left!" : " items left!"),
+  ];
+  const someCompleted = app.state.active < app.state.total;
+  if (someCompleted) {
+    clearCompleted.show();
+  } else {
+    clearCompleted.hide();
+  }
+}
+
+// Helper function to check or uncheck a list of checkboxes
+function check(checkboxes) {
+  checkboxes.forEach((checkbox) => {
+    checkbox.checked = !checkbox.checked;
+    const event = new Event("change", {
+      bubbles: true,
+      cancelable: true,
+    });
+    checkbox.dispatchEvent(event);
+  });
+}
+
+// The event handlers themselves
 export function addTodo(e) {
   if (e.key === "Enter") {
     e.preventDefault();
@@ -66,7 +94,6 @@ export function addTodo(e) {
       attrs: {
         id: `edit-${count}`,
         class: "edit",
-        // style: "display: none",
         value: e.target.value,
       },
     });
@@ -96,19 +123,6 @@ export function addTodo(e) {
   }
 }
 
-function updateTodoCount() {
-  todoCount.children = [
-    app.state.active +
-      (app.state.active === 1 ? " item left!" : " items left!"),
-  ];
-  const someCompleted = app.state.active < app.state.total;
-  if (someCompleted) {
-    clearCompleted.show();
-  } else {
-    clearCompleted.hide();
-  }
-}
-
 export function destroyHandler(e) {
   const $todo = e.target.closest("li");
   const listItemId = app.$NodeToVNodeMap.get($todo.id);
@@ -128,6 +142,65 @@ export function destroyHandler(e) {
   }
 
   app.remove(listItem);
+}
+
+export function toggleHandler(e) {
+  const listItemId = app.$NodeToVNodeMap.get(e.target.closest("li").id);
+  const listItem = app.getVNodeById(listItemId);
+  const toggle = listItem.children[0].children[0];
+  if (e.target.checked) {
+    app.state.active--;
+    listItem.addClass("completed");
+    toggle.attrs.checked = "";
+    clearCompleted.show();
+  } else {
+    app.state.active++;
+    listItem.removeClass("completed");
+    delete toggle.attrs.checked;
+    if (app.state.active === app.state.total) {
+      clearCompleted.hide();
+    }
+  }
+  updateTodoCount();
+}
+
+export function toggleAllHandler() {
+  const todos = todoList.children;
+
+  if (app.state.active === 0) {
+    const completed = todos.filter((todo) => todo.hasClass("completed"));
+    const $completed = [];
+    completed.forEach((todo) => {
+      const toggle = todo.children[0].children[0];
+      const $completedId = VNodeTo$NodeMap.get(toggle.attrs.id);
+      const $completedItem = document.getElementById($completedId);
+      $completed.push($completedItem);
+    });
+    check($completed);
+    app.state.active = app.state.total;
+    completed.forEach((todo) => {
+      const toggle = todo.children[0].children[0];
+      delete toggle.attrs.checked;
+    });
+    app.state.active = app.state.total;
+    clearCompleted.hide();
+  } else {
+    const active = todos.filter((todo) => !todo.hasClass("completed"));
+    const $active = [];
+    active.forEach((todo) => {
+      const toggle = todo.children[0].children[0];
+      const $activeId = VNodeTo$NodeMap.get(toggle.attrs.id);
+      const $activeItem = document.getElementById($activeId);
+      $active.push($activeItem);
+      toggle.attrs.checked = "";
+    });
+
+    check($active);
+    app.state.active = 0;
+    clearCompleted.show();
+  }
+
+  updateTodoCount();
 }
 
 export function clearCompletedHandler() {
@@ -234,73 +307,4 @@ export function finishEditingByBlurHandler(e) {
   currentlyEditing = null;
 
   app.update();
-}
-
-export function toggleHandler(e) {
-  const listItemId = app.$NodeToVNodeMap.get(e.target.closest("li").id);
-  const listItem = app.getVNodeById(listItemId);
-  const toggle = listItem.children[0].children[0];
-  if (e.target.checked) {
-    app.state.active--;
-    listItem.addClass("completed");
-    toggle.attrs.checked = "";
-    clearCompleted.show();
-  } else {
-    app.state.active++;
-    listItem.removeClass("completed");
-    delete toggle.attrs.checked;
-    if (app.state.active === app.state.total) {
-      clearCompleted.hide();
-    }
-  }
-  updateTodoCount();
-}
-
-export function toggleAllHandler() {
-  const todos = todoList.children;
-
-  if (app.state.active === 0) {
-    const completed = todos.filter((todo) => todo.hasClass("completed"));
-    const $completed = [];
-    completed.forEach((todo) => {
-      const toggle = todo.children[0].children[0];
-      const $completedId = VNodeTo$NodeMap.get(toggle.attrs.id);
-      const $completedItem = document.getElementById($completedId);
-      $completed.push($completedItem);
-    });
-    check($completed);
-    app.state.active = app.state.total;
-    completed.forEach((todo) => {
-      const toggle = todo.children[0].children[0];
-      delete toggle.attrs.checked;
-    });
-    app.state.active = app.state.total;
-    clearCompleted.hide();
-  } else {
-    const active = todos.filter((todo) => !todo.hasClass("completed"));
-    const $active = [];
-    active.forEach((todo) => {
-      const toggle = todo.children[0].children[0];
-      const $activeId = VNodeTo$NodeMap.get(toggle.attrs.id);
-      const $activeItem = document.getElementById($activeId);
-      $active.push($activeItem);
-      toggle.attrs.checked = "";
-    });
-    check($active);
-    app.state.active = 0;
-    clearCompleted.show();
-  }
-
-  updateTodoCount();
-}
-
-function check(checkboxes) {
-  checkboxes.forEach((checkbox) => {
-    checkbox.checked = !checkbox.checked;
-    const event = new Event("change", {
-      bubbles: true,
-      cancelable: true,
-    });
-    checkbox.dispatchEvent(event);
-  });
 }
