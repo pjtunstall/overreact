@@ -1,18 +1,9 @@
-import { makeTodoApp } from "./components/todoapp.js";
-import { App, VNode } from "../overreact/overReact.js";
+import { app } from "./init.js";
+import "./routes.js";
+import { toggleAllHandler, toggleHandler } from "./events.js";
+
+import { VNode } from "../overreact/overReact.js";
 import { nodeVNodeMap, vNodeNodeMap } from "../overreact/render.js";
-import { aAll, aActive, aCompleted } from "./components/footer.js";
-
-location.hash = "";
-
-let state = {
-  total: 0,
-  active: 0,
-};
-
-let vApp = makeTodoApp();
-let $target = document.getElementsByClassName("todoapp")[0];
-let app = new App(vApp, $target, state);
 
 const todoList = app.getVNodeById("todoList");
 const todoCount = app.getVNodeById("todoCount");
@@ -23,47 +14,7 @@ const inputToggleAll = app.getVNodeById("inputToggleAll");
 const clearCompleted = app.getVNodeById("clearCompleted");
 
 let enterPressed = false;
-
-const routes = {
-  "": function () {
-    aAll.addClass("selected");
-    aActive.removeClass("selected");
-    aCompleted.removeClass("selected");
-    todoList.children.forEach((todo) => {
-      todo.show();
-    });
-    app.update();
-  },
-  active: function () {
-    aAll.removeClass("selected");
-    aActive.addClass("selected");
-    aCompleted.removeClass("selected");
-
-    todoList.children.forEach((todo) => {
-      if (todo.hasClass("completed")) {
-        todo.hide();
-      } else {
-        todo.show();
-      }
-    });
-    app.update();
-  },
-  completed: function () {
-    aAll.removeClass("selected");
-    aActive.removeClass("selected");
-    aCompleted.addClass("selected");
-    todoList.children.forEach((todo) => {
-      if (todo.hasClass("completed")) {
-        todo.show();
-      } else {
-        todo.hide();
-      }
-    });
-    app.update();
-  },
-};
-
-app.setRoutes(routes);
+let currentlyEditing = null;
 
 newTodo.listenEvent("onkeypress", addTodo);
 
@@ -149,63 +100,9 @@ function addTodo(e) {
       app.remove(listItem);
     });
 
-    toggle.listenEvent("onchange", (e) => {
-      const listItemId = app.nodeVNodeMap.get(e.target.closest("li").id);
-      const listItem = app.getVNodeById(listItemId);
-      const toggle = listItem.children[0].children[0];
-      if (e.target.checked) {
-        app.state.active--;
-        listItem.addClass("completed");
-        toggle.attrs.checked = "";
-        clearCompleted.show();
-      } else {
-        app.state.active++;
-        listItem.removeClass("completed");
-        delete toggle.attrs.checked;
-        if (app.state.active === app.state.total) {
-          clearCompleted.hide();
-        }
-      }
-      updateTodoCount();
-    });
+    toggle.listenEvent("onchange", toggleHandler);
 
-    inputToggleAll.listenEvent("onclick", () => {
-      const todos = todoList.children;
-
-      if (app.state.active === 0) {
-        const completed = todos.filter((todo) => todo.hasClass("completed"));
-        const $completed = [];
-        completed.forEach((todo) => {
-          const toggle = todo.children[0].children[0];
-          const $completedId = vNodeNodeMap.get(toggle.attrs.id);
-          const $completedItem = document.getElementById($completedId);
-          $completed.push($completedItem);
-        });
-        check($completed);
-        app.state.active = app.state.total;
-        completed.forEach((todo) => {
-          const toggle = todo.children[0].children[0];
-          delete toggle.attrs.checked;
-        });
-        app.state.active = app.state.total;
-        clearCompleted.hide();
-      } else {
-        const active = todos.filter((todo) => !todo.hasClass("completed"));
-        const $active = [];
-        active.forEach((todo) => {
-          const toggle = todo.children[0].children[0];
-          const $activeId = vNodeNodeMap.get(toggle.attrs.id);
-          const $activeItem = document.getElementById($activeId);
-          $active.push($activeItem);
-          toggle.attrs.checked = "";
-        });
-        check($active);
-        app.state.active = 0;
-        clearCompleted.show();
-      }
-
-      updateTodoCount();
-    });
+    inputToggleAll.listenEvent("onclick", toggleAllHandler);
 
     clearCompleted.listenEvent("onclick", () => {
       const completed = todoList.children.filter((todo) =>
@@ -236,6 +133,7 @@ function addTodo(e) {
       const todoId = nodeVNodeMap.get($todo.id);
       const todo = app.getVNodeById(todoId);
       todo.addClass("editing");
+      currentlyEditing = $todo.querySelector(".edit");
 
       app.update();
     });
@@ -244,6 +142,7 @@ function addTodo(e) {
       if (e.key === "Enter") {
         e.preventDefault();
         enterPressed = true;
+
         if (e.target.value === "") {
           const $todo = e.target.closest("li");
           const listItemId = app.nodeVNodeMap.get($todo.id);
@@ -268,6 +167,8 @@ function addTodo(e) {
           listItem.removeClass("editing");
         }
 
+        currentlyEditing = null;
+
         app.update();
       }
     });
@@ -277,6 +178,7 @@ function addTodo(e) {
         enterPressed = false;
         return;
       }
+
       if (e.target.value === "") {
         const $todo = e.target.closest("li");
         const listItemId = app.nodeVNodeMap.get($todo.id);
@@ -301,6 +203,8 @@ function addTodo(e) {
         listItem.removeClass("editing");
       }
 
+      currentlyEditing = null;
+
       app.update();
     });
 
@@ -323,16 +227,13 @@ function updateTodoCount() {
   }
 }
 
-function check(checkboxes) {
-  checkboxes.forEach((checkbox) => {
-    checkbox.checked = !checkbox.checked;
-    const event = new Event("change", {
-      bubbles: true,
-      cancelable: true,
-    });
-    checkbox.dispatchEvent(event);
-  });
-}
+// Necessary to step outside of the virtual event handling system here to deal with the case where the user potentially clicks outside of the app
+document.addEventListener("click", function (event) {
+  if (currentlyEditing && !currentlyEditing.contains(event.target)) {
+    currentlyEditing.dispatchEvent(new Event("blur"));
+    currentlyEditing = null;
+  }
+});
 
-// Initial update to add the event listeners
+// Initial update to render the event listeners
 app.update();

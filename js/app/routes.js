@@ -1,40 +1,46 @@
-// import { aAll, aActive, aCompleted } from "./components/footer.js";
-// import { todoList } from "./components/main.js";
+import { aAll, aActive, aCompleted } from "./components/footer.js";
+import { todoList } from "./components/main.js";
+import { app } from "./init.js";
 
-// const todos = todoList.children;
+location.hash = "";
 
-// export const routes = {
-//   "": function () {
-//     aAll.addClass("selected");
-//     aActive.removeClass("selected");
-//     aCompleted.removeClass("selected");
-//     todos.forEach((todo) => {
-//       todo.show();
-//     });
-//   },
-//   active: function () {
-//     aAll.removeClass("selected");
-//     aActive.addClass("selected");
-//     aCompleted.removeClass("selected");
+const routes = {
+  "": function () {
+    aAll.addClass("selected");
+    aActive.removeClass("selected");
+    aCompleted.removeClass("selected");
+    todoList.children.forEach((todo) => {
+      todo.show();
+    });
+    app.update();
+  },
+  active: function () {
+    aAll.removeClass("selected");
+    aActive.addClass("selected");
+    aCompleted.removeClass("selected");
 
-//     todos.forEach((todo) => {
-//       if (todo.hasClass("completed")) {
-//         todo.hide();
-//       } else {
-//         todo.show();
-//       }
-//     });
-//   },
-//   completed: function () {
-//     aAll.removeClass("selected");
-//     aActive.removeClass("selected");
-//     aCompleted.addClass("selected");
-//     todos.forEach((todo) => {
-//       if (todo.hasClass("completed")) {
-//         todo.show();
-//       } else {
-//         todo.hide();
-//       }
-//     });
-//   },
-// };
+    todoList.children.forEach((todo) => {
+      if (todo.hasClass("completed")) {
+        todo.hide();
+      } else {
+        todo.show();
+      }
+    });
+    app.update();
+  },
+  completed: function () {
+    aAll.removeClass("selected");
+    aActive.removeClass("selected");
+    aCompleted.addClass("selected");
+    todoList.children.forEach((todo) => {
+      if (todo.hasClass("completed")) {
+        todo.show();
+      } else {
+        todo.hide();
+      }
+    });
+    app.update();
+  },
+};
+
+app.setRoutes(routes);

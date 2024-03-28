@@ -126,13 +126,12 @@ export class App {
     this.eventHandlersRecord = eventHandlersRecord;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
-    // this.state = state;
 
     this.state = new Proxy(state, {
       set: (state, key, value) => {
         if (state[key] === value) {
           console.log("No change");
-          return false;
+          return true;
         }
         state[key] = value;
         console.log("Setting", key, "to", value);
@@ -203,12 +202,9 @@ export class App {
           vCurr.children = vCurr.children
             .slice(0, i)
             .concat(vCurr.children.slice(i + 1));
-          // vNodeNodeMap.delete(child);
-          // nodeVNodeMap.delete(this.nodeVNodeMap.get(child));
           const nodeId = vNodeNodeMap.get(child.attrs.id);
           vNodeNodeMap.delete(child.attrs.id);
           nodeVNodeMap.delete(nodeId);
-          // console.log("Removed", child);
           break;
         }
       }
