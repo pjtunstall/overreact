@@ -1,9 +1,42 @@
 export class EventRegister {
+  #types = new Set();
+  handlers = new Map();
+  $root;
+
   constructor($root) {
     this.$root = $root;
-    this.handlers = new Map();
-    this.types = new Set();
-    this._centralEventHandler = this._centralEventHandler.bind(this);
+    this.centralEventHandler = this.centralEventHandler.bind(this);
+  }
+
+  #updateListenersOnRootNode() {
+    // Add new event listeners and update rootEventTypes
+    this.handlers.forEach((handlers, eventType) => {
+      if (!this.#types.has(eventType)) {
+        this.$root.addEventListener(
+          eventType.slice(2),
+          this.centralEventHandler,
+          true
+        );
+        this.#types.add(eventType);
+      }
+    });
+
+    // Remove old event listeners
+    this.#types.forEach((eventType) => {
+      if (!this.handlers.has(eventType)) {
+        $root.removeEventListener(eventType.slice(2), this.centralEventHandler);
+        this.#types.delete(eventType);
+      }
+    });
+  }
+
+  #removeEventListenersKeyIfNone(eventType) {
+    if (
+      this.handlers.has(eventType) &&
+      this.handlers.get(eventType).size === 0
+    ) {
+      this.handlers.delete(eventType);
+    }
   }
 
   listenEvent(vNode, eventType, handler) {
@@ -12,7 +45,7 @@ export class EventRegister {
     }
     vNode.attrs[eventType] = handler;
     this.handlers.get(eventType).set(vNode.attrs.id, handler);
-    this._updateListenersOnRootNode();
+    this.#updateListenersOnRootNode();
   }
 
   unlistenEvent(vNode, eventType) {
@@ -22,46 +55,21 @@ export class EventRegister {
     }
     delete vNode.attrs[eventType];
     this.handlers.get(eventType).delete(vNode.attrs.id);
-    this._removeEventListenersKeyIfNone(eventType);
-    this._updateListenersOnRootNode();
+    this.#removeEventListenersKeyIfNone(eventType);
+    this.#updateListenersOnRootNode();
   }
 
   clearEventHandlers(vNode) {
     for (const [k, v] of Object.entries(vNode.attrs)) {
       if (k.startsWith("on")) {
         this.handlers.get(k).delete(vNode.attrs.id);
-        this._removeEventListenersKeyIfNone(k);
+        this.#removeEventListenersKeyIfNone(k);
       }
     }
-    this._updateListenersOnRootNode();
+    this.#updateListenersOnRootNode();
   }
 
-  _updateListenersOnRootNode() {
-    // Add new event listeners and update rootEventTypes
-    this.handlers.forEach((handlers, eventType) => {
-      if (!this.types.has(eventType)) {
-        this.$root.addEventListener(
-          eventType.slice(2),
-          this._centralEventHandler,
-          true
-        );
-        this.types.add(eventType);
-      }
-    });
-
-    // Remove old event listeners
-    this.types.forEach((eventType) => {
-      if (!this.handlers.has(eventType)) {
-        $root.removeEventListener(
-          eventType.slice(2),
-          this._centralEventHandler
-        );
-        this.types.delete(eventType);
-      }
-    });
-  }
-
-  _centralEventHandler(event) {
+  centralEventHandler(event) {
     const eventType = "on" + event.type;
     const handlersForType = this.handlers.get(eventType);
     if (handlersForType && handlersForType.has(event.target.id)) {
@@ -69,15 +77,6 @@ export class EventRegister {
       if (typeof handler === "function") {
         handler(event);
       }
-    }
-  }
-
-  _removeEventListenersKeyIfNone(eventType) {
-    if (
-      this.handlers.has(eventType) &&
-      this.handlers.get(eventType).size === 0
-    ) {
-      this.handlers.delete(eventType);
     }
   }
 }

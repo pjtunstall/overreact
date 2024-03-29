@@ -6,6 +6,11 @@ import { makeRouter } from "./router.js";
 import { diff } from "./diff.js";
 
 export class VNode {
+  tagName;
+  attrs;
+  children;
+  eventRegister;
+
   constructor(tagName, { attrs = {}, children = [] } = {}, app = null) {
     if (typeof tagName !== "string") {
       throw new Error("tagName must be a string");
@@ -151,6 +156,12 @@ export class VNode {
 }
 
 export class App {
+  vApp;
+  vAppOld;
+  $app;
+  eventRegister;
+  state;
+
   constructor(vApp, $target, state) {
     this.vApp = vApp;
     this.vAppOld = JSON.parse(JSON.stringify(vApp));
@@ -174,10 +185,10 @@ export class App {
       },
     });
 
-    this.setEventRegisterOnVNodes();
+    this.#setEventRegisterOnVNodes();
   }
 
-  setEventRegisterOnVNodes() {
+  #setEventRegisterOnVNodes() {
     this.traverse(this.vApp, (vNode) => {
       if (typeof vNode === "string") {
         return;
