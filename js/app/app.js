@@ -4,6 +4,3 @@ import { addTodo } from "./events.js";
 
 const newTodo = app.getVNodeById("newTodo");
 newTodo.listenEvent("onkeypress", addTodo);
-
-// Initial update to render the event listeners
-app.update();

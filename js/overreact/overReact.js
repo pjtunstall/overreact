@@ -121,6 +121,14 @@ export class VNode {
     return this;
   }
 
+  clearEvents() {
+    if (!this.eventRegister) {
+      throw new Error("Event register not set");
+    }
+    this.eventRegister.clearEventHandlers(this);
+    return this;
+  }
+
   hide() {
     addStyle(this, "display", "none");
     return this;
@@ -198,7 +206,6 @@ export class App {
     const patch = diff(this.vAppOld, this.vApp);
     this.$app = patch(this.$app);
     this.vAppOld = JSON.parse(JSON.stringify(this.vApp));
-    this.eventRegister.updateListenersOnRootNode();
 
     checked = document.querySelectorAll(".toggle");
     checked.forEach((checkbox) => {

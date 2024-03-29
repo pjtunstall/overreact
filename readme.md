@@ -48,9 +48,17 @@ In more detail: updates of the actual DOM happen automatically on change of stat
 
 ### Event handling
 
-Events are handled through one central event handler. This is more efficient than having many listeners, scattered through the DOM, listening for the same type of event.
+Events are handled through one central event handler. This is more efficient than having many listeners, scattered throughout the DOM, listening for the same type of event.
 
-To regain what might otherwise be lost in terms of readability, the framework offers some syntactic sugar. It lets you attach events to individual nodes as you would normally. Under the hood, though, it instead maintains one event listener on the root node for each event type that you need. These all refer to the same collective handler function, which captures the target. The central event handler looks up the virtual node corresponding to the target, then calls your specific event handler after locating it in a database that links event handlers, types, and potential targets.
+To regain what might otherwise be lost in terms of readability, the framework offers some syntactic sugar. It lets you attach virtual event listeners to individual nodes as you would normally. Under the hood, though, it maintains just one event listener on the root node for each type of event that you need.
+
+All these root event listeners refer to the same, unchanging collective handler function. This central handler captures the target and looks up the corresponding virtual node, then calls your specific event handler after locating it in a database that links event types, targets, and specific handlers.
+
+When you add a new virtual event listener, there is a check to see if the root node is listening for this type of event. If not, such a listener is added to the actual root.
+
+When you remove a virtual event listener, there is a check to see if ANY node has a virtual event listener for such an event type. If not, the actual root event listener corresponding to this event type is removed.
+
+Either way, the central event handler remains unchanged. It always just refers events to the relevant individual event handler, which it locates in the register.
 
 ## 4. Usage
 
@@ -142,6 +150,8 @@ input = new VNode("input", {
 });
 ```
 
+Child nodes can also be removed with the `removeChild` method.
+
 ### Templating
 
 To build a virtual node from a string of HTML, you can use the tag function `htmlToVNode(strings, ...values)`, which works like a virtual DOMParser:
@@ -189,17 +199,22 @@ Add attributes with the `addAttribute` method:
 input.addAttribute("placeholder", "What's on your mind?");
 ```
 
+The `class` and `style` attributes can be manipulated with more specific methods: `addClass`, `removeClass`, `hasClass`; `addStyle`, `removeStyle`. The `hide` and `show` methods add and remove the `"display: none"` style.
+
 ### Create an event
 
-Create an event:
+After [building and initializing](#build-and-mount-an-app) a new app, say you want to an event handler called `addTodo` to be called when a `keypress` event occurs at a node called `newTodo`. The syntax is as follows:
 
 ```javascript
+const newTodo = app.getVNodeById("newTodo");
 newTodo.listenEvent("onkeypress", addTodo);
 ```
 
 The first argument is the event type, prefixed with `on`. The second argument is your event handler. Write it just as you would a normal event handler. The framework takes care of the rest.
 
-(Please note that, when the node is rendered, this does not attach on old-fashioned on-event listener. Rather, it skips rendering such an attribute and instead adds your event listener to a register that maps event types to maps from node ids to event handlers. When the state changes, it triggers an update, which, as well as syncing the actual DOM with the virtual one, updates event listeners on the a actual root node, adding any new ones and removing unused ones. The central event handler remains unchanged. It always simply refers events to the relevant individual event handler, which it locates in the register.)
+(Please note that, under the hood, when the node is rendered, `listenEvent` does not attach on old-fashioned on-event listener. Rather, it skips rendering such an attribute and instead adds your event listener to a register that maps event types to maps from node ids to specific event handlers such as `addTodo`.)
+
+You can also `unlistenEvent`, or `clearEvents` if you want to remove all event handlers from a node.
 
 ### Initialize state
 
@@ -232,9 +247,11 @@ This is where the third and final argument of the VNode constructor comes in. If
 
 ### Routes
 
-Set some routes for a single page application:
+Set some routes for a single page application. Assuming `aAll` etc. are virtual anchor tags and that you've created an App called `app`:
 
 ```javascript
+location.hash = "";
+
 const routes = {
   "": function () {
     aAll.addClass("selected");
@@ -243,6 +260,7 @@ const routes = {
     todoList.children.forEach((todo) => {
       todo.show();
     });
+    app.update();
   },
   active: function () {
     aAll.removeClass("selected");
@@ -256,6 +274,7 @@ const routes = {
         todo.show();
       }
     });
+    app.update();
   },
   completed: function () {
     aAll.removeClass("selected");
@@ -268,11 +287,14 @@ const routes = {
         todo.hide();
       }
     });
+    app.update();
   },
 };
 
 app.setRoutes(routes);
 ```
+
+Note the calls to `app.update`! These is needed because `setRoutes` has to register an `onhashchange` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
 
 Enjoy!
 

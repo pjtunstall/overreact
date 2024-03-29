@@ -12,6 +12,7 @@ export class EventRegister {
     }
     vNode.attrs[eventType] = handler;
     this.handlers.get(eventType).set(vNode.attrs.id, handler);
+    this._updateListenersOnRootNode();
   }
 
   unlistenEvent(vNode, eventType) {
@@ -21,18 +22,21 @@ export class EventRegister {
     }
     delete vNode.attrs[eventType];
     this.handlers.get(eventType).delete(vNode.attrs.id);
-    removeEventListenersKeyIfNone(eventType);
+    this._removeEventListenersKeyIfNone(eventType);
+    this._updateListenersOnRootNode();
   }
 
   clearEventHandlers(vNode) {
     for (const [k, v] of Object.entries(vNode.attrs)) {
       if (k.startsWith("on")) {
         this.handlers.get(k).delete(vNode.attrs.id);
+        this._removeEventListenersKeyIfNone(k);
       }
     }
+    this._updateListenersOnRootNode();
   }
 
-  updateListenersOnRootNode() {
+  _updateListenersOnRootNode() {
     // Add new event listeners and update rootEventTypes
     this.handlers.forEach((handlers, eventType) => {
       if (!this.types.has(eventType)) {
