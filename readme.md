@@ -80,7 +80,7 @@ const myVNode = new VNode("div", {
 
 ```
 
-To ensure the smooth operation of your app, give each virtual node a unique id.
+Be sure to give each virtual node a unique id.
 
 ```javascript
 const myVNode = new VNode("div", { attrs: { id: "VNode-1" } });
@@ -103,6 +103,8 @@ const myVNode = new VNode("div", {
 ```javascript
 myNode.append(childVNode1, childVNode2);
 ```
+
+Important! There is a third and final argument to the VNode constructor. It's syntactically optional. It's only used after you've initialized your app. It should definitely be included from that point on. But you don't have to worry about it till then. See [below](#build-and-mount-an-app).
 
 Here's a more elaborate example of a function that creates a virtual node `header` with tagName "header", and nests children `h1` and `input`. It can be imported and used as a component of another virtual node.
 
@@ -212,13 +214,21 @@ const state = {
 
 ### Build and mount an app
 
-Build a whole virtual DOM representation of your add, then pass its root node and the placeholder actual DOM node that you want to replace to the App constructor, together with initial state an an update function:
+A component function, `makeMyVNode`, is a function you write that returns a new virtual node. It calls the VNode constructor and nests the resulting VNode with VNodes you made earlier. You can build up components in this way till you've made the root node of your virtual DOM.
+
+Suppose `makeTodoApp` is your root component function, i.e. a function that returns this virtual root node. Suppose `$target` is the placeholder node in the actual DOM that you want to swap for your own app's actual root node. Then you can create a new app like so:
 
 ```javascript
 let vApp = makeTodoApp();
 let $target = document.getElementsByClassName("todoapp")[0];
 let app = new App(vApp, $target, state);
 ```
+
+The App constructor renders your virtual DOM into a tree of actual `HTMLElement`s and attaches the result to the actual DOM. It creates a new proxy object from the state argument, which will automatically call `app.update()` when in response to any change of state.
+
+It also initializes a central event register and traverses your virtual DOM to give each VNode a reference to it, so that it can be accessed by VNode methods such as `listenEvent`.
+
+This is where the third and final argument of the VNode constructor comes in. If you make a new VNode AFTER initializing your app, be sure to pass `app` to the constructor here. This will give your new VNode access to the event register.
 
 ### Routes
 

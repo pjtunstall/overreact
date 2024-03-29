@@ -1,19 +1,12 @@
 import { VNodeToHtml } from "./VNodeToHtml.js";
-import { addAttribute, removeAttribute } from "./attributes.js";
-import {
-  listenEvent,
-  unlistenEvent,
-  updateEventListenersOnRootNode,
-  eventHandlersRecord,
-} from "./events.js";
+import { EventRegister } from "./events.js";
 import { addStyle, removeStyle } from "./style.js";
-
 import { render } from "./render.js";
 import { makeRouter } from "./router.js";
 import { diff } from "./diff.js";
 
 export class VNode {
-  constructor(tagName, { attrs = {}, children = [] } = {}) {
+  constructor(tagName, { attrs = {}, children = [] } = {}, app = null) {
     if (typeof tagName !== "string") {
       throw new Error("tagName must be a string");
     }
@@ -29,6 +22,8 @@ export class VNode {
     this.tagName = tagName;
     this.attrs = attrs;
     this.children = children;
+
+    this.eventRegister = app ? app.eventRegister : null;
   }
 
   toHtml() {
@@ -49,12 +44,41 @@ export class VNode {
   }
 
   addAttribute(attribute, value) {
-    addAttribute(this, attribute, value);
+    if (attribute.startsWith("on")) {
+      if (this.eventRegister.handlers.has(attribute)) {
+        this.root.eventRegister.handlers
+          .get(attribute)
+          .set(this.attrs.id, value);
+      } else {
+        this.eventRegister.handlers.set(
+          attribute,
+          new Map([[this.attrs.id, value]])
+        );
+      }
+    } else {
+      this.attrs[attribute] = value;
+    }
     return this;
   }
 
   removeAttribute(attribute) {
-    removeAttribute(this, attribute);
+    if (attribute.startsWith("on")) {
+      if (
+        this.eventRegister.handlers.has(attribute) &&
+        this.eventRegister.handlers.get(attribute).has(this.attrs.id)
+      ) {
+        this.eventRegister.unlistenEvent(this, attribute);
+        return this;
+      } else {
+        console.log("No event handler found for", attribute, this);
+        return this;
+      }
+    }
+    if (this.attrs[attribute] === undefined) {
+      console.log("No attribute found for", attribute, this);
+      return this;
+    }
+    delete this.attrs[attribute];
     return this;
   }
 
@@ -82,12 +106,18 @@ export class VNode {
   }
 
   listenEvent(onevent, handler) {
-    listenEvent(this, onevent, handler);
+    if (!this.eventRegister) {
+      throw new Error("Event register not set");
+    }
+    this.eventRegister.listenEvent(this, onevent, handler);
     return this;
   }
 
   unlistenEvent(onevent) {
-    unlistenEvent(this, onevent);
+    if (!this.eventRegister) {
+      throw new Error("Event register not set");
+    }
+    this.eventRegister.unlistenEvent(this, onevent);
     return this;
   }
 
@@ -116,9 +146,9 @@ export class App {
   constructor(vApp, $target, state) {
     this.vApp = vApp;
     this.vAppOld = JSON.parse(JSON.stringify(vApp));
-    this.eventHandlersRecord = eventHandlersRecord;
     this.$app = render(vApp);
     $target.replaceWith(this.$app);
+    this.eventRegister = new EventRegister(this.$app);
 
     this.state = new Proxy(state, {
       set: (state, key, value) => {
@@ -134,6 +164,17 @@ export class App {
 
         return true;
       },
+    });
+
+    this.setEventRegisterOnVNodes();
+  }
+
+  setEventRegisterOnVNodes() {
+    this.traverse(this.vApp, (vNode) => {
+      if (typeof vNode === "string") {
+        return;
+      }
+      vNode.eventRegister = this.eventRegister;
     });
   }
 
@@ -157,7 +198,7 @@ export class App {
     const patch = diff(this.vAppOld, this.vApp);
     this.$app = patch(this.$app);
     this.vAppOld = JSON.parse(JSON.stringify(this.vApp));
-    updateEventListenersOnRootNode(this.$app);
+    this.eventRegister.updateListenersOnRootNode();
 
     checked = document.querySelectorAll(".toggle");
     checked.forEach((checkbox) => {

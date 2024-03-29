@@ -71,36 +71,60 @@ export function addTodo(e) {
 
     const count = counter.next().value;
 
-    const toggle = new VNode("input", {
-      attrs: {
-        id: `toggle-${count}`,
-        class: "toggle",
-        type: "checkbox",
+    const toggle = new VNode(
+      "input",
+      {
+        attrs: {
+          id: `toggle-${count}`,
+          class: "toggle",
+          type: "checkbox",
+        },
       },
-    });
-    const label = new VNode("label", {
-      attrs: { id: `label-${count}` },
-      children: [e.target.value],
-    });
-    const destroy = new VNode("button", {
-      attrs: { id: `destroy-${count}`, class: "destroy" },
-    });
-    const view = new VNode("div", {
-      attrs: { id: `view-${count}`, class: "view" },
-      children: [toggle, label, destroy],
-    });
-    const edit = new VNode("input", {
-      attrs: {
-        id: `edit-${count}`,
-        class: "edit",
-        value: e.target.value,
-        autocomplete: "off",
+      app
+    );
+    const label = new VNode(
+      "label",
+      {
+        attrs: { id: `label-${count}` },
+        children: [e.target.value],
       },
-    });
-    const listItem = new VNode("li", {
-      attrs: { id: `listItem-${count}` },
-      children: [view, edit],
-    });
+      app
+    );
+    const destroy = new VNode(
+      "button",
+      {
+        attrs: { id: `destroy-${count}`, class: "destroy" },
+      },
+      app
+    );
+    const view = new VNode(
+      "div",
+      {
+        attrs: { id: `view-${count}`, class: "view" },
+        children: [toggle, label, destroy],
+      },
+      app
+    );
+    const edit = new VNode(
+      "input",
+      {
+        attrs: {
+          id: `edit-${count}`,
+          class: "edit",
+          value: e.target.value,
+          autocomplete: "off",
+        },
+      },
+      app
+    );
+    const listItem = new VNode(
+      "li",
+      {
+        attrs: { id: `listItem-${count}` },
+        children: [view, edit],
+      },
+      app
+    );
 
     const hash = location.hash.slice(2);
     const parts = hash.split("/");
