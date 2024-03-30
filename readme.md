@@ -44,7 +44,7 @@ A routing system handles changes of route, aka hash. That is to say, the part of
 
 Tell the framework the initial state of your app. The framework creates a proxy object which triggers an update when the state changes. It supplies the logic for how to compare the virtual DOM with how it was on the last update, then renders and attaches anything that's new.
 
-In more detail: updates of the actual DOM happen automatically on change of state; that is, when the value of any property of your state object changes. A `diff` function compares the current virtual DOM with how it was on the last update. It returns a `patch` function that tells the actual DOM what to change. Assuming your app is called `app`, the `app.update` method passes your actual root node to the resulting `patch`, which performs the sync, rendering what needs to be rendered and mounting it at at the appropriate place.
+In more detail: updates of the actual DOM happen automatically on change of state; that is, when the value of any property of your state object changes. A `diff` function compares the current virtual DOM with how it was on the last update. It returns a `patch` function that tells the actual DOM what to change. Assuming your `App` is called `app`, the `app.update` method passes your actual root node to the resulting `patch`, which performs the sync, rendering what needs to be rendered and mounting it at at the appropriate place.
 
 ### Event handling
 
@@ -234,9 +234,9 @@ const state = {
 
 ### Build and mount an app
 
-A component function, `makeMyVNode`, is a function you write that returns a new virtual node. It calls the VNode constructor and nests the resulting VNode with VNodes you made earlier. You can build up components in this way till you've made the root node of your virtual DOM.
+A component function, `makeMyVNode`, is a function you write that returns a new virtual node. It calls the `VNode` constructor and nests the resulting `VNode` with `VNode`s you made earlier. You can build up components in this way till you've made the root node of your virtual DOM.
 
-Suppose `makeTodoApp` is your root component function, i.e. a function that returns this virtual root node. Suppose `$target` is the placeholder node in the actual DOM that you want to swap for your own app's actual root node. Then you can create a new app like so:
+Suppose `makeTodoApp` is your root component function, i.e. a function that returns this virtual root node. Suppose `$target` is the placeholder node in the actual DOM that you want to swap for your own app's actual root node. Then you can create a new `App` like so:
 
 ```javascript
 import { overReact } from "../overreact/over-react.js";
@@ -248,11 +248,11 @@ let $target = document.getElementsByClassName("todoapp")[0];
 let app = new overReact.App(vApp, $target, state);
 ```
 
-The App constructor renders your virtual DOM into a tree of actual `HTMLElement`s and attaches the result to the actual DOM. It creates a new proxy object from the state argument, which will automatically call `app.update()` when in response to any change of state.
+The `App` constructor renders your virtual DOM into a tree of actual `HTMLElement`s and attaches the result to the actual DOM. It creates a new proxy object from the state argument, which will automatically call `app.update()` when in response to any change of state.
 
-It also initializes a central event register and traverses your virtual DOM to give each VNode a reference to it, so that it can be accessed by VNode methods such as `listenEvent`.
+It also initializes a central event register and traverses your virtual DOM to give each `VNode` a reference to it, so that it can be accessed by `VNode` methods such as `listenEvent`.
 
-This is where the third and final argument of the VNode constructor comes in. If you make a new `VNode` AFTER initializing your app, be sure to pass `app` to the constructor here. This will give your new `VNode` access to the event register.
+This is where the third and final argument of the `VNode` constructor comes in. If you make a new `VNode` AFTER initializing your app, be sure to pass `app` to the constructor here. This will give your new `VNode` access to the event register.
 
 ### Find a node
 
@@ -268,7 +268,7 @@ The `App` class also provides a method to traverse the virtual DOM, starting at 
 
 ### Routes
 
-Set some routes for a single page application. Assuming `aAll` etc. are virtual anchor tags and that you've created an App called `app`,
+Set some routes for a single page application. Assuming `aAll` etc. are virtual anchor tags and that you've created an `App` called `app`,
 
 ```javascript
 location.hash = "";
