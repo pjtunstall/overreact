@@ -2,10 +2,10 @@ import { makeHeader } from "./header.js";
 import { makeMain } from "./main.js";
 import { makeFooter } from "./footer.js";
 
-import { VNode } from "../../overreact/overReact.js";
+import { overReact } from "../../overreact/over-react.js";
 
 export function makeTodoApp() {
-  let todoApp = new VNode("section", {
+  let todoApp = new overReact.VNode("section", {
     attrs: { id: "todoapp", class: "todoapp" },
   });
 

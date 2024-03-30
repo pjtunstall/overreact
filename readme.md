@@ -18,7 +18,7 @@ The [mini-framework](https://learn.01founders.co/git/root/public/src/branch/mast
 
 ## 1. Getting started
 
-Clone this repo and install the dependencies with [npm](https://npmjs.com) by running: `npm install`.
+Clone this repo and install the dependencies with [npm](https://npmjs.com) by running `npm install`.
 
 ## 2. Features
 
@@ -34,11 +34,11 @@ Clone this repo and install the dependencies with [npm](https://npmjs.com) by ru
 
 You build a tree of virtual DOM nodes, representing the structure of your app. The framework renders it into actual HTML elements and appends the root to the actual HTML element of your choice.
 
-(Note on notation: a virtual node is an instance of the class `VNode`. Where we think it might help to avoid confusion, we follow the convention of prefixing nodes of the actual DOM with a dollar sign, thus `$Node` for the type, and `$node` versus `vNode` for instances of actual and virtual nodes respectively. In our todo-list app, we use the name `app` for an instance of the framework's `App` class, which encapsulates the whole structure. It has fields `app.vApp` and `app.$app` for the root nodes of its virtual and actual DOMs. See, for example, [Build and mount an app](#build-and-mount-an-app).)
+(Note on notation: a virtual node is an instance of the class `VNode`. Where we think it might help to avoid confusion, we follow the convention of prefixing nodes of the actual DOM with a dollar sign, thus `$node` versus `vNode` for instances of actual and virtual nodes respectively. In our todo-list app, we use the name `app` for an instance of the framework's `App` class, which encapsulates the whole structure. It has fields `app.vApp` and `app.$app` for the root nodes of its virtual and actual DOMs. See, for example, [Build and mount an app](#build-and-mount-an-app).)
 
 ### Routing system
 
-A routing system handles changes of route, aka hash. Give the framework an object associating hashes, i.e. the part of the URL after a `#` symbol, with functions. These functions tell your page how to change when passing to a new hash. The framework will register each one to be called on the event that the hash changes to the value specified. To change hash when the user clicks on an element, give it a `href` value of `#/myHash`. You can make the key an empty string for the default value `#/`. Any event handlers you add can also access the hash to tailor the appearance and behavior of your app to the URL, allowing you to make a single-page application.
+A routing system handles changes of route, aka hash. That is to say, the part of the URL after a `#` symbol. Give the framework an object associating hashes with functions. These functions tell your page how to change when passing to a new hash. The framework will register each function to be called on the event that the hash changes to the value specified. To change hash when the user clicks on an element, give it a `href` value of the form `#/myHash`. You can make the key an empty string for the default value, equivalent to `#/`. Any event handlers you add can also access the hash to tailor the appearance and behavior of your app to the URL, allowing you to make a single-page application.
 
 ### State management
 
@@ -64,18 +64,18 @@ Either way, the central event handler remains unchanged. It always just refers e
 
 ### Creating and nesting elements
 
-To create an element, first make a new virtual node:
+To create an element, first make a new virtual node. (The exact path to the module will depend on your file structure.)
 
 ```javascript
-import { VNode } from "../../overreact/overReact.js";
+import { overReact } from "../../overreact/over-react.js";
 
-const myVNode = new VNode("div");
+const myVNode = new overReact.VNode("div");
 ```
 
 The first argument is a tag name. The optional second argument is an object with two properties, `attrs` (attributes) and `children`, either of which can be omitted. Chilren can be element nodes or text nodes. If you want the child to be a text node, make it a string.
 
 ```javascript
-const myVNode = new VNode("div", {
+const myVNode = new overReact.VNode("div", {
   attrs: {
     id: "VNode-1"
     class: "item",
@@ -91,16 +91,16 @@ const myVNode = new VNode("div", {
 Be sure to give each virtual node a unique id.
 
 ```javascript
-const myVNode = new VNode("div", { attrs: { id: "VNode-1" } });
+const myVNode = new overReact.VNode("div", { attrs: { id: "VNode-1" } });
 ```
 
 You can pass an array of children to the constructor ...
 
 ```javascript
-const childVNode1 = new VNode("p", { attrs: { id: "childVNode-1" } });
-const childVNode2 = new VNode("p", { attrs: { id: "childVNode-2" } });
+const childVNode1 = new overReact.VNode("p", { attrs: { id: "childVNode-1" } });
+const childVNode2 = new overReact.VNode("p", { attrs: { id: "childVNode-2" } });
 
-const myVNode = new VNode("div", {
+const myVNode = new overReact.VNode("div", {
   attrs: { id: "VNode-1" },
   children: [childVNode1, childVNode2],
 });
@@ -112,12 +112,12 @@ const myVNode = new VNode("div", {
 myNode.append(childVNode1, childVNode2);
 ```
 
-Important! There is a third and final argument to the VNode constructor. It's syntactically optional. It's only used after you've initialized your app. It should definitely be included from that point on. But you don't have to worry about it till then. See [below](#build-and-mount-an-app).
+Important! There is a third and final argument to the `VNode` constructor. It's syntactically optional. It's only used after you've initialized your app. It should definitely be included from that point on. But you don't have to worry about it till then. See [below](#build-and-mount-an-app).
 
 Here's a more elaborate example of a function that creates a virtual node `header` with tagName "header", and nests children `h1` and `input`. It can be imported and used as a component of another virtual node.
 
 ```javascript
-import { VNode } from "../../overreact/overReact.js";
+import { overReact } from "../../overreact/over-react.js";
 
 let header;
 let h1, input;
@@ -128,16 +128,18 @@ export function makeHeader() {
 }
 
 // child of todoApp
-header = new VNode("header", { attrs: { id: "header", class: "header" } });
+header = new overReact.VNode("header", {
+  attrs: { id: "header", class: "header" },
+});
 
 // child of header
-h1 = new VNode("h1", {
+h1 = new overReact.VNode("h1", {
   attrs: { id: "h1", class: "h1" },
   children: ["todos"],
 });
 
 // child of header
-input = new VNode("input", {
+input = new overReact.VNode("input", {
   attrs: {
     id: "newTodo",
     name: "newTodo",
@@ -154,12 +156,15 @@ Child nodes can also be removed with the `removeChild` method.
 
 ### Templating
 
-To build a virtual node from a string of HTML, you can use the tag function `htmlToVNode(strings, ...values)`, which works like a virtual DOMParser:
+To build a virtual node from a string of HTML, you can use the tag function `htmlToVNode(strings, ...values)`, which works like a virtual DOMParser.
 
 ```javascript
-const hello = "Hello";
+import { overReact } from "../../overreact/over-react.js";
 
-const vNode = htmlToVNode`
+const hello = "Hello";
+const h = overReact.htmlToVNode;
+
+const vNode = h`
 <div class="my-div">
   ${hello}, <span>world!</span>
 </div>
@@ -168,12 +173,12 @@ const vNode = htmlToVNode`
 console.log(vnode);
 ```
 
-Nest to your heart's content:
+Nest at will, commander!
 
 ```javascript
 const hello = "Hello";
 
-const vNode = htmlToVNode`
+const vNode = h`
 <div class="my-div"
   id="main-div">
     <p style="color: red;">
@@ -193,7 +198,7 @@ The inverse is `VNodeToHtml`.
 
 ### Add an attribute
 
-Add attributes with the `addAttribute` method:
+Add attributes with the `addAttribute` method.
 
 ```javascript
 input.addAttribute("placeholder", "What's on your mind?");
@@ -218,7 +223,7 @@ You can also `unlistenEvent`, or `clearEvents` if you want to remove all event h
 
 ### Initialize state
 
-Initialize state as an object:
+Initialize state as an object.
 
 ```javascript
 const state = {
@@ -234,20 +239,36 @@ A component function, `makeMyVNode`, is a function you write that returns a new 
 Suppose `makeTodoApp` is your root component function, i.e. a function that returns this virtual root node. Suppose `$target` is the placeholder node in the actual DOM that you want to swap for your own app's actual root node. Then you can create a new app like so:
 
 ```javascript
+import { overReact } from "../overreact/over-react.js";
+
+import { makeTodoApp } from "./components/todoapp.js";
+
 let vApp = makeTodoApp();
 let $target = document.getElementsByClassName("todoapp")[0];
-let app = new App(vApp, $target, state);
+let app = new overReact.App(vApp, $target, state);
 ```
 
 The App constructor renders your virtual DOM into a tree of actual `HTMLElement`s and attaches the result to the actual DOM. It creates a new proxy object from the state argument, which will automatically call `app.update()` when in response to any change of state.
 
 It also initializes a central event register and traverses your virtual DOM to give each VNode a reference to it, so that it can be accessed by VNode methods such as `listenEvent`.
 
-This is where the third and final argument of the VNode constructor comes in. If you make a new VNode AFTER initializing your app, be sure to pass `app` to the constructor here. This will give your new VNode access to the event register.
+This is where the third and final argument of the VNode constructor comes in. If you make a new `VNode` AFTER initializing your app, be sure to pass `app` to the constructor here. This will give your new `VNode` access to the event register.
+
+### Find a node
+
+Call `app.getVNodeById` to find a node in your virtual DOM.
+
+### Remove a node
+
+Call `app.remove(vNode)` to remove a node from your virtual DOM. Say you do this in a function `f`. If you change state before `f` returns, the removal will automatically be rendered. Otherwise, call `app.update`.
+
+### Traverse
+
+The `App` class also provides a method to traverse the virtual DOM, starting at a node of your choice and running a callback function on every node: `app.traverse(v.Node, callback)`.
 
 ### Routes
 
-Set some routes for a single page application. Assuming `aAll` etc. are virtual anchor tags and that you've created an App called `app`:
+Set some routes for a single page application. Assuming `aAll` etc. are virtual anchor tags and that you've created an App called `app`,
 
 ```javascript
 location.hash = "";
@@ -295,6 +316,17 @@ app.setRoutes(routes);
 ```
 
 Note the calls to `app.update`! These is needed because `setRoutes` has to register an `onhashchange` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
+
+You can access the hash at any time with `location.hash`, for example to tailor the behavior of event handlers.
+
+```javascript
+const hash = location.hash.slice(2);
+const parts = hash.split("/");
+const route = parts[0];
+if (route === "completed") {
+  listItem.hide();
+}
+```
 
 Enjoy!
 

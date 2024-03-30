@@ -1,4 +1,4 @@
-import { VNode } from "../../overreact/overReact.js";
+import { overReact } from "../../overreact/over-react.js";
 
 let main;
 let inputToggleAll, labelToggleAll;
@@ -11,7 +11,7 @@ export function makeMain() {
 }
 
 // child of todoApp
-main = new VNode("section", {
+main = new overReact.VNode("section", {
   attrs: {
     id: "main",
     class: "main",
@@ -20,7 +20,7 @@ main = new VNode("section", {
 });
 
 // child of main
-inputToggleAll = new VNode("input", {
+inputToggleAll = new overReact.VNode("input", {
   attrs: {
     id: "inputToggleAll",
     class: "toggle-all",
@@ -29,7 +29,7 @@ inputToggleAll = new VNode("input", {
 });
 
 // child of main
-labelToggleAll = new VNode("label", {
+labelToggleAll = new overReact.VNode("label", {
   attrs: {
     for: "inputToggleAll",
   },
@@ -37,7 +37,7 @@ labelToggleAll = new VNode("label", {
 });
 
 // child of main
-todoList = new VNode("ul", {
+todoList = new overReact.VNode("ul", {
   attrs: {
     id: "todoList",
     class: "todo-list",
