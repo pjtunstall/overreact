@@ -61,7 +61,6 @@ export class App {
       }
     });
 
-    document.dispatchEvent(new CustomEvent("changed", { detail: false }));
     const patch = diff(this.vAppOld, this.vApp);
     this.$app = patch(this.$app);
     this.vAppOld = JSON.parse(JSON.stringify(this.vApp));

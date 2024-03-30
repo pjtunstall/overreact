@@ -8,9 +8,32 @@
 
 [3. How it works](#3-how-it-works)
 
+- [Abstracting the DOM](#abstracting-the-dom)
+- [Routing system](#routing-system)
+- [State management](#state-management)
+- [Event handling](#event-handling)
+
 [4. Usage](#4-usage)
 
-[5. Resources](#resources)
+- [Create and nest elements](#create-and-nest-elements)
+- [Convert HTML to a `VNode` and vice versa](#convert-html-to-a-vnode-and-vice-versa)
+- [Add an attribute](#add-an-attribute)
+- [Create an event](#create-an-event)
+- [Initialize state](#initialize-state)
+- [Build and mount an app](#build-and-mount-an-app)
+- [Find a node](#find-a-node)
+- [Remove a node](#remove-a-node)
+- [Traverse](#traverse)
+- [Set routes](#set-routes)
+
+[5. Further](#5-further)
+
+- [More methods](#more-methods)
+- [Components](#components)
+- [Templating](#templating)
+- [Sensorium](#sensorium)
+
+[6. Resources](#6-resources)
 
 ## 0. Context
 
@@ -62,7 +85,7 @@ Either way, the central event handler remains unchanged. It always just refers e
 
 ## 4. Usage
 
-### Creating and nesting elements
+### Create and nest elements
 
 To create an element, first make a new virtual node. (The exact path to the module will depend on your file structure.)
 
@@ -154,7 +177,7 @@ input = new overReact.VNode("input", {
 
 Child nodes can also be removed with the `removeChild` method.
 
-### Templating
+### Convert HTML to a `VNode` and vice versa
 
 To build a virtual node from a string of HTML, you can use the tag function `htmlToVNode(strings, ...values)`, which works like a virtual DOMParser.
 
@@ -198,7 +221,7 @@ The inverse is `VNodeToHtml`.
 
 ### Add an attribute
 
-Add attributes with the `addAttribute` method.
+Add attributes to a `VNOde` with the `addAttribute` method.
 
 ```javascript
 input.addAttribute("placeholder", "What's on your mind?");
@@ -266,7 +289,7 @@ Call `app.remove(vNode)` to remove a node from your virtual DOM. Say you do this
 
 The `App` class also provides a method to traverse the virtual DOM, starting at a node of your choice and running a callback function on every node: `app.traverse(v.Node, callback)`.
 
-### Routes
+### Set routes
 
 Set some routes for a single page application. Assuming `aAll` etc. are virtual anchor tags and that you've created an `App` called `app`,
 
@@ -330,6 +353,24 @@ if (route === "completed") {
 
 Enjoy!
 
-## Resources
+## 5. Further
+
+### More methods
+
+It would be convenient for users of the framework to have access to more functions, such as the various selection methods available through the DOM API.
+
+### Components
+
+Much of this document is about the raw details of the implementation, where the key players are `VNOde`s and the tree they belong to. A more sophisticated approach might encapsulate the nuts and bolts better, and let users think more in terms of whole UI components, and perhaps also abstract, structural components that group together features scattered across the DOM.
+
+### Templating
+
+At present, this just consists of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals, and a function to convert a `VNode` into HTML. But it could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components.
+
+### Sensorium
+
+In our crude system, a global diff is called every time any state property changes. One could imagine a system where components can be selective about which properties they're sensitive to, allowing for a more focused diff. By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, when which aspect of state changes.
+
+## 6. Resources
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc).
