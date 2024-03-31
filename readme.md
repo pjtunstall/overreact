@@ -1,4 +1,4 @@
-# Overreact: a framework for tense times
+# ☢verReact: a framework for tense times
 
 [0. Context](#0-context)
 
@@ -28,7 +28,7 @@
 
 [5. Further](#5-further)
 
-- [More methods](#more-methods)
+- [Extras](#extras)
 - [Components](#components)
 - [Templating](#templating)
 - [Sensorium](#sensorium)
@@ -355,9 +355,9 @@ Enjoy!
 
 ## 5. Further
 
-### More methods
+### Extras
 
-It would be convenient for users of the framework to have access to more functions, such as the various selection methods available through the DOM API.
+It would be convenient for users of the framework to have access to more functions, such as the various selection methods available through the DOM API, and a `prepend` to complement `append` for nesting elements. Error handling could be more thorough. Another exercise would be to write tests to ensure that each feature continues to work as extras are added.
 
 ### Components
 
@@ -367,10 +367,12 @@ Much of this document is about the raw details of the implementation, where the 
 
 At present, this just consists of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals, and a function to convert a `VNode` into HTML. But it could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components.
 
-### Sensorium
+### Sensorium[^1]
 
 In our crude system, a global diff is called every time any state property changes. One could imagine a system where components can be selective about which properties they're sensitive to, allowing for a more focused diff. By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, when which aspect of state changes.
 
 ## 6. Resources
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc).
+
+[^1] I'd call it Sensorium, this ideal version. It's S would be its logo: two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Probably, on its home page, it would be animated, ripples in the one reflected in the other, as if to suggest the responsiveness of actual to virtual DOMs.
