@@ -367,7 +367,7 @@ Much of this document is about the raw details of the implementation, where the 
 
 At present, this just consists of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals, and a function to convert a `VNode` into HTML. But it could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components.
 
-### Sensorium<sup>[1](#note1)</sup>
+### Sensorium<sup>[1](#f1)</sup>
 
 In our crude system, a global diff is called every time any state property changes. One could imagine a system where components can be selective about which properties they're sensitive to, allowing for a more focused diff. By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, when which aspect of state changes.
 
@@ -375,4 +375,4 @@ In our crude system, a global diff is called every time any state property chang
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc).
 
-<a name="note1">1</a>: I'd call it Sensorium, this ideal version. It's S would be its logo: two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Probably, on its home page, it would be animated, ripples in the one reflected in the other, as if to suggest the responsiveness of actual to virtual DOMs.
+<span id="f1">1</span>: I'd call it Sensorium, this ideal version. It's S would be its logo: two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Probably, on its home page, it would be animated, ripples in the one reflected in the other, as if to suggest the responsiveness of actual to virtual DOMs. [↩](#a1)
