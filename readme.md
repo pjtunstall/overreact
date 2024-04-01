@@ -35,6 +35,8 @@
 
 [6. Resources](#6-resources)
 
+> If a thing's worth doing, it's worth overdoing.
+
 ## 0. Context
 
 The [mini-framework](https://learn.01founders.co/git/root/public/src/branch/master/subjects/mini-framework) project for 01Founders, part of the 01 Edu network of coding bootcamps. It consists of making a mini framework with certain features and using it to make a [TodoMVC](https://todomvc.com/)--that is, a simple todo-list app of a standard design that can be used to compare how different frameworks accomplish the same task.
