@@ -1,6 +1,4 @@
-# ☢verReact: a framework for tense times
-
-> If a thing's worth doing, it's worth overdoing.
+# ☢verReact: if a thing's worth doing, it's worth overdoing
 
 [0. Context](#0-context)
 
