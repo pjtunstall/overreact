@@ -1,5 +1,7 @@
 # ☢verReact: a framework for tense times
 
+> If a thing's worth doing, it's worth overdoing.
+
 [0. Context](#0-context)
 
 [1. Getting started](#1-getting-started)
@@ -34,8 +36,6 @@
 - [Sensorium](#sensorium)
 
 [6. Resources](#6-resources)
-
-> If a thing's worth doing, it's worth overdoing.
 
 ## 0. Context
 
