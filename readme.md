@@ -1,6 +1,6 @@
 # ☢verReact
 
-> <big>if a thing's worth doing it's worth overdoing
+> <big>if a thing's worth doing, it's worth overdoing</big>
 
 [0. Context](#0-context)
 
