@@ -1,4 +1,4 @@
-# ☢verReact: if a thing's worth doing, it's worth overdoing
+# ☢verReact:<br>&nbsp;because<br>&nbsp;&nbsp;if a thing's worth doing,<br>&nbsp;&nbsp;&nbsp;it's worth overdoing
 
 [0. Context](#0-context)
 
