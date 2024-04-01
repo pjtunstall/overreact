@@ -1,4 +1,4 @@
-import { overReact } from "../overreact/over-react.js";
+import { App } from "../overreact/over-react.js";
 
 import { makeTodoApp } from "./components/todoapp.js";
 
@@ -12,6 +12,6 @@ const state = {
 const vApp = makeTodoApp();
 const $target = document.getElementsByClassName("todoapp")[0];
 
-app = new overReact.App(vApp, $target, state);
+app = new App(vApp, $target, state);
 
 export { app };

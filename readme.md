@@ -87,7 +87,7 @@ Either way, the central event handler remains unchanged. It always just refers e
 
 ### Create and nest elements
 
-To create an element, first make a new virtual node. (The exact path to the module will depend on your file structure.)
+To create an element, first make a new virtual node.
 
 ```javascript
 import { overReact } from "../../overreact/over-react.js";
@@ -95,10 +95,20 @@ import { overReact } from "../../overreact/over-react.js";
 const myVNode = new overReact.VNode("div");
 ```
 
-The first argument is a tag name. The optional second argument is an object with two properties, `attrs` (attributes) and `children`, either of which can be omitted. Chilren can be element nodes or text nodes. If you want the child to be a text node, make it a string.
+Or, more succinctly,
 
 ```javascript
-const myVNode = new overReact.VNode("div", {
+import { VNode } from "../../overreact/over-react.js";
+
+const myVNode = new VNode("div");
+```
+
+(The exact path to the module will depend on your file structure.)
+
+The first argument is a tag name. The optional second argument is an object with two properties, `attrs` (attributes) and `children`, either of which can be omitted. Children can be element nodes or text nodes. If you want the child to be a text node, make it a string.
+
+```javascript
+const myVNode = new VNode("div", {
   attrs: {
     id: "VNode-1"
     class: "item",
@@ -114,28 +124,28 @@ const myVNode = new overReact.VNode("div", {
 Be sure to give each virtual node a unique id.
 
 ```javascript
-const myVNode = new overReact.VNode("div", { attrs: { id: "VNode-1" } });
+const myVNode = new VNode("div", { attrs: { id: "VNode-1" } });
 ```
 
 You can pass an array of children to the constructor ...
 
 ```javascript
-const childVNode1 = new overReact.VNode("p", { attrs: { id: "childVNode-1" } });
-const childVNode2 = new overReact.VNode("p", { attrs: { id: "childVNode-2" } });
+const childVNode1 = new VNode("p", { attrs: { id: "childVNode-1" } });
+const childVNode2 = new VNode("p", { attrs: { id: "childVNode-2" } });
 
-const myVNode = new overReact.VNode("div", {
+const myVNode = new VNode("div", {
   attrs: { id: "VNode-1" },
   children: [childVNode1, childVNode2],
 });
 ```
 
-... or nest with the `append` method:
+... or nest them later with the `append` method.
 
 ```javascript
 myNode.append(childVNode1, childVNode2);
 ```
 
-Important! There is a third and final argument to the `VNode` constructor. It's syntactically optional. It's only used after you've initialized your app. It should definitely be included from that point on. But you don't have to worry about it till then. See [below](#build-and-mount-an-app).
+Important! There is a third and final argument to the `VNode` constructor, representing the app that you want your `VNode` to belong to. This argument is syntactically optional. It's meaningless till you've instantiated an instance of the `App` class, but should definitely be included from that point on. See [below](#build-and-mount-an-app).
 
 Here's a more elaborate example of a function that creates a virtual node `header` with tagName "header", and nests children `h1` and `input`. It can be imported and used as a component of another virtual node.
 
@@ -151,18 +161,18 @@ export function makeHeader() {
 }
 
 // child of todoApp
-header = new overReact.VNode("header", {
+header = new VNode("header", {
   attrs: { id: "header", class: "header" },
 });
 
 // child of header
-h1 = new overReact.VNode("h1", {
+h1 = new VNode("h1", {
   attrs: { id: "h1", class: "h1" },
   children: ["todos"],
 });
 
 // child of header
-input = new overReact.VNode("input", {
+input = new VNode("input", {
   attrs: {
     id: "newTodo",
     name: "newTodo",
@@ -179,21 +189,18 @@ Child nodes can also be removed with the `removeChild` method.
 
 ### Convert HTML to a `VNode` and vice versa
 
-To build a virtual node from a string of HTML, you can use the tag function `htmlToVNode(strings, ...values)`, which works like a virtual DOMParser.
+To build a virtual node from a string of HTML, you can use the tag function `HTMLToVNode(strings, ...values)`, which works like a virtual DOMParser.
 
 ```javascript
-import { overReact } from "../../overreact/over-react.js";
+import { HTMLToVNode as h } from "../../overreact/over-react.js";
 
 const hello = "Hello";
-const h = overReact.htmlToVNode;
 
 const vNode = h`
 <div class="my-div">
   ${hello}, <span>world!</span>
 </div>
 `;
-
-console.log(vnode);
 ```
 
 Nest at will, commander!
@@ -217,11 +224,11 @@ const vNode = h`
 console.log(vNode);
 ```
 
-The inverse is `VNodeToHtml`.
+The inverse is `VNodeToHTML`, also available as a `VNode` method, `vNode.toHTML`.
 
 ### Add an attribute
 
-Add attributes to a `VNOde` with the `addAttribute` method.
+Add attributes to an existing `VNode` with the `addAttribute` method.
 
 ```javascript
 input.addAttribute("placeholder", "What's on your mind?");
@@ -262,13 +269,13 @@ A component function, `makeMyVNode`, is a function you write that returns a new 
 Suppose `makeTodoApp` is your root component function, i.e. a function that returns this virtual root node. Suppose `$target` is the placeholder node in the actual DOM that you want to swap for your own app's actual root node. Then you can create a new `App` like so:
 
 ```javascript
-import { overReact } from "../overreact/over-react.js";
+import { App } from "../overreact/over-react.js";
 
 import { makeTodoApp } from "./components/todoapp.js";
 
 let vApp = makeTodoApp();
 let $target = document.getElementsByClassName("todoapp")[0];
-let app = new overReact.App(vApp, $target, state);
+let app = new App(vApp, $target, state);
 ```
 
 The `App` constructor renders your virtual DOM into a tree of actual `HTMLElement`s and attaches the result to the actual DOM. It creates a new proxy object from the state argument, which will automatically call `app.update()` when in response to any change of state.
@@ -361,7 +368,7 @@ It would be convenient for users of the framework to have access to more functio
 
 ### Components
 
-Much of this document is about the raw details of the implementation, where the key players are `VNOde`s and the tree they belong to. A more sophisticated approach might encapsulate the nuts and bolts better, and let users think more in terms of whole UI components, and perhaps also abstract, structural components that group together features scattered across the DOM.
+Much of this document is about the raw details of the implementation, where the key players are `VNode`s and the tree they belong to. A more sophisticated approach might encapsulate the nuts and bolts better, and let users think more in terms of whole UI components, and perhaps also abstract, structural components that group together features scattered across the DOM.
 
 ### Templating
 
@@ -375,4 +382,4 @@ In our crude system, a global diff is called every time any state property chang
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc).
 
-<span id="f1">1</span>: I'd call it Sensorium, this ideal version. Its S would be its logo: two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Probably, on its home page, it would be animated, ripples in the one reflected in the other, as if to suggest the responsiveness of actual to virtual DOMs. [↩](#a1)
+<span id="f1">1</span>: I'd call it Sensorium, this ideal version. Its S would be its logo: two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Probably, on its home page, it would be animated, ripples in the one reflected in the other, as if to suggest the responsiveness of actual to virtual DOM. [↩](#a1)

@@ -1,5 +1,5 @@
 import { addStyle, removeStyle } from "./style.js";
-import { VNodeToHtml } from "./v-node-to-html.js";
+import { VNodeToHTML } from "./v-node-to-html.js";
 
 export class VNode {
   tagName;
@@ -27,8 +27,8 @@ export class VNode {
     this.eventRegister = app ? app.eventRegister : null;
   }
 
-  toHtml() {
-    return VNodeToHtml(this);
+  toHTML() {
+    return VNodeToHTML(this);
   }
 
   append(...children) {

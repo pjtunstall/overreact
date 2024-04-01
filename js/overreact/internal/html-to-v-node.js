@@ -1,4 +1,4 @@
-export function htmlToVNode(strings, ...values) {
+export function HTMLToVNode(strings, ...values) {
   // Combine the strings and values to create the HTML string
   const htmlString = strings.reduce((result, string, i) => {
     return result + string + (values[i] || "");

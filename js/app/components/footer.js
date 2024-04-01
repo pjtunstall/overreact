@@ -1,4 +1,4 @@
-import { overReact } from "../../overreact/over-react.js";
+import { VNode } from "../../overreact/over-react.js";
 
 let footer;
 let todoCount, ulFilters, clearCompleted;
@@ -20,22 +20,22 @@ export function makeFooter() {
 }
 
 // child of todoApp
-footer = new overReact.VNode("footer", {
+footer = new VNode("footer", {
   attrs: { id: "footer", class: "footer", style: "display: none;" },
 });
 
 // child of footer
-todoCount = new overReact.VNode("span", {
+todoCount = new VNode("span", {
   attrs: { id: "todoCount", class: "todo-count" },
 });
 
 // child of footer
-ulFilters = new overReact.VNode("ul", {
+ulFilters = new VNode("ul", {
   attrs: { id: "ulFilters", class: "filters" },
 });
 
 // child of footer
-clearCompleted = new overReact.VNode("button", {
+clearCompleted = new VNode("button", {
   attrs: {
     id: "clearCompleted",
     class: "clear-completed",
@@ -45,7 +45,7 @@ clearCompleted = new overReact.VNode("button", {
 });
 
 // child of todoCount
-todoCountNumber = new overReact.VNode("strong", {
+todoCountNumber = new VNode("strong", {
   attrs: { id: "todoCountNumber" },
   children: ["0"],
 });
@@ -54,34 +54,34 @@ todoCountNumber = new overReact.VNode("strong", {
 todoCountText = " items left!";
 
 // child of ulFilters
-liAll = new overReact.VNode("li", { attrs: { id: "liAll" }, children: [] });
+liAll = new VNode("li", { attrs: { id: "liAll" }, children: [] });
 
 // child of liAll
-aAll = new overReact.VNode("a", {
+aAll = new VNode("a", {
   attrs: { id: "aAll", href: "#/", class: "selected" },
   children: ["All"],
 });
 
 // child of ulFilters
-liActive = new overReact.VNode("li", {
+liActive = new VNode("li", {
   attrs: { id: "liActive" },
   children: [],
 });
 
 // child of liActive
-aActive = new overReact.VNode("a", {
+aActive = new VNode("a", {
   attrs: { id: "aActive", href: "#/active" },
   children: ["Active"],
 });
 
 // child of ulFilters
-liCompleted = new overReact.VNode("li", {
+liCompleted = new VNode("li", {
   attrs: { id: "liCompleted" },
   children: [],
 });
 
 // child of liCompleted
-aCompleted = new overReact.VNode("a", {
+aCompleted = new VNode("a", {
   attrs: { id: "aCompleted", href: "#/completed" },
   children: ["Completed"],
 });

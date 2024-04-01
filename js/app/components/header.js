@@ -1,4 +1,4 @@
-import { overReact } from "../../overreact/over-react.js";
+import { VNode } from "../../overreact/over-react.js";
 
 let header;
 let h1, input;
@@ -9,18 +9,18 @@ export function makeHeader() {
 }
 
 // child of todoApp
-header = new overReact.VNode("header", {
+header = new VNode("header", {
   attrs: { id: "header", class: "header" },
 });
 
 // child of header
-h1 = new overReact.VNode("h1", {
+h1 = new VNode("h1", {
   attrs: { id: "h1", class: "h1" },
   children: ["todos"],
 });
 
 // child of header
-input = new overReact.VNode("input", {
+input = new VNode("input", {
   attrs: {
     id: "newTodo",
     name: "newTodo",

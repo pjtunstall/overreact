@@ -1,4 +1,4 @@
-import { overReact } from "../overreact/over-react.js";
+import { VNode } from "../overreact/over-react.js";
 
 import { app } from "./init.js";
 
@@ -71,7 +71,7 @@ export function addTodo(e) {
 
     const count = counter.next().value;
 
-    const toggle = new overReact.VNode(
+    const toggle = new VNode(
       "input",
       {
         attrs: {
@@ -82,7 +82,7 @@ export function addTodo(e) {
       },
       app
     );
-    const label = new overReact.VNode(
+    const label = new VNode(
       "label",
       {
         attrs: { id: `label-${count}` },
@@ -90,14 +90,14 @@ export function addTodo(e) {
       },
       app
     );
-    const destroy = new overReact.VNode(
+    const destroy = new VNode(
       "button",
       {
         attrs: { id: `destroy-${count}`, class: "destroy" },
       },
       app
     );
-    const view = new overReact.VNode(
+    const view = new VNode(
       "div",
       {
         attrs: { id: `view-${count}`, class: "view" },
@@ -105,7 +105,7 @@ export function addTodo(e) {
       },
       app
     );
-    const edit = new overReact.VNode(
+    const edit = new VNode(
       "input",
       {
         attrs: {
@@ -117,7 +117,7 @@ export function addTodo(e) {
       },
       app
     );
-    const listItem = new overReact.VNode(
+    const listItem = new VNode(
       "li",
       {
         attrs: { id: `listItem-${count}` },
