@@ -222,8 +222,6 @@ const vNode = h`
     </ul>
 </div>
 `;
-
-console.log(vNode);
 ```
 
 The inverse is `VNodeToHTML`, also available as a `VNode` method, `vNode.toHTML`.
