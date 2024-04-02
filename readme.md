@@ -1,6 +1,6 @@
 # ☢verReact
 
-> <big>If a thing's worth doing, it's worth overdoing.</big>
+> If a thing's worth doing, it's worth overdoing.
 
 [0. Context](#0-context)
 
@@ -147,7 +147,7 @@ const myVNode = new VNode("div", {
 myNode.append(childVNode1, childVNode2);
 ```
 
-Important! There is a third and final argument to the `VNode` constructor, representing the app that you want your `VNode` to belong to. This argument is syntactically optional. It's meaningless till you've instantiated an instance of the `App` class, but should definitely be included from that point on. See [below](#build-and-mount-an-app).
+Important! There is a third and final argument to the `VNode` constructor, representing the app that you want your `VNode` to belong to. This argument is syntactically optional. It's meaningless till you've made an instance of the `App` class, but should definitely be included from that point on. See [below](#build-and-mount-an-app).
 
 Here's a more elaborate example of a function that creates a virtual node `header` with tagName "header", and nests children `h1` and `input`. It can be imported and used as a component of another virtual node.
 
@@ -384,4 +384,4 @@ In our crude system, a global diff is called every time any state property chang
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc).
 
-<span id="f1">1</span>: I'd call it Sensorium, this ideal version. Its S would be its logo: two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Probably, on its home page, it would be animated, ripples in the one reflected in the other, as if to suggest the responsiveness of actual to virtual DOM. [↩](#a1)
+<span id="f1">1</span>: I'd call it Sensorium, this ideal version. Its S would be its emblem: two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. [↩](#a1)
