@@ -384,4 +384,4 @@ In our crude system, a global diff is called every time any state property chang
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc).
 
-<span id="f1">1</span>: I'd call it Sensorium, this ideal version. Its S would be its emblem: two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. [↩](#a1)
+<span id="f1">1</span>: I'd call it Sensorium, this ideal version. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. [↩](#a1)
