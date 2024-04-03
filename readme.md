@@ -43,7 +43,7 @@ The [mini-framework](https://learn.01founders.co/git/root/public/src/branch/mast
 
 ## 1. Getting started
 
-Clone this repo and install the dependencies with [npm](https://npmjs.com) by running `npm install`.
+Clone this repo and install the dependencies (in our case, just the CSS) with [npm](https://npmjs.com) by running `npm install`.
 
 ## 2. Features
 
