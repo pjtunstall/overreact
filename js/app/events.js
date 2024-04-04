@@ -10,6 +10,7 @@ const inputToggleAll = app.getVNodeById("inputToggleAll");
 const clearCompleted = app.getVNodeById("clearCompleted");
 
 let enterPressed = false;
+let escapePressed = false;
 let currentlyEditing = null;
 
 // Necessary to step outside of the virtual event handling system here to deal with the case where the user potentially clicks outside of the app
@@ -143,7 +144,7 @@ export function addTodo(e) {
     inputToggleAll.listenEvent("onclick", toggleAllHandler);
     clearCompleted.listenEvent("onclick", clearCompletedHandler);
     label.listenEvent("ondblclick", startEditingHandler);
-    edit.listenEvent("onkeypress", finishEditingByEnterHandler);
+    edit.listenEvent("onkeydown", finishEditingByEnterHandler);
     edit.listenEvent("onblur", finishEditingByBlurHandler);
 
     todoList.append(listItem);
@@ -249,24 +250,45 @@ export function startEditingHandler(e) {
     todo.removeClass("editing");
   });
 
-  const $edit = e.target;
-  $edit.focus();
-  const $listItem = $edit.closest("li");
+  const $label = e.target;
+
+  const $listItem = $label.closest("li");
   const listItem = app.getVNodeById($listItem.id);
   listItem.addClass("editing");
-  currentlyEditing = $listItem.querySelector(".edit");
+  const $edit = $listItem.querySelector(".edit");
+  currentlyEditing = $edit;
+  const len = $edit.value.length;
+  $edit.setSelectionRange(len, len);
 
   app.update();
+
+  // Needs to come after update, otherwise focus will be lost in re-render
+  $edit.focus();
 }
 
 export function finishEditingByEnterHandler(e) {
+  if (e.key !== "Escape" && e.key !== "Enter") {
+    return;
+  }
+
+  const listItem = app.getVNodeById(e.target.closest("li").id);
+
+  if (e.key === "Escape") {
+    e.target.value = "";
+    listItem.removeClass("editing");
+    currentlyEditing = null;
+    escapePressed = true;
+    e.target.blur();
+    app.update();
+    return;
+  }
+
   if (e.key === "Enter") {
     e.preventDefault();
     enterPressed = true;
 
     e.target.value = e.target.value.trim();
 
-    const listItem = app.getVNodeById(e.target.closest("li").id);
     const label = listItem.children[0].children[1];
 
     if (e.target.value === "") {
@@ -298,6 +320,11 @@ export function finishEditingByEnterHandler(e) {
 export function finishEditingByBlurHandler(e) {
   if (enterPressed) {
     enterPressed = false;
+    return;
+  }
+
+  if (escapePressed) {
+    escapePressed = false;
     return;
   }
 
