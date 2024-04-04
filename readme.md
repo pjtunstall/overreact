@@ -364,11 +364,11 @@ Enjoy!
 
 ### Extras
 
-It would be convenient for users of the framework to have access to more functions, such as the various selection methods available through the DOM API, and a `prepend` to complement `append` for nesting elements. Error handling could be more thorough. Another exercise would be to write tests to ensure that each feature continues to work as extras are added.
+It would be convenient for users of the framework to have available more functions, such as a `prepend` to complement `append` for nesting elements. Virtual parallels to the various selection methods available through the DOM API would further reduce the need for actual DOM access. Error handling could be more thorough. Another exercise would be to write tests to ensure that each feature continues to work as extras are added.
 
 ### Components
 
-Much of this document is about the raw details of the implementation, where the key players are `VNode`s and the tree they belong to. A more sophisticated approach might encapsulate the nuts and bolts better, and let users think more in terms of whole UI components, and perhaps also abstract, structural components that group together features scattered across the DOM.
+The key players in our framework are `VNode`s and the tree they belong to. A more sophisticated approach might encapsulate the nuts and bolts better, and let users think more in terms of whole UI components, and perhaps also abstract, structural components that group together features scattered across the DOM.
 
 ### Templating
 
@@ -376,10 +376,12 @@ At present, this just consists of a function to write a `VNode` using HTML, with
 
 ### Sensorium<sup>[1](#f1)</sup>
 
-In our crude system, a global diff is called every time any state property changes. One could imagine a system where components can be selective about which properties they're sensitive to, allowing for a more focused diff. By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, when which aspect of state changes.
+Our framework calls an actual update every time a state property changes, albeit the only virtual nodes that are rerendered are those that have changed since the previous update. But one could imagine a system where components can be selective about which properties they're sensitive to. By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state.
+
+As we currently have it, event handlers play several roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.
 
 ## 6. Resources
 
-Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc).
+Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). Our `diff`, `render`, and `VNode`-creation functions are closely based on this.
 
 <span id="f1">1</span>: I'd call it Sensorium, this ideal version. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. [↩](#a1)

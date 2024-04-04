@@ -82,6 +82,7 @@ export function addTodo(e) {
       },
       app
     );
+
     const label = new VNode(
       "label",
       {
@@ -90,6 +91,7 @@ export function addTodo(e) {
       },
       app
     );
+
     const destroy = new VNode(
       "button",
       {
@@ -97,6 +99,7 @@ export function addTodo(e) {
       },
       app
     );
+
     const view = new VNode(
       "div",
       {
@@ -105,6 +108,7 @@ export function addTodo(e) {
       },
       app
     );
+
     const edit = new VNode(
       "input",
       {
@@ -117,6 +121,7 @@ export function addTodo(e) {
       },
       app
     );
+
     const listItem = new VNode(
       "li",
       {
