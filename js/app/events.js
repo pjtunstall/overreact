@@ -264,6 +264,8 @@ export function finishEditingByEnterHandler(e) {
     e.preventDefault();
     enterPressed = true;
 
+    e.target.value = e.target.value.trim();
+
     const listItem = app.getVNodeById(e.target.closest("li").id);
     const label = listItem.children[0].children[1];
 
@@ -298,6 +300,8 @@ export function finishEditingByBlurHandler(e) {
     enterPressed = false;
     return;
   }
+
+  e.target.value = e.target.value.trim();
 
   const listItem = app.getVNodeById(e.target.closest("li").id);
   const label = listItem.children[0].children[1];
