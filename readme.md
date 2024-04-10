@@ -374,6 +374,8 @@ Our framework calls an actual update every time a state property changes, albeit
 
 As we currently have it, event handlers play several roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.
 
+TodoMVC has a really simple state. Our approach could be generalized, in several ways, to handle more complex states. If one knows the structure of the state object won't change, a hierarchically nested proxy could be created once at the outset. However, if even the structure of state is dynamic, the state proxy could recursively nest child proxy objects to deal with this. In the latter case, performance might benefit from lazy initialization: those nested proxies could be created on-the-fly as the relevant properties are accessed through the getters of parent objects.
+
 ## 6. Resources
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). Our `diff`, `render`, and `VNode`-creation functions are closely based on this.
