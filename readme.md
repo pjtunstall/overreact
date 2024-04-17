@@ -30,6 +30,7 @@
 [5. Further](#5-further)
 
 - [Extras](#extras)
+- [Routing](#routing)
 - [Components](#components)
 - [Templating](#templating)
 - [Sensorium](#sensorium)
