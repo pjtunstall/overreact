@@ -25,6 +25,7 @@
 - [Remove a node](#remove-a-node)
 - [Traverse](#traverse)
 - [Set routes](#set-routes)
+- [Sample structure](#sample-structure)
 
 [5. Further](#5-further)
 
@@ -57,7 +58,7 @@ You build a tree of virtual DOM nodes, representing the structure of your app. T
 
 ### Routing system
 
-A routing system handles changes of route, aka hash. That is to say, the part of the URL after a `#` symbol. Give the framework an object associating hashes with functions. These functions tell your page how to change when passing to a new hash. The framework will register each function to be called on the event that the hash changes to the value specified. To change hash when the user clicks on an element, give it a `href` value of the form `#/myHash`. You can make the key an empty string for the default value, equivalent to `#/`. Any event handlers you add can also access the hash to tailor the appearance and behavior of your app to the URL, allowing you to make a single-page application.
+The routing system handles changes of route, aka hash or hash fragment. That is to say, the part of the URL after a `#` symbol. Give the framework an object associating hashes with functions. These functions tell your page how to change when passing to a new hash. The framework will register each function to be called on the event that the hash changes to the value specified. To change hash when the user clicks on an element, give it a `href` value of the form `#/myHash`. You can make the key an empty string for the default value, equivalent to `#/`. Any event handlers you add can also access the hash to tailor the appearance and behavior of your app to the URL, allowing you to make a single-page application.
 
 ### State management
 
@@ -352,13 +353,41 @@ if (route === "completed") {
 }
 ```
 
-Enjoy!
+### Sample structure
+
+```
+app
+├──components
+|  ├──footer.js
+|  ├──header.js
+|  ├──main.js
+|  └──todoapp.js
+|
+├──app.js
+├──events.js
+├──init.js
+└──routes.js
+```
+
+For the TodoMVC app, we define three principle subcomponents--`footer`, `header`, and `main`--in modules of their own. These are imported into `todoapp`, where they're used to define the root component of the virtual DOM. `init` imports this root and defines the state object. It then passes root and state to the `App` constructor along with a reference to the actual DOM element whose place will be taken by the rendered root.
+
+The top-level module `app` imports the resulting instance of `App` from `init`. Next, `app` performs a side-effect import of the `routes` module. This is so that `routes` can specify functions to instruct the UI on how to change in response to each change of route.
+
+Finally, `app` imports the `addTodo` event handler from `events` and sets it as callback for a virtual `onkeypress` event listener on the `newTodo` form. (Other virtual event listeners are nested in `appTodo`.)
 
 ## 5. Further
 
 ### Extras
 
 It would be convenient for users of the framework to have available more functions, such as a `prepend` to complement `append` for nesting elements. Virtual parallels to the various selection methods available through the DOM API would further reduce the need for actual DOM access. Error handling could be more thorough. Another exercise would be to write tests to ensure that each feature continues to work as extras are added.
+
+### Routing
+
+We used hash-based routing. This is somewhat of a hack since the hash fragment is really intended as a link to a specific part of the page. The browser would normally scroll to an element whose id was equal to the hash, if such an element existed.
+
+More robust and versatile is history-based routing, which uses the browser's [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to associate a state object of your choice with a URL. This is better for SEO and server-side rendering.
+
+For the future, an even better choice will be the [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), still experimental as of April 2024. (Supported in Chrome, but not yet Firefox or Safari.)
 
 ### Components
 
