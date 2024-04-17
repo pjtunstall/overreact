@@ -73,7 +73,7 @@ Events are handled through one central event handler. This is more efficient tha
 
 To regain what might otherwise be lost in terms of readability, the framework offers some syntactic sugar. It lets you attach virtual event listeners to individual nodes as you would normally. Under the hood, though, it maintains just one event listener on the root node for each type of event that you need.
 
-All these root event listeners refer to the same, unchanging collective handler function. This central handler captures the target and looks up the corresponding virtual node, then calls your specific event handler after locating it in a database that links event types, targets, and specific handlers.
+All these root event listeners refer to the same, unchanging collective handler function. This central handler identifies the target and looks up the corresponding virtual node, then calls your specific event handler after locating it in a database that links event types, targets, and specific handlers.
 
 When you add a new virtual event listener, there is a check to see if the root node is listening for this type of event. If not, such a listener is added to the actual root.
 
