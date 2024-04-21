@@ -33,6 +33,7 @@
 - [Routing](#routing)
 - [Components](#components)
 - [Templating](#templating)
+- [Events](#events)
 - [Sensorium](#sensorium)
 
 [6. Resources](#6-resources)
@@ -73,11 +74,11 @@ Events are handled through one central event handler. This is more efficient tha
 
 To regain what might otherwise be lost in terms of readability, the framework offers some syntactic sugar. It lets you attach virtual event listeners to individual nodes as you would normally. Under the hood, though, it maintains just one event listener on the root node for each type of event that you need.
 
-All these root event listeners refer to the same, unchanging collective handler function. This central handler identifies the target and looks up the corresponding virtual node, then calls your specific event handler after locating it in a database that links event types, targets, and specific handlers.
+All these root event listeners share one unchanging, collective handler. When an event occurs, it's intercepted at the root during the capturing phase of propagation and the collective handler is called. This central event handler looks up the virtual node corresponding to the target, then calls your specific event handler after locating it in a register that links event types, targets, and specific handlers.
 
-When you add a new virtual event listener, there is a check to see if the root node is listening for this type of event. If not, such a listener is added to the actual root.
+When you add a new virtual event listener, there's a check to see if the root node is listening for this type of event. If not, such a listener is added to the actual root.
 
-When you remove a virtual event listener, there is a check to see if ANY node has a virtual event listener for such an event type. If not, the actual root event listener corresponding to this event type is removed.
+When you remove a virtual event listener, there's a check to see if ANY node has a virtual event listener for such an event type. If not, the actual root event listener corresponding to this event type is removed.
 
 Either way, the central event handler remains unchanged. It always just refers events to the relevant individual event handler, which it locates in the register.
 
@@ -397,6 +398,12 @@ The key players in our framework are `VNode`s and the tree they belong to. A mor
 ### Templating
 
 At present, this just consists of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals, and a function to convert a `VNode` into HTML. But it could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components.
+
+### Events
+
+As yet, we only handle one event type per node, like the old `onchange`, `onclick` etc. property of Vanilla JS. More syntactic sugar could be added to simulate the way one can attach multiple event listeners to the same node for the same event type with `addEventListener`.
+
+Simulated propagation could be implemented to offer more flexibility.
 
 ### Sensorium<sup>[1](#f1)</sup>
 
