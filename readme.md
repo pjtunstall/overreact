@@ -421,4 +421,6 @@ TodoMVC has a really simple state. Our approach could be generalized, in several
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). Our `diff`, `render`, and `VNode`-creation functions are closely based on this.
 
+David Greenspan has a good explanation of propagation: [Browser events: bubbling, capturing, and delegation](https://blog.meteor.com/browser-events-bubbling-capturing-and-delegation-14db28e924ae).
+
 <span id="f1">1</span>: I'd call it Sensorium, this ideal version. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. [↩](#a1)
