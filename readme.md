@@ -66,7 +66,9 @@ The routing system handles changes of route, aka hash or hash fragment. That is 
 
 Tell the framework the initial state of your app. The framework creates a proxy object which triggers an update when the state changes. It supplies the logic for how to compare the virtual DOM with how it was on the last update, then renders and attaches anything that's new.
 
-In more detail: updates of the actual DOM happen automatically on change of state; that is, when the value of any property of your state object changes. A `diff` function compares the current virtual DOM with how it was on the last update. It returns a `patch` function that tells the actual DOM what to change. Assuming your `App` is called `app`, the `app.update` method passes your actual root node to the resulting `patch`, which performs the sync, rendering what needs to be rendered and mounting it at at the appropriate place.
+In more detail: updates of the actual DOM happen automatically on change of state; that is, when the value of any property of your state object changes. A `diff` function compares the current virtual DOM with how it was on the last update. It returns a `patch` function that tells the actual DOM what to change. Assuming your `App` is called `app`, the `app.update` method passes your actual root node to the resulting `patch`, which performs the sync, rendering what needs to be rendered and mounting it at the appropriate place.
+
+A nuance is that, in the interests of efficiency, updates are batched to happen at most once per frame (iteration of the browser's event loop).
 
 ### Event handling
 
@@ -407,7 +409,7 @@ Simulated propagation could be implemented to offer more flexibility.
 
 ### Sensorium<sup>[1](#f1)</sup>
 
-Our framework calls an actual update every time a state property changes, albeit the only virtual nodes that are re-rendered are those that have changed since the previous update. One could, however, imagine a system where components can be selective about which properties they're sensitive to. By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state.
+Our framework calls an actual update every frame in which a state property changes, albeit the only virtual nodes that are re-rendered are those that have changed since the previous update. One could, however, imagine a system where components can be selective about which properties they're sensitive to, and where diffing is limited to the relevant subtrees. By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state.
 
 As we currently have it, event handlers play several roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.
 
