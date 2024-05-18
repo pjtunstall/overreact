@@ -68,7 +68,7 @@ Tell the framework the initial state of your app. The framework creates a proxy 
 
 In more detail: updates of the actual DOM happen automatically on change of state; that is, when the value of any property of your state object changes. A `diff` function compares the current virtual DOM with how it was on the last update. It returns a `patch` function that tells the actual DOM what to change. Assuming your `App` is called `app`, the `app.update` method passes your actual root node to the resulting `patch`, which performs the sync, rendering what needs to be rendered and mounting it at the appropriate place.
 
-A nuance is that, in the interests of efficiency, updates are batched to happen at most once per frame (iteration of the browser's event loop).
+A nuance is that, in the interests of efficiency, updates are batched to happen at most once per frame using `requestAnimationFrame`. In fact, making the update function an asynchronous callback in this way serves a double purpose. It also ensures that whatever event handler caused the change of state finishes running, and hence finishes its modifications to the virtual DOM before the actual DOM is adjust to match it.
 
 ### Event handling
 
