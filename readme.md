@@ -409,15 +409,17 @@ Simulated propagation could be implemented to offer more flexibility.
 
 ### Sensorium<sup>[1](#f1)</sup>
 
-Our framework calls an actual update every frame in which a state property changes, albeit the only virtual nodes that are re-rendered are those that have changed since the previous update. One could, however, imagine a system where components can be selective about which properties they're sensitive to, and where diffing is limited to the relevant subtrees. By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state.
+Our framework calls an actual update every frame in which a state property changes, albeit the only virtual nodes that are re-rendered into actual nodes are those that have changed since the previous update. One could, however, imagine a system where components can be selective about which properties they're sensitive to, and where diffing is restricted to the relevant subtrees, as in React. By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state.
 
 As we currently have it, event handlers play several roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.
 
-TodoMVC has a really simple state. Our approach could be generalized, in several ways, to handle more complex states. For nested state objects, we could make nested proxies recursively. If one knows the structure of the state object won't change, this could be done once at the outset. But if even the structure of state is dynamic, nested proxies would have to be built in response to structural changes. In either case, performance might benefit from lazy initialization: those nested proxies could be created on-the-fly as the relevant properties are accessed through the getters of parent objects. In deciding between lazy and eager initialization, one might comsider
+TodoMVC has a really simple state with just two properties. Our approach could be generalized, in several ways, to handle more complex states. For nested state objects, we could make nested proxies recursively. If one knows the structure of the state object won't change, this could be done once at the outset. But if even the structure of state is dynamic, nested proxies might have to be built in response to structural changes. In either case, performance might benefit from lazy initialization: those nested proxies could be created on-the-fly as the relevant properties are accessed through the getters of parent objects. In deciding between lazy and eager initialization, one might consider
 
 - Predictability of the state structure
 - Frequency of access to various parts of the state
 - Performance overhead of creating proxies
+
+JavaScript offers various other types of trap method on (proxy objects)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy], besides `get` and `set`, which could be useful here, such as `defineProperty` and `deleteProperty`, `has`, and `ownKeys`.
 
 ## 6. Resources
 
