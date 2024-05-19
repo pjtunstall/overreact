@@ -395,7 +395,7 @@ For the future, an even better choice will be the [Navigation API](https://devel
 
 ### Components
 
-The key players in our framework are `VNode`s and the tree they belong to. A more sophisticated approach might encapsulate the nuts and bolts better, and let users think more in terms of whole UI components, and perhaps also abstract, structural components that group together features scattered across the DOM.
+The key players in our framework are `VNode`s and the tree they belong to. A more sophisticated approach might encapsulate the nuts and bolts better, and let users think more in terms of whole UI components, and perhaps also abstract, structural components that group together features scattered across the DOM. Dependence on state (see below, [Sensorium](#sensorium)) could be built into component definitions. In our TodoMVC, event handlers were defined all in one `events` module, but it might be more readable to define event handlers together with the relevant component.
 
 ### Templating
 
@@ -409,22 +409,24 @@ Simulated propagation could be implemented to offer more flexibility.
 
 ### Sensorium<sup>[1](#f1)</sup>
 
-Our framework calls an actual update every frame in which a state property changes, albeit the only virtual nodes that are re-rendered into actual nodes are those that have changed since the previous update. One could, however, imagine a system where components can be selective about which properties they're sensitive to, and where diffing is restricted to the relevant subtrees, as in React. By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state.
+Our framework calls an actual update every frame in which a state property changes, albeit the only virtual nodes that are re-rendered into actual nodes are those that have changed since the previous update. The obvious next step would be a system where components can be selective about which properties they're sensitive to, and where diffing is restricted to the relevant subtrees, as in React.
 
-As we currently have it, event handlers play several roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.
+By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state.
 
-TodoMVC has a really simple state with just two properties. Our approach could be generalized, in several ways, to handle more complex states. For nested state objects, we could make nested proxies recursively. If one knows the structure of the state object won't change, this could be done once at the outset. But if even the structure of state is dynamic, nested proxies might have to be built in response to structural changes. In either case, performance might benefit from lazy initialization: those nested proxies could be created on-the-fly as the relevant properties are accessed through the getters of parent objects. In deciding between lazy and eager initialization, one might consider
+As we currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.
 
-- Predictability of the state structure
-- Frequency of access to various parts of the state
-- Performance overhead of creating proxies
+TodoMVC has a really simple state with just two properties. Our approach could be generalized, in various ways, to handle more complex states. For nested state objects, we could make nested proxies recursively. If one knows the structure of the state object won't change, this could be done once at the outset. But if even the structure of state is dynamic, nested proxies might have to be built in response to structural changes. In either case, performance might benefit from lazy initialization: those nested proxies could be created on-the-fly as the relevant properties are accessed through the getters of parent objects. How useful such nesting would be, though, I don't know.
 
 JavaScript offers various other types of trap method on (proxy objects)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy], besides `get` and `set`, which could be useful here, such as `defineProperty` and `deleteProperty`, `has`, and `ownKeys`.
+
+Finally, it would be interesting to explore signals-based reactivity. Signals fall into two types: state signals, which are like the basic state properties discussed above, and computed signals, whose value depends on that of one or more other signals. Each signal has, associated with it, a value and functions to be called when the value changes. In frameworks like Solid, changes propagate through a dependency graph of signals, modifying the UI directly without a virtual DOM.
 
 ## 6. Resources
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). Our `diff`, `render`, and `VNode`-creation functions are closely based on this.
 
-David Greenspan has a good explanation of propagation: [Browser events: bubbling, capturing, and delegation](https://blog.meteor.com/browser-events-bubbling-capturing-and-delegation-14db28e924ae).
+David Greenspan has a good explanation of event propagation: [Browser events: bubbling, capturing, and delegation](https://blog.meteor.com/browser-events-bubbling-capturing-and-delegation-14db28e924ae).
 
-<span id="f1">1</span>: I'd call it Sensorium, this ideal version. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. [↩](#a1)
+Ratiu5 offers an introduction to the idea of signals in [Implementing Signals from Scratch](https://dev.to/ratiu5/implementing-signals-from-scratch-3e4c). For a much more in-depth discussion, not tied to any specific framework, see the [JavaScript Signals standard proposal](https://github.com/tc39/proposal-signals) by Daniel Ehrenberg et al.
+
+<span id="f1">1</span>: This is what I'd call the version that might arise out of these ideas. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. [↩](#a1)
