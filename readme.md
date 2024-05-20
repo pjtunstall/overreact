@@ -399,7 +399,7 @@ The key players in our framework are `VNode`s and the tree they belong to. A mor
 
 ### Templating
 
-At present, this just consists of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals, and a function to convert a `VNode` into HTML. But it could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components.
+At present, we have just a nod towards templating in the form of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals; along with a function to perform the inverse operation of converting a `VNode` into HTML. But these ideas could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components. Interesting reading in this regard is Rahul Sharma's article [How to create JSX template engine from scratch](https://dev.to/devsmitra/how-to-create-the-app-using-jsx-without-react-k08).
 
 ### Events
 
@@ -417,9 +417,74 @@ As we currently have it, event handlers play multiple roles: they modify virtual
 
 TodoMVC has a really simple state with just two properties. Our approach could be generalized, in various ways, to handle more complex states. For nested state objects, we could make nested proxies recursively. If one knows the structure of the state object won't change, this could be done once at the outset. But if even the structure of state is dynamic, nested proxies might have to be built in response to structural changes. In either case, performance might benefit from lazy initialization: those nested proxies could be created on-the-fly as the relevant properties are accessed through the getters of parent objects. How useful such nesting would be, though, I don't know.
 
-JavaScript offers various other types of trap method on (proxy objects)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy], besides `get` and `set`, which could be useful here, such as `defineProperty` and `deleteProperty`, `has`, and `ownKeys`.
+JavaScript offers other trap methods on (proxy objects)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy], besides `get` and `set`, which could be useful here, such as `defineProperty` and `deleteProperty`, `has`, and `ownKeys`.
 
-Finally, it would be interesting to explore signals-based reactivity. Signals fall into two types: state signals, which are like the basic state properties discussed above, and computed signals, whose value depends on that of one or more other signals. Each signal has, associated with it, a value and functions to be called when the value changes. In frameworks like Solid, changes propagate through a dependency graph of signals, modifying the UI directly without a virtual DOM.
+Finally, it would be interesting to explore signals-based reactivity. Signals make use of the pub-sub (publisher-subscriber) model in a recursive way to communicate state. They fall into two types: state signals, which are like the basic state properties discussed above, and computed signals, whose value depends on that of one or more other signals. Each signal has, associated with it, a value and functions to be called when the value changes. In frameworks like Solid, changes propagate through a dependency graph of signals, modifying the UI directly without a virtual DOM. Here's a simple implementation, based on Academind's video [Understanding Signals](https://www.youtube.com/watch?v=t18Kzj9S8-M). The choice of computed signals to exemplify comes from [JavaScript Signals standard proposal](https://github.com/tc39/proposal-signals) by Daniel Ehrenberg et al., although the details of the implementation are our own (i.e. GitHub Copilot's). While this basic example achieves a kind of implicit subscription on accessing the observed value via `effect` (one of the defining features of signals), it should ideally be refined with lazy evaluation on `get` and caching logic to support this without having to compute the value every time it's accessed.
+
+```javascript
+let current;
+
+function createSignal(initialValue) {
+  let value = initialValue;
+  const subscribers = [];
+
+  function set(newValue) {
+    value = newValue;
+    subscribers.forEach((subscriber) => subscriber(value));
+  }
+
+  function get() {
+    if (current) {
+      subscribers.push(current);
+    }
+    return value;
+  }
+
+  return [get, set];
+}
+
+function createComputedSignal(getter) {
+  let value = getter();
+  const subscribers = [];
+
+  function get() {
+    if (current) {
+      subscribers.push(current);
+    }
+    return value;
+  }
+
+  effect(() => {
+    const newValue = getter();
+    if (newValue !== value) {
+      value = newValue;
+      subscribers.forEach((subscriber) => subscriber(value));
+    }
+  });
+
+  return get;
+}
+
+function effect(callback) {
+  current = callback;
+  callback();
+  current = null;
+}
+
+const [count, setCount] = createSignal(0);
+const isEven = createComputedSignal(() => (count() & 1) === 0);
+const parity = createComputedSignal(() => (isEven() ? "even" : "odd"));
+
+effect(() => {
+  console.log(`Count: ${count()}\n`);
+});
+
+effect(() => {
+  console.log(`Parity: ${parity()}`);
+});
+
+setInterval(() => setCount(count() + 1), 1000);
+```
 
 ## 6. Resources
 
