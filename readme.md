@@ -492,6 +492,8 @@ effect(() => {
 setInterval(() => setCount(count() + 1), 1000);
 ```
 
+The goal here is "fine-grained reactivity": precise manipulation of the DOM with minimal re-rendering.
+
 ## 6. Resources
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). Our `diff`, `render`, and `VNode`-creation functions are closely based on this.
