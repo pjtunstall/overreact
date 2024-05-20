@@ -411,7 +411,7 @@ Simulated propagation could be implemented to offer more flexibility.
 
 <div id="sensorium">
 
-### Sensorium<sup>[1](#f1)</sup>
+### Sensorium<sup id="f1">[1](#f1)</sup>
 
 </div>
 
