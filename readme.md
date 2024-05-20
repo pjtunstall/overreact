@@ -407,7 +407,11 @@ As yet, we only handle one event type per node, like the old `onchange`, `onclic
 
 Simulated propagation could be implemented to offer more flexibility.
 
-### Sensorium <sup>[1](#f1)</sup>
+<div id="sensorium">
+
+### Sensorium<sup>[1](#f1)</sup>
+
+</div>
 
 Our framework calls an actual update every frame in which a state property changes, albeit the only virtual nodes that are re-rendered into actual nodes are those that have changed since the previous update. The obvious next step would be a system where components can be selective about which properties they're sensitive to, and where diffing is restricted to the relevant subtrees, as in React.
 
