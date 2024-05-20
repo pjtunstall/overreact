@@ -401,6 +401,8 @@ The key players in our framework are `VNode`s and the tree they belong to. A mor
 
 At present, we have just a nod towards templating in the form of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals; along with a function to perform the inverse operation of converting a `VNode` into HTML. But these ideas could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components. Interesting reading in this regard is Rahul Sharma's article [How to create JSX template engine from scratch](https://dev.to/devsmitra/how-to-create-the-app-using-jsx-without-react-k08).
 
+If we'd gone this route, we might have called the framework Bad Reaction, and its templating language R☠.
+
 ### Events
 
 As yet, we only handle one event type per node, like the old `onchange`, `onclick` etc. property of Vanilla JS. More syntactic sugar could be added to simulate the way one can attach multiple event listeners to the same node for the same event type with `addEventListener`.
