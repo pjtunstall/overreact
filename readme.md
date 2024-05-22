@@ -30,6 +30,7 @@
 [5. Further](#5-further)
 
 - [Extras](#extras)
+- [Storage](#storage)
 - [Routing](#routing)
 - [Components](#components)
 - [Templating](#templating)
@@ -40,7 +41,7 @@
 
 ## 1. Context
 
-The [mini-framework](https://learn.01founders.co/git/root/public/src/branch/master/subjects/mini-framework) project for 01Founders, part of the 01 Edu network of coding bootcamps. It consists of making a mini framework with certain features and using it to make a [TodoMVC](https://todomvc.com/)--that is, a simple todo-list app of a standard design that can be used to compare how different frameworks accomplish the same task.
+This is our take on the [mini-framework](https://learn.01founders.co/git/root/public/src/branch/master/subjects/mini-framework) project for 01Founders, part of the (01 Edu)[https://01-edu.org/] network of coding bootcamps. The exercise is to design a miniature frontend framework, with features as listed in the next section, and use it to make a [TodoMVC](https://todomvc.com/)--that is, a simple todo-list app of a standard design that can be used to compare how different frameworks accomplish the same task.
 
 ## 2. Features
 
@@ -54,9 +55,9 @@ The [mini-framework](https://learn.01founders.co/git/root/public/src/branch/mast
 
 ### Abstracting the DOM
 
-You build a tree of virtual DOM nodes, representing the structure of your app. The framework renders it into actual HTML elements and appends the root to the actual HTML element of your choice.
+You build a tree of virtual DOM nodes, representing the structure of your app. The framework renders<sup id="ref-f1">[1](#f1)</sup> it into actual HTML elements and appends the root to the actual HTML element of your choice.
 
-(Note on notation: a virtual node is an instance of the class `VNode`. Where we think it might help to avoid confusion, we follow the convention of prefixing nodes of the actual DOM with a dollar sign, thus `$node` versus `vNode` for instances of actual and virtual nodes respectively. In our todo-list app, we use the name `app` for an instance of the framework's `App` class, which encapsulates the whole structure. It has fields `app.vApp` and `app.$app` for the root nodes of its virtual and actual DOMs. See, for example, [Build and mount an app](#build-and-mount-an-app).)
+A note on notation: a virtual node is an instance of the class `VNode`. Where we think it might help to avoid confusion, we follow the convention of prefixing nodes of the actual DOM with a dollar sign, thus `$node` versus `vNode` for instances of actual and virtual nodes respectively. In our todo-list app, we use the name `app` for an instance of the framework's `App` class, which encapsulates the whole structure. It has fields `app.vApp` and `app.$app` for the root nodes of its virtual and actual DOMs. See, for example, [Build and mount an app](#build-and-mount-an-app).
 
 ### Routing system
 
@@ -68,7 +69,7 @@ Tell the framework the initial state of your app. The framework creates a proxy 
 
 In more detail: updates of the actual DOM happen automatically on change of state; that is, when the value of any property of your state object changes. A `diff` function compares the current virtual DOM with how it was on the last update. It returns a `patch` function that tells the actual DOM what to change. Assuming your `App` is called `app`, the `app.update` method passes your actual root node to the resulting `patch`, which performs the sync, rendering what needs to be rendered and mounting it at the appropriate place.
 
-A nuance is that, in the interests of efficiency, updates are batched to happen at most once per frame using `requestAnimationFrame`. In fact, making the update function an asynchronous callback in this way serves a double purpose. It also ensures that whatever event handler caused the change of state finishes running, and hence finishes its modifications to the virtual DOM before the actual DOM is adjusted to match it. (Set traps of proxy objects are called synchronously.)
+A nuance is that, in the interests of efficiency, updates are batched to happen at most once per frame using `requestAnimationFrame`. In fact, making the update function an asynchronous callback in this way serves a double purpose. It also ensures that whatever event handler caused the change of state finishes running, and hence finishes its modifications to the virtual DOM before the actual DOM is adjusted to match it. (Trap methods of proxy objects are called synchronously.)
 
 ### Event handling
 
@@ -385,6 +386,10 @@ Finally, `app` imports the `addTodo` event handler from `events` and sets it as 
 
 It would be convenient for users of the framework to have available more functions, such as a `prepend` to complement `append` for nesting elements. Virtual parallels to the various selection methods available through the DOM API would further reduce the need for actual DOM access. Error handling could be more thorough. Another exercise would be to write tests to ensure that each feature continues to work as extras are added.
 
+### Storage
+
+To follow the TodoMVC spec more accurately, we could have persisted state using local storage. But existing examples omit this feature, and we found it convenient to do the same, so as to more easily see the effect of edits to our code.
+
 ### Routing
 
 We used hash-based routing. This is somewhat of a hack since the hash fragment is really intended as a link to a specific part of the page. The browser would normally scroll to an element whose id was equal to the hash, if such an element existed.
@@ -411,7 +416,7 @@ Simulated propagation could be implemented to offer more flexibility.
 
 <div id="sensorium">
 
-### Sensorium<sup id="ref-f1">[1](#f1)</sup>
+### Sensorium<sup id="ref-f2">[2](#f2)</sup>
 
 </div>
 
@@ -419,13 +424,15 @@ Our framework calls an actual update every frame in which a state property chang
 
 By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state.
 
-As we currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.
+As we currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.<sup id="ref-f3">[3](#f3)</sup>
 
 TodoMVC has a really simple state with just two properties. Our approach could be generalized, in various ways, to handle more complex states. For nested state objects, we could make nested proxies recursively. If one knows the structure of the state object won't change, this could be done once at the outset. But if even the structure of state is dynamic, nested proxies might have to be built in response to structural changes. In either case, performance might benefit from lazy initialization: those nested proxies could be created on-the-fly as the relevant properties are accessed through the getters of parent objects. How useful such nesting would be, though, I don't know.
 
 JavaScript offers other trap methods on [proxy objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy), besides `get` and `set`, which could be useful here, such as `defineProperty` and `deleteProperty`, `has`, and `ownKeys`.
 
-Finally, it would be interesting to explore signals-based reactivity. Signals make use of the pub-sub (publisher-subscriber) model in a recursive way to communicate state. They fall into two types: state signals, which are like the basic state properties discussed above, and computed signals, whose value depends on that of one or more other signals. Each signal has, associated with it, a value and functions to be called when the value changes. In frameworks like Solid, changes propagate through a dependency graph of signals, modifying the UI directly without a virtual DOM. Here's a simple implementation, based on Academind's video [Understanding Signals](https://www.youtube.com/watch?v=t18Kzj9S8-M). The choice of computed signals to exemplify comes from [JavaScript Signals standard proposal](https://github.com/tc39/proposal-signals) by Daniel Ehrenberg et al. While this basic example achieves a kind of implicit subscription on accessing the observed value via `effect` (one of the defining features of signals), it should ideally be refined with lazy evaluation on `get` and caching logic to support this without having to compute the value every time it's accessed.
+Finally, it would be interesting to explore signals-based reactivity. Signals make use of the pub-sub (publisher-subscriber) model in a recursive way to communicate state. They fall into two types: state signals, which are like the basic state properties discussed above, and computed signals, whose value depends on that of one or more other signals. Each signal has, associated with it, a value and functions to be called when the value changes. In frameworks like Solid, changes propagate through a dependency graph of signals, modifying the UI directly without a virtual DOM. The result is often called "fine-grained reactivity", because it can target specific DOM elements, in contrast to React's default system where, as I currently understand it, state is passed down the virtual DOM, and the ancestor of virtual nodes that all depend on a particular state variable must be recreated when that variable changes (Web Dev Simplified: [Why Signals Are Better Than React Hooks](https://www.youtube.com/watch?v=SO8lBVWF2Y8)).
+
+Here's a simple implementation of signals, based on Academind's video [Understanding Signals](https://www.youtube.com/watch?v=t18Kzj9S8-M). The choice of computed signals to exemplify comes from [JavaScript Signals standard proposal](https://github.com/tc39/proposal-signals) by Daniel Ehrenberg et al. While this basic example achieves a kind of implicit subscription on accessing the observed value via `effect` (a nice feature associated with signals), it should ideally be refined with lazy evaluation on `get` and caching logic to support this.
 
 ```javascript
 let current;
@@ -492,8 +499,6 @@ effect(() => {
 setInterval(() => setCount(count() + 1), 1000);
 ```
 
-The goal here is "fine-grained reactivity": precise manipulation of the DOM with minimal re-rendering.
-
 ## 6. Resources
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). Our `diff`, `render`, and `VNode`-creation functions are closely based on this.
@@ -502,4 +507,8 @@ David Greenspan has a good explanation of event propagation: [Browser events: bu
 
 Ratiu5 offers an introduction to the idea of signals in [Implementing Signals from Scratch](https://dev.to/ratiu5/implementing-signals-from-scratch-3e4c). For a much more in-depth discussion, not tied to any specific framework, see the [JavaScript Signals standard proposal](https://github.com/tc39/proposal-signals) by Daniel Ehrenberg et al. or Rakesh Purohit's overview, [How to Implement Signals in JavaScript for Efficient Event Handling](https://www.dhiwise.com/post/how-to-implement-signals-in-javascript-for-event-handling).
 
-<a id="f1" href="#ref-f1">1</a>: This is what I'd call the version that might arise out of these ideas. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. [↩](#ref-f1)
+<a id="f1" href="#ref-f1">1</a>: Following Jason Yu's terminology, in the talk listed in Resources, above, I adopted the word "render" to mean the act of turning virtual DOM elements into actual DOM. Since then, I've learnt that React uses "render" to mean recreating a virtual DOM node and its descendents. In a React context, the process of matching actual DOM to virtual is called "reconciliation". [↩](#ref-f1)
+
+<a id="f2" href="#ref-f2">2</a>: This is what I'd call the version that might arise out of these ideas. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. [↩](#ref-f2)
+
+<a id="f3" href="#ref-f3">3</a>: An unanticipated effect of this practice of directly modifying the virtual DOM inside of event handlers was that, when we first introduced state management via a proxy object, we wouldn't see changes till the following user interaction, (or at least, not the full change), leading to accumulating inconsistencies. On AI advice, we placed the update function, with its diff and reconciliation, in a `requestAnimationFrame` callback, and that worked, but it wasn't till much later that we discovered the reason. It turns out that proxy traps are called synchronously! (I'd assumed they were asynchronous.) This meant that, if an event handler modified a state variable, the actual DOM would be updated immediately, so any changes the event handler then made to the virtual DOM would happen too late. [↩](#ref-f3)
