@@ -345,7 +345,7 @@ const routes = {
 app.setRoutes(routes);
 ```
 
-Note the calls to `app.update`! These is needed because `setRoutes` has to register an `onhashchange` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
+Note the calls to `app.update`, which are necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. Also, note that `setRoutes` has to register an `onhashchange` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
 
 You can access the hash at any time with `location.hash`, for example to tailor the behavior of event handlers.
 
@@ -500,6 +500,8 @@ setInterval(() => setCount(count() + 1), 1000);
 ## 6. Resources
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). Our `diff`, `render`, and `VNode`-creation functions are closely based on this.
+
+I didn't know about this before, but Rodrigo Pombo's blog post [Build your own React](https://pomb.us/build-your-own-react/) would have been really useful.
 
 David Greenspan has a good explanation of event propagation: [Browser events: bubbling, capturing, and delegation](https://blog.meteor.com/browser-events-bubbling-capturing-and-delegation-14db28e924ae).
 
