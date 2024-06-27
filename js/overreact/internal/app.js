@@ -27,8 +27,9 @@ export class App {
         state[key] = value;
         console.log("Setting", key, "to", value);
 
-        // `requestAnimationFrame` is needed here to make sure `update` is called before the repaint that it triggers. Otherwise it may be called after the repaint and the changes will not be visible until repaint is triggered again by the next update. By canceling any previous `requestAnimationFrame`, we make sure that only one `update` is called per frame, thus batching interactions with the DOM.
+        // `requestAnimationFrame` ensures `update` is called before the repaint that it triggers. Otherwise `update` may be called after the repaint and the changes will not be visible until repaint has been triggered again by the next update.
         if (this.#batch) {
+          // By canceling any previous `requestAnimationFrame`, we make sure that only one `update` is called per frame, thus batching interactions with the DOM, and preventing multiple updates in response to a single event.
           cancelAnimationFrame(this.#batch);
         }
         this.#batch = requestAnimationFrame(() => this.update());

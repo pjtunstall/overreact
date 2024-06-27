@@ -149,7 +149,7 @@ myNode.append(childVNode1, childVNode2);
 
 Important! There is a third and final argument to the `VNode` constructor, representing the app that you want your `VNode` to belong to. This argument is syntactically optional. It's meaningless till you've made an instance of the `App` class, but should definitely be included from that point on. See [below](#build-and-mount-an-app).
 
-Here's a more elaborate example of a function that creates a virtual node `header` with tagName "header", and nests children `h1` and `input`. It can be imported and used as a component of another virtual node.
+Here's a more elaborate example of a function that creates a virtual node `header` with tagName "header", and nests children `h1` and `input`. It can be imported and nested in another virtual node.
 
 ```javascript
 import { overReact } from "../../overreact/over-react.js";
@@ -264,9 +264,9 @@ const state = {
 
 ### Build and mount an app
 
-A component function, `makeMyVNode`, is a function you write that returns a new virtual node. It calls the `VNode` constructor and nests the resulting `VNode` with `VNode`s you made earlier. You can build up components in this way till you've made the root node of your virtual DOM.
+A component function, `makeMyVNode`, is a function you write that returns a new virtual node. It calls the `VNode` constructor and nests the resulting `VNode` with `VNode`s you made earlier. You can build up components in this way till you've made the root node of your virtual DOM. (Regarding the term 'component', see [below](#components).)
 
-Suppose `makeTodoApp` is your root component function, i.e. a function that returns this virtual root node. Suppose `$target` is the placeholder node in the actual DOM that you want to swap for your own app's actual root node. Then you can create a new `App` like so:
+Suppose `makeTodoApp` is your root component function, i.e. a function that returns the virtual root node of your app. Suppose `$target` is the placeholder node in the actual DOM that you want to swap for your own app's actual root node. Then you can create a new `App` like so:
 
 ```javascript
 import { App } from "../overreact/over-react.js";
@@ -388,7 +388,7 @@ It would be convenient for users of the framework to have available more functio
 
 ### Storage
 
-To follow the TodoMVC spec more accurately, we could have persisted state using local storage. But existing examples omit this feature, and we found it convenient to do the same, so as to more easily see the effect of edits to our code.
+To follow the TodoMVC spec more accurately, we could have persisted state using local storage. But existing examples omit this feature, and we found it convenient to do the same, so as to more easily see the effect of edits to our code. If items were persisted, we'd need some extra logic to ensure distinct ids for each item, either by switching to UUIDs or by saving the current value of an iterator. This value would then constitute a hidden aspect of state: governing internal structure, although it wouldn't need to trigger any update itself, given that an update is already triggered by a change in the total number of items.
 
 ### Routing
 
@@ -396,11 +396,13 @@ We used hash-based routing. This is somewhat of a hack since the hash fragment i
 
 More robust and versatile is history-based routing, which uses the browser's [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to associate a state object of your choice with a URL. This is better for SEO and server-side rendering.
 
-For the future, an even better choice will be the [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), still experimental as of April 2024. (Supported in Chrome, but not yet Firefox or Safari.)
+For the future, an even better choice will likely be the [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), still experimental as of April 2024. (Supported in Chrome, but not yet Firefox or Safari.)
 
 ### Components
 
-The key players in our framework are `VNode`s and the tree they belong to. A more sophisticated approach might encapsulate the nuts and bolts better, and let users think more in terms of whole UI components, and perhaps also abstract, structural components that group together features scattered across the DOM. Dependence on state (see below, [Sensorium](#sensorium)) could be built into component definitions. In our TodoMVC, event handlers were defined all in one `events` module, but it might be more readable to define event handlers together with the relevant component.
+The key players in our framework are `VNode`s and the tree they belong to. It's this virtual DOM that is diffed on each update before reconciling the actual DOM. The next level of sophistication would be implement true components: functions that return functions, and so on, that ultimately return functions that return trees of virtual nodes. Rather than letting event handlers modify the virtual DOM directly (as well as global state variables), we could restrict event handlers to modifying state variables (whether global or local to a component), which would schedule the component to re-run on the next batched re-run of components.
+
+Dependence on state (see below, [Sensorium](#sensorium)) could be built into component definitions. In our TodoMVC, event handlers were defined all in one `events` module, but it might be more readable to define event handlers together with the relevant component.
 
 ### Templating
 
@@ -418,19 +420,21 @@ Simulated propagation could be implemented to offer more flexibility.
 
 </div>
 
-Our framework calls an actual update every frame in which a state property changes, albeit the only virtual nodes that are re-rendered into actual nodes are those that have changed since the previous update. The obvious next step would be a system where components can be selective about which properties they're sensitive to, and where diffing is restricted to the relevant subtrees, as in React.
-
-By analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state.
-
 As we currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.<sup id="ref-f3">[3](#f3)</sup>
+
+React, as I currently understand it, has various ways of handling state: props (arguments of components, immutable inside a component), `useState` (which allows state variables to be declared and mutated inside a component, at its top level), and `useContext` (for global state variables). The Preact library also allows use of signals, a slicker approach, discussed further below.
+
+Our framework calls an actual update every frame in which a state property changes, albeit the only virtual nodes that cause changes in actual nodes are those that have changed since the previous update. The obvious next step would be a system where components can be selective about which properties they're sensitive to, where the diff is of the component tree rather than the virtual DOM itself, and where diffing is restricted to the relevant subtrees.
+
+Alternatively, by analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state. I gather React uses this technique in some cases as an optimization, although it mainly stores dependency data in the components themselves. Signals offer a neat take on this idea whereby components are registered automatically when they access a signal value.
 
 TodoMVC has a really simple state with just two properties. Our approach could be generalized, in various ways, to handle more complex states. For nested state objects, we could make nested proxies recursively. If one knows the structure of the state object won't change, this could be done once at the outset. But if even the structure of state is dynamic, nested proxies might have to be built in response to structural changes. In either case, performance might benefit from lazy initialization: those nested proxies could be created on-the-fly as the relevant properties are accessed through the getters of parent objects. How useful such nesting would be, though, I don't know.
 
 JavaScript offers other trap methods on [proxy objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy), besides `get` and `set`, which could be useful here, such as `defineProperty` and `deleteProperty`, `has`, and `ownKeys`.
 
-Finally, it would be interesting to explore signals-based reactivity. Signals are a technique for sharing state. They fall into two types: state signals, which are like the basic state properties discussed above, and computed signals, whose value depends on that of one or more other signals. Each signal has, associated with it, a value and functions to be called when the value changes. In frameworks like Solid, changes propagate through a dependency graph of signals, modifying the UI directly without a virtual DOM. The result is often called "fine-grained reactivity", because it can target specific DOM elements, in contrast to React's default system where, as I currently understand it, when a component is re-executed, the whole subtree of its nested virtual nodes is recreated (Web Dev Simplified: [Why Signals Are Better Than React Hooks](https://www.youtube.com/watch?v=SO8lBVWF2Y8)).
+Finally, it would be interesting to explore signals-based reactivity. Signals are a technique for sharing state, simpler and more performant than React hooks (Web Dev Simplified: [Why Signals Are Better Than React Hooks](https://www.youtube.com/watch?v=SO8lBVWF2Y8)). Signals fall into two types: state signals, which are like the basic state properties discussed above, and computed signals, whose value depends on that of one or more other signals. Each signal has, associated with it, a value and functions to be called when the value changes. In frameworks like Solid, changes propagate through a dependency graph of signals, modifying the UI directly without a virtual DOM. The result is often called "fine-grained reactivity", because it can target specific DOM elements.
 
-Here's a simple implementation of signals, based on Academind's video [Understanding Signals](https://www.youtube.com/watch?v=t18Kzj9S8-M). The choice of computed signals to exemplify comes from [JavaScript Signals standard proposal](https://github.com/tc39/proposal-signals) by Daniel Ehrenberg et al. While this basic example achieves a kind of implicit subscription on accessing the observed value via `effect` (a nice feature associated with signals), it should ideally be refined with lazy evaluation on `get` and caching logic to support this.
+Here's a simple implementation of signals, based on Academind's video [Understanding Signals](https://www.youtube.com/watch?v=t18Kzj9S8-M). The choice of computed signals to exemplify comes from [JavaScript Signals standard proposal](https://github.com/tc39/proposal-signals) by Daniel Ehrenberg et al. While this basic example achieves a kind of implicit subscription on accessing the observed value via `effect` (a nice feature associated with signals), it should ideally be refined with lazy evaluation on `get` (rather than immediately on `set`) and caching logic to support this.
 
 ```javascript
 let current;

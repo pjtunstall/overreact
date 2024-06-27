@@ -13,7 +13,7 @@ let enterPressed = false;
 let escapePressed = false;
 let currentlyEditing = null;
 
-// Necessary to step outside of the virtual event handling system here to deal with the case where the user potentially clicks outside of the app
+// We step outside of the virtual event handling system here to deal with the case where the user potentially clicks outside of the app
 document.addEventListener("click", function (event) {
   if (currentlyEditing && !currentlyEditing.contains(event.target)) {
     currentlyEditing.dispatchEvent(new Event("blur"));
