@@ -400,9 +400,11 @@ For the future, an even better choice will likely be the [Navigation API](https:
 
 ### Components
 
-The key players in our framework are `VNode`s and the tree they belong to. It's this virtual DOM that is diffed on each update before reconciling the actual DOM. The next level of sophistication would be implement true components: functions that return functions, and so on, that ultimately return functions that return trees of virtual nodes. Rather than letting event handlers modify the virtual DOM directly (as well as global state variables), we could restrict event handlers to modifying state variables (whether global or local to a component), which would schedule the component to re-run on the next batched re-run of components.
+The key players in our framework are `VNode`s. The obvious next step would be to integrate components as a third type of node in the virtual DOM along with element nodes and text nodes. Rather than letting event handlers modify the virtual DOM directly, we could restrict event handlers to modifying state variables (whether global or local to a component). A change in a state variable, could trigger components that rely on it to be called and the `VNode` that each returns to be appended.
 
-Dependence on state (see below, [Sensorium](#sensorium)) could be built into component definitions. In our TodoMVC, event handlers were defined all in one `events` module, but it might be more readable to define event handlers together with the relevant component.
+In our TodoMVC, event handlers were defined all in one `events` module, but it might be more readable to define event handlers together with the relevant component.
+
+Dependence on state could be built into component definitions. (See below, [Sensorium](#sensorium)).
 
 ### Templating
 
