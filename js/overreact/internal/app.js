@@ -58,7 +58,7 @@ export class App {
   update() {
     console.log("Updating");
 
-    // // Turn off display to avoid layout thrashing. See end of update for line that turn it back on and force a repaint. But does this trick work in this context? Is it superfluous? Would it have unintended consequences? The forced repaint doesn't seem to be necessary, but is it still worth it as a precaution? Might tt sometimes be necessary?
+    // // Turn off display to avoid layout thrashing. See end of update for line that turn it back on and force a repaint. But does this trick work in this context? Is it superfluous? Would it have unintended consequences? The forced repaint doesn't seem to be necessary for TodoMVC, but is it still worth it as a precaution? Might it sometimes be necessary?
     // document.documentElement.style.display = "none";
 
     let checked = document.querySelectorAll(".toggle");
