@@ -384,7 +384,11 @@ Finally, `app` imports the `addTodo` event handler from `events` and sets it as 
 
 ### Extras
 
-It would be convenient for users of the framework to have available more functions, such as a `prepend` to complement `append` for nesting elements. Virtual parallels to the various selection methods available through the DOM API would further reduce the need for actual DOM access. Error handling could be more thorough. Another exercise would be to write tests to ensure that each feature continues to work as extras are added.
+It would be convenient for users of the framework to have available more functions, such as a `prepend` to complement `append` for nesting elements. Virtual parallels to the various selection methods available through the DOM API would further reduce the need for actual DOM access.
+
+Error handling could be more thorough. Another exercise would be to write tests to ensure that each feature continues to work as extras are added.
+
+It would be neat to add automatic batching of style reads before writes, in the mannner of (`fastDOM`)[https://github.com/wilsonpage/fastdom], to prevent (layout thrashing)[https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing].
 
 ### Storage
 
