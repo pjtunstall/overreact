@@ -21,6 +21,20 @@ document.addEventListener("click", function (event) {
   }
 });
 
+footer.listenEvent("onclick", (event) => {
+  console.log(event.target.id);
+  if (
+    event.target.id === "aAll" ||
+    event.target.id === "aActive" ||
+    event.target.id === "aCompleted"
+  ) {
+    const url = event.target.getAttribute("href");
+    event.preventDefault();
+    history.pushState({}, "", url);
+    app.router();
+  }
+});
+
 // To make unique ids for each todo item
 function* counterMaker() {
   let count = 0;

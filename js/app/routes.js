@@ -2,8 +2,6 @@ import { aAll, aActive, aCompleted } from "./components/footer.js";
 import { todoList } from "./components/main.js";
 import { app } from "./init.js";
 
-location.hash = "";
-
 const routes = {
   "": function () {
     aAll.addClass("selected");

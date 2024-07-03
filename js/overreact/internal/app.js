@@ -8,6 +8,7 @@ export class App {
   vAppOld;
   $app;
   eventRegister;
+  router;
   state;
   #batch;
 
@@ -51,8 +52,8 @@ export class App {
   }
 
   setRoutes(routes) {
-    const router = makeRouter(routes);
-    router();
+    this.router = makeRouter(routes);
+    this.router();
   }
 
   update() {
