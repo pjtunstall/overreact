@@ -4,9 +4,12 @@ import { app } from "./init.js";
 
 const routes = {
   "": function () {
-    aAll.addClass("selected");
+    aAll.removeClass("selected");
     aActive.removeClass("selected");
     aCompleted.removeClass("selected");
+
+    aAll.addClass("selected");
+
     todoList.children.forEach((todo) => {
       todo.show();
     });
@@ -14,8 +17,10 @@ const routes = {
   },
   active: function () {
     aAll.removeClass("selected");
-    aActive.addClass("selected");
+    aActive.removeClass("selected");
     aCompleted.removeClass("selected");
+
+    aActive.addClass("selected");
 
     todoList.children.forEach((todo) => {
       if (todo.hasClass("completed")) {
@@ -29,7 +34,10 @@ const routes = {
   completed: function () {
     aAll.removeClass("selected");
     aActive.removeClass("selected");
+    aCompleted.removeClass("selected");
+
     aCompleted.addClass("selected");
+    
     todoList.children.forEach((todo) => {
       if (todo.hasClass("completed")) {
         todo.show();
@@ -41,4 +49,4 @@ const routes = {
   },
 };
 
-app.setRoutes(routes);
+app.setRoutes(routes, true);

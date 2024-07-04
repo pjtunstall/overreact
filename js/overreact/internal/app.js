@@ -51,8 +51,8 @@ export class App {
     });
   }
 
-  setRoutes(routes) {
-    this.router = makeRouter(routes);
+  setRoutes(routes, isHash) {
+    this.router = makeRouter(routes, isHash);
     this.router();
   }
 

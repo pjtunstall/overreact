@@ -320,6 +320,7 @@ body {
 
 .filters li a.selected {
   border-color: #ce4646;
+  box-shadow: none; /* Inserted to remove box-shadow bestowed by focus pseudo-class */
 }
 
 .clear-completed,

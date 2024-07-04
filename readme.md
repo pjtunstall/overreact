@@ -27,7 +27,9 @@
 - [Set routes](#set-routes)
 - [Sample structure](#sample-structure)
 
-[5. Further](#5-further)
+[5. Deviations](#5-deviations)
+
+[6. Further](#6-further)
 
 - [Extras](#extras)
 - [Storage](#storage)
@@ -37,7 +39,7 @@
 - [Events](#events)
 - [Sensorium](#sensorium)
 
-[6. Resources](#6-resources)
+[7. Resources](#7-resources)
 
 ## 1. Context
 
@@ -311,7 +313,7 @@ const routes = {
     todoList.children.forEach((todo) => {
       todo.show();
     });
-    app.update();
+    // app.update();
   },
   active: function () {
     aAll.removeClass("selected");
@@ -325,7 +327,7 @@ const routes = {
         todo.show();
       }
     });
-    app.update();
+    // app.update();
   },
   completed: function () {
     aAll.removeClass("selected");
@@ -338,12 +340,14 @@ const routes = {
         todo.hide();
       }
     });
-    app.update();
+    // app.update();
   },
 };
 
-app.setRoutes(routes);
+app.setRoutes(routes, true);
 ```
+
+The second argument passed to `app.setRoutes` indicates whether a hash symbol will be used to divide the base URL from the fragment, as is the case for TodoMVC.
 
 Note the calls to `app.update`, which are necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. Also, note that `setRoutes` has to register an `onhashchange` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
 
@@ -380,7 +384,19 @@ The top-level module `app` imports the resulting instance of `App` from `init`. 
 
 Finally, `app` imports the `addTodo` event handler from `events` and sets it as callback for a virtual `onkeypress` event listener on the `newTodo` form. (Other virtual event listeners are nested in `appTodo`.)
 
-## 5. Further
+## 5. Deviations
+
+### Persistence
+
+The TodoMVC spec says that the todo items should be persisted in local storage or whatever other means of storage your framework has. Although easy to implement, we chose not to do this to avoid the inconvenience of having to continually clear local storage while testing, and because few, if any, of the examples do so.
+
+### Focus of filters
+
+We chose to set `box-shadow` to `none` for the filter buttons: "all", "active", "completed". This is to ensure that they loses focus after being clicked on. Otherwise it retains the thick red box-shadow supplied by the focus pseudoclass till something else is clicked on. Although many examples on TodoMVC do allow the box-shadow to remain, we guessed that this was not the intention of the projects' creators, or that they perhaps didn't anticipate the anomaly seen when the user changes filter by navigating with the back and forward buttons and the filter button stays focused even though a different filter is now highlighted by the "selected" class.
+
+Of all the examples labeled "new" on TodoMVC, only Backbone.js and jQuery take our approach. The majority allow the anomaly. (Old examples have a quite different style and so can't be compared.)
+
+## 6. Further
 
 ### Extras
 
@@ -396,9 +412,11 @@ To follow the TodoMVC spec more accurately, we could have persisted state using 
 
 ### Routing
 
-We used hash-based routing. This is somewhat of a hack since the hash fragment is really intended as a link to a specific part of the page. The browser would normally scroll to an element whose id was equal to the hash, if such an element existed.
+The simplest form of routing for a single-page application is hash-based. This is somewhat of a hack since the hash fragment is really intended as a link to a specific part of the page. The browser would normally scroll to an element whose id was equal to the hash, if such an element existed.
 
 More robust and versatile is history-based routing, which uses the browser's [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to associate a state object of your choice with a URL. This is better for SEO and server-side rendering.
+
+Although the URLS in TodoMVC do include, we've use the History API with an option to allow a hash symbol.
 
 For the future, an even better choice will likely be the [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), still experimental as of April 2024. (Supported in Chrome, but not yet Firefox or Safari.)
 
@@ -507,7 +525,7 @@ effect(() => {
 setInterval(() => setCount(count() + 1), 1000);
 ```
 
-## 6. Resources
+## 7. Resources
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). Our `diff`, `render`, and `VNode`-creation functions are closely based on this.
 

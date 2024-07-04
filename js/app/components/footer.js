@@ -58,7 +58,7 @@ liAll = new VNode("li", { attrs: { id: "liAll" }, children: [] });
 
 // child of liAll
 aAll = new VNode("a", {
-  attrs: { id: "aAll", href: "#", class: "selected" },
+  attrs: { id: "aAll", href: "#/", class: "selected" },
   children: ["All"],
 });
 
@@ -70,7 +70,7 @@ liActive = new VNode("li", {
 
 // child of liActive
 aActive = new VNode("a", {
-  attrs: { id: "aActive", href: "#active" },
+  attrs: { id: "aActive", href: "#/active" },
   children: ["Active"],
 });
 
@@ -82,6 +82,6 @@ liCompleted = new VNode("li", {
 
 // child of liCompleted
 aCompleted = new VNode("a", {
-  attrs: { id: "aCompleted", href: "#completed" },
+  attrs: { id: "aCompleted", href: "#/completed" },
   children: ["Completed"],
 });

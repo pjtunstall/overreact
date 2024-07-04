@@ -21,6 +21,7 @@ document.addEventListener("click", function (event) {
   }
 });
 
+
 footer.listenEvent("onclick", (event) => {
   console.log(event.target.id);
   if (
@@ -31,6 +32,7 @@ footer.listenEvent("onclick", (event) => {
     const url = event.target.getAttribute("href");
     event.preventDefault();
     history.pushState({}, "", url);
+    event.target.style.boxShadow = "none";
     app.router();
   }
 });
