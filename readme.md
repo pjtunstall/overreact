@@ -313,7 +313,6 @@ const routes = {
     todoList.children.forEach((todo) => {
       todo.show();
     });
-    // app.update();
   },
   active: function () {
     aAll.removeClass("selected");
@@ -327,7 +326,6 @@ const routes = {
         todo.show();
       }
     });
-    // app.update();
   },
   completed: function () {
     aAll.removeClass("selected");
@@ -340,14 +338,13 @@ const routes = {
         todo.hide();
       }
     });
-    // app.update();
   },
 };
 
 app.setRoutes(routes, true);
 ```
 
-The second argument passed to `app.setRoutes` indicates whether a hash symbol will be used to divide the base URL from the fragment, as is the case for TodoMVC. You can access the hash at any time with `location.hash`, for example to tailor the behavior of event handlers.
+The second argument passed to `app.setRoutes` indicates whether a hash symbol will be used to divide the base URL from the fragment, as is the case for TodoMVC. You can access the hash at any time with `location.hash`, for example to tailor the behavior of event handlers. If you prefer to omit the hash symbol, make sure your server is configured to catch requests such as `/active` or `/completed`, and return `index.html`, in case a user arrives via one of these URLs.
 
 ```javascript
 const hash = location.hash.slice(2);
@@ -358,9 +355,9 @@ if (route === "completed") {
 }
 ```
 
-Note the calls to `app.update` in `app.setRoutes`, which are necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. (Alternatively, we could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic.)
+Note the calls to `app.update` in `app.setRoutes`, which are necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. Alternatively, we could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic.
 
-Also, note that `setRoutes` has to register an `popstate` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
+Also, note that `setRoutes` has to register a `popstate` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
 
 ### Sample structure
 
