@@ -13,7 +13,6 @@ const routes = {
     todoList.children.forEach((todo) => {
       todo.show();
     });
-    app.update();
   },
   active: function () {
     aAll.removeClass("selected");
@@ -29,7 +28,6 @@ const routes = {
         todo.show();
       }
     });
-    app.update();
   },
   completed: function () {
     aAll.removeClass("selected");
@@ -45,7 +43,6 @@ const routes = {
         todo.hide();
       }
     });
-    app.update();
   },
 };
 

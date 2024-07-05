@@ -32,7 +32,6 @@ footer.listenEvent("onclick", (event) => {
     const url = event.target.getAttribute("href");
     event.preventDefault();
     history.pushState({}, "", url);
-    event.target.style.boxShadow = "none";
     app.router();
   }
 });
@@ -196,6 +195,7 @@ export function toggleHandler(e) {
     listItem.addClass("completed");
     toggle.attrs.checked = "";
     clearCompleted.show();
+    app.router();
   } else {
     app.state.active++;
     listItem.removeClass("completed");

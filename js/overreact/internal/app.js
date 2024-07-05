@@ -1,6 +1,5 @@
 import { EventRegister } from "./events.js";
 import { render } from "./render.js";
-import { makeRouter } from "./router.js";
 import { diff } from "./diff.js";
 
 export class App {
@@ -52,7 +51,24 @@ export class App {
   }
 
   setRoutes(routes, isHash) {
-    this.router = makeRouter(routes, isHash);
+    const router = () => {
+      let path;
+      if (isHash) {
+        path = window.location.hash.slice(2);
+      } else {
+        path = window.location.pathname.slice(1);
+      }
+    
+      if (routes[path]) {
+        routes[path]();
+        this.update();
+      } else {
+        console.log(`Route ${path} not found`);
+      }
+    };
+
+    window.addEventListener("popstate", router);
+    this.router = router;
     this.router();
   }
 

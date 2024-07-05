@@ -392,9 +392,27 @@ The TodoMVC spec says that the todo items should be persisted in local storage o
 
 ### Focus of filters
 
-We chose to set `box-shadow` to `none` for the filter buttons: "all", "active", "completed". This is to ensure that they loses focus after being clicked on. Otherwise it retains the thick red box-shadow supplied by the focus pseudoclass till something else is clicked on. Although many examples on TodoMVC do allow the box-shadow to remain, we guessed that this was not the intention of the projects' creators, or that they perhaps didn't anticipate the anomaly seen when the user changes filter by navigating with the back and forward buttons and the filter button stays focused even though a different filter is now highlighted by the "selected" class.
+Although spec says, "The base.css file should be referenced from the assets folder and should not be touched. If you need to change some styles, use the app.css file, but try to keep changes to a minimum," we chose to set `box-shadow` to `none` for the filters ("all", "active", "completed") in our single `index.css` file, thus:
 
-Of all the examples labeled "new" on TodoMVC, only Backbone.js and jQuery take our approach. The majority allow the anomaly. (Old examples have a quite different style and so can't be compared.)
+```css
+.filters li a {
+  color: inherit;
+  margin: 3px;
+  padding: 3px 7px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-shadow: none; /* Inserted to remove box-shadow bestowed by focus pseudo-class */
+}
+```
+
+This is to ensure that the filter loses focus after being clicked on. Otherwise it retains the thick red box-shadow supplied by the focus pseudoclass till something else is clicked on. Although many examples on TodoMVC do allow the box-shadow to remain, we guessed that this was not the intention of the projects' creators, or that they perhaps didn't anticipate the anomaly seen when the user changes filter by navigating with back or forward buttons and it stays focused even though a different filter is now highlighted by the "selected" class.
+
+Of all the examples labeled "new" on TodoMVC, only Backbone and jQuery take our approach. The majority allow the anomaly. (Old examples have a quite different style and so can't be compared.) That said, the spec does recommend Backbone as a reference implementation.
+
+### Quotes
+
+The spec advocates single quotes in JavaScript, but we chose to stick to our normal default double quotes.
 
 ## 6. Further
 
