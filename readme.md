@@ -434,7 +434,7 @@ The simplest form of routing for a single-page application is hash-based. This i
 
 More robust and versatile is history-based routing, which uses the browser's [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to associate a state object of your choice with a URL. This is better for SEO and server-side rendering.
 
-Although the URLS in TodoMVC do include, we've use the History API with an option to allow a hash symbol.
+Although the URLs in TodoMVC do include the hash symbol, we've implemented the history-based routing with hash as an option.
 
 For the future, an even better choice will likely be the [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), still experimental as of April 2024. (Supported in Chrome, but not yet Firefox or Safari.)
 
