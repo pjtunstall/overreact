@@ -195,7 +195,7 @@ export function toggleHandler(e) {
     listItem.addClass("completed");
     toggle.attrs.checked = "";
     clearCompleted.show();
-    app.router(); // Called here to hide items newly created on active
+    app.router();
   } else {
     app.state.active++;
     listItem.removeClass("completed");
@@ -203,6 +203,7 @@ export function toggleHandler(e) {
     if (app.state.active === app.state.total) {
       clearCompleted.hide();
     }
+    app.router();
   }
   updateTodoCount();
 }
