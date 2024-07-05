@@ -195,7 +195,7 @@ export function toggleHandler(e) {
     listItem.addClass("completed");
     toggle.attrs.checked = "";
     clearCompleted.show();
-    app.router();
+    app.router(); // Called here to hide items newly created on active
   } else {
     app.state.active++;
     listItem.removeClass("completed");

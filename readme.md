@@ -392,7 +392,7 @@ The TodoMVC spec says that the todo items should be persisted in local storage o
 
 ### Focus of filters
 
-Although spec says, "The base.css file should be referenced from the assets folder and should not be touched. If you need to change some styles, use the app.css file, but try to keep changes to a minimum," we chose to set `box-shadow` to `none` for the filters ("all", "active", "completed") in our single `index.css` file, thus:
+Although spec says, "The base.css file should be referenced from the assets folder and should not be touched. If you need to change some styles, use the app.css file, but try to keep changes to a minimum," we chose to set `box-shadow` to `none` for the filters ("all", "active", "completed") in the single `index.css` file, thus:
 
 ```css
 .filters li a {
