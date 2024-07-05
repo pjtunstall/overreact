@@ -355,9 +355,7 @@ if (route === "completed") {
 }
 ```
 
-Note the calls to `app.update` in `app.setRoutes`, which are necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. Alternatively, we could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic.
-
-Also, note that `setRoutes` has to register a `popstate` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
+Note that `setRoutes` has to register a `popstate` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
 
 ### Sample structure
 
@@ -431,7 +429,7 @@ The simplest form of routing for a single-page application is hash-based. This i
 
 More robust and versatile is history-based routing, which uses the browser's [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to associate a state object of your choice with a URL. This is better for SEO and server-side rendering.
 
-Although the URLs in TodoMVC do include the hash symbol, we've implemented history-based routing with hash as an option.
+Although the URLs in TodoMVC do include the hash symbol, we've implemented history-based routing with hash as an option. To take advantage of the purely history-based approach, you'll need to configure your server to handle requests for all pages in your app, in case a user arrives at a deep link.<sup id="ref-f2">[2](#f2)</sup>
 
 For the future, an even better choice will likely be the [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), still experimental as of April 2024. (Supported in Chrome, but not yet Firefox or Safari.)
 
@@ -455,11 +453,11 @@ Simulated propagation could be implemented to offer more flexibility.
 
 <div id="sensorium">
 
-### Sensorium<sup id="ref-f2">[2](#f2)</sup>
+### Sensorium<sup id="ref-f3">[3](#f3)</sup>
 
 </div>
 
-As we currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.<sup id="ref-f3">[3](#f3)</sup>
+As we currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.<sup id="ref-f4">[4](#f4)</sup>
 
 React, as I currently understand it, has various ways of handling state: props (arguments of components, immutable inside a component), `useState` (which allows state variables to be declared and mutated inside a component, at its top level), and `useContext` (for global state variables). The Preact library also allows use of signals, a slicker approach, discussed further below.
 
@@ -552,6 +550,8 @@ Ratiu5 offers an introduction to the idea of signals in [Implementing Signals fr
 
 <a id="f1" href="#ref-f1">1</a>: Following Jason Yu's terminology, in the talk listed in [Resources](#resources), above, I adopted the word "render" to mean the act of turning virtual DOM elements into actual DOM. Since then, I've learnt that React uses "render" to mean recreating a virtual DOM node and its descendents. In a React context, the process of matching actual DOM to virtual is called "reconciliation". [↩](#ref-f1)
 
-<a id="f2" href="#ref-f2">2</a>: This is what I'd call the framework that might arise out of these ideas. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. It's arch-rivals, of course, would be R☠ (Adverse, aka Bad React) and Reflux (logo not shown for obvious reasons). [↩](#ref-f2)
+<a id="f2" href="#ref-f2">2</a>: Note the call to `app.update` in `app.setRoutes`, which is necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. We could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic. Another alternative would be to rely on the `state` property of the `popstate` event, fired when the user navigates between pages using the browser's Forward or Back buttons. This derives from the first argument passed to `history.pushState()`. [↩](#ref-f2)
 
-<a id="f3" href="#ref-f3">3</a>: An unanticipated effect of this practice of directly modifying the virtual DOM inside of event handlers was that, when we first introduced state management via a proxy object, we wouldn't see changes till the following user interaction, (or at least, not the full change), leading to accumulating inconsistencies. On AI advice, we placed the update function, with its diff and reconciliation, in a `requestAnimationFrame` callback, and that worked, but it wasn't till much later that we discovered the reason. It turns out that proxy traps are called synchronously! (I'd assumed they were asynchronous.) This meant that, if an event handler modified a state variable, the actual DOM would be updated immediately, so any changes the event handler then made to the virtual DOM would happen too late. [↩](#ref-f3)
+<a id="f3" href="#ref-f3">3</a>: This is what I'd call the framework that might arise out of these ideas. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. It's arch-rivals, of course, would be R☠ (Adverse, aka Bad React) and Reflux (logo not shown for obvious reasons). [↩](#ref-f3)
+
+<a id="f4" href="#ref-f4">4</a>: An unanticipated effect of this practice of directly modifying the virtual DOM inside of event handlers was that, when we first introduced state management via a proxy object, we wouldn't see changes till the following user interaction, (or at least, not the full change), leading to accumulating inconsistencies. On AI advice, we placed the update function, with its diff and reconciliation, in a `requestAnimationFrame` callback, and that worked, but it wasn't till much later that we discovered the reason. It turns out that proxy traps are called synchronously! (I'd assumed they were asynchronous.) This meant that, if an event handler modified a state variable, the actual DOM would be updated immediately, so any changes the event handler then made to the virtual DOM would happen too late. [↩](#ref-f4)
