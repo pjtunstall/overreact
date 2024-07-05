@@ -347,11 +347,7 @@ const routes = {
 app.setRoutes(routes, true);
 ```
 
-The second argument passed to `app.setRoutes` indicates whether a hash symbol will be used to divide the base URL from the fragment, as is the case for TodoMVC.
-
-Note the calls to `app.update`, which are necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. Also, note that `setRoutes` has to register an `onhashchange` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
-
-You can access the hash at any time with `location.hash`, for example to tailor the behavior of event handlers.
+The second argument passed to `app.setRoutes` indicates whether a hash symbol will be used to divide the base URL from the fragment, as is the case for TodoMVC. You can access the hash at any time with `location.hash`, for example to tailor the behavior of event handlers.
 
 ```javascript
 const hash = location.hash.slice(2);
@@ -361,6 +357,10 @@ if (route === "completed") {
   listItem.hide();
 }
 ```
+
+Note the calls to `app.update` in `app.setRoutes`, which are necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. (Alternatively, we could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic.)
+
+Also, note that `setRoutes` has to register an `popstate` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
 
 ### Sample structure
 
@@ -434,7 +434,7 @@ The simplest form of routing for a single-page application is hash-based. This i
 
 More robust and versatile is history-based routing, which uses the browser's [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to associate a state object of your choice with a URL. This is better for SEO and server-side rendering.
 
-Although the URLs in TodoMVC do include the hash symbol, we've implemented the history-based routing with hash as an option.
+Although the URLs in TodoMVC do include the hash symbol, we've implemented history-based routing with hash as an option.
 
 For the future, an even better choice will likely be the [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), still experimental as of April 2024. (Supported in Chrome, but not yet Firefox or Safari.)
 
