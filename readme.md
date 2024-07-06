@@ -416,13 +416,15 @@ The spec advocates single quotes in JavaScript, but we chose to stick to our nor
 
 It would be convenient for users of the framework to have available more functions, such as a `prepend` to complement `append` for nesting elements. Virtual parallels to the various selection methods available through the DOM API would further reduce the need for actual DOM access.
 
-Error handling could be more thorough. Another exercise would be to write tests to ensure that each feature continues to work as extras are added.
+The style attribute really should be broken down into an object so that it's easier to add, remove, and modify CSS properties individually.
+
+More error handling would be good. Another exercise would be to write tests to ensure that each feature continues to work as extras are added.
 
 It would be neat to add automatic batching of style reads before writes, in the mannner of (`fastDOM`)[https://github.com/wilsonpage/fastdom], to prevent (layout thrashing)[https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing].
 
 ### Storage
 
-To follow the TodoMVC spec more accurately, we could have persisted state using local storage. But existing examples omit this feature, and we found it convenient to do the same, so as to more easily see the effect of edits to our code. If items were persisted, we'd need some extra logic to ensure distinct ids for each item, either by switching to UUIDs or by saving the current value of an iterator. This value would then constitute a hidden aspect of state: governing internal structure, although it wouldn't need to trigger any update itself, given that an update is already triggered by a change in the total number of items.
+At present, we ask users to give items a unique id (so that they play a role similar to keys in React), but if items were persisted, we'd really need some extra logic to ensure distinct ids for each item, either by switching to UUIDs or by saving the current value of an iterator. This value would then constitute a hidden aspect of state: governing internal structure, although it wouldn't need to trigger any update itself, given that an update is already triggered by a change in the total number of items.
 
 ### Routing
 
@@ -444,7 +446,7 @@ Dependence on state could be built into component definitions. (See below, [Sens
 
 ### Templating
 
-At present, we have just a nod towards templating in the form of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals; along with a function to perform the inverse operation of converting a `VNode` into HTML. But these ideas could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components. Interesting reading in this regard is Rahul Sharma's article [How to create JSX template engine from scratch](https://dev.to/devsmitra/how-to-create-the-app-using-jsx-without-react-k08).
+At present, we have just a nod towards templating in the form of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals; along with a function to perform the inverse operation of converting a `VNode` into HTML. But these ideas could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components. Interesting reading in this regard is Rahul Sharma's article [How to create JSX template engine from scratch](https://dev.to/devsmitra/how-to-create-the-app-using-jsx-without-react-k08) and Rodrigo Pombo's [Build your own React](https://pomb.us/build-your-own-react/), which shows how to use Babel to transpile actual JSX into your own `createElement` function.
 
 ### Events
 
@@ -462,7 +464,7 @@ As we currently have it, event handlers play multiple roles: they modify virtual
 
 React, as I currently understand it, has various ways of handling state: props (arguments of components, immutable inside a component), `useState` (which allows state variables to be declared and mutated inside a component, at its top level), and `useContext` (for global state variables). The Preact library also allows use of signals, a slicker approach, discussed further below.
 
-Our framework calls an actual update every frame in which a state property changes, albeit the only virtual nodes that cause changes in actual nodes are those that have changed since the previous update. The obvious next step would be a system where components can be selective about which properties they're sensitive to, where the diff is of the component tree rather than the virtual DOM itself, and where diffing is restricted to the relevant subtrees.
+Our framework calls an actual update (with a diff of the whole virtual DOM) every frame in which a state property changes, albeit the only virtual nodes that cause changes in actual nodes are those that have changed since the previous update. The obvious next step would be a system where components can be selective about which properties they're sensitive to, and where diffing is restricted to the relevant subtrees.
 
 Alternatively, by analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state. I gather React uses this technique in some cases as an optimization, although it mainly stores dependency data in the components themselves. Signals offer a neat take on this idea whereby components are registered automatically when they access a signal value.
 
@@ -473,6 +475,8 @@ JavaScript offers other trap methods on [proxy objects](https://developer.mozill
 Finally, it would be interesting to explore signals-based reactivity. Signals are a technique for sharing state, simpler and more performant than React hooks (Web Dev Simplified: [Why Signals Are Better Than React Hooks](https://www.youtube.com/watch?v=SO8lBVWF2Y8)). Signals fall into two types: state signals, which are like the basic state properties discussed above, and computed signals, whose value depends on that of one or more other signals. Each signal has, associated with it, a value and functions to be called when the value changes. In frameworks like Solid, changes propagate through a dependency graph of signals, modifying the UI directly without a virtual DOM. The result is often called "fine-grained reactivity", because it can target specific DOM elements.
 
 Here's a simple implementation of signals, based on Academind's video [Understanding Signals](https://www.youtube.com/watch?v=t18Kzj9S8-M). The choice of computed signals to exemplify comes from [JavaScript Signals standard proposal](https://github.com/tc39/proposal-signals) by Daniel Ehrenberg et al. While this basic example achieves a kind of implicit subscription on accessing the observed value via `effect` (a nice feature associated with signals), it should ideally be refined with lazy evaluation on `get` (rather than immediately on `set`) and caching logic to support this.
+
+Note that, although the syntax of `const [count, setCount] = createSignal(0);` resembles React's `useState`, the first element of this returned array, `count`, is a actually function.
 
 ```javascript
 let current;
@@ -543,7 +547,7 @@ setInterval(() => setCount(count() + 1), 1000);
 
 Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). Our `diff`, `render`, and `VNode`-creation functions are closely based on this.
 
-I didn't know about this before, but Rodrigo Pombo's blog post [Build your own React](https://pomb.us/build-your-own-react/) would have been really useful.
+I didn't know about this till after the project was finished in its present form, but Rodrigo Pombo's article [Build your own React](https://pomb.us/build-your-own-react/) would have been really useful. He shows how to use a fiber tree, which is modern React's take on the idea of a virtual DOM, how to perform updates asynchronously (using `requestIdleCallback`), how to manage state with a React-style `useState`, and how to transpile JSX into your own code using Babel.
 
 David Greenspan has a good explanation of event propagation: [Browser events: bubbling, capturing, and delegation](https://blog.meteor.com/browser-events-bubbling-capturing-and-delegation-14db28e924ae).
 
