@@ -312,7 +312,6 @@ body {
   text-decoration: none;
   border: 1px solid transparent;
   border-radius: 3px;
-  box-shadow: none; /* Inserted to remove box-shadow bestowed by focus pseudo-class */
 }
 
 .filters li a:hover {

@@ -9,6 +9,9 @@ const routes = {
     aCompleted.removeClass("selected");
 
     aAll.addClass("selected");
+    setTimeout(() => {
+      document.getElementById("aAll").blur();
+    }, 32);
 
     todoList.children.forEach((todo) => {
       todo.show();
@@ -20,6 +23,9 @@ const routes = {
     aCompleted.removeClass("selected");
 
     aActive.addClass("selected");
+    setTimeout(() => {
+      document.getElementById("aActive").blur();
+    }, 32);
 
     todoList.children.forEach((todo) => {
       if (todo.hasClass("completed")) {
@@ -35,7 +41,10 @@ const routes = {
     aCompleted.removeClass("selected");
 
     aCompleted.addClass("selected");
-    
+    setTimeout(() => {
+      document.getElementById("aCompleted").blur();
+    }, 32);
+
     todoList.children.forEach((todo) => {
       if (todo.hasClass("completed")) {
         todo.show();
@@ -46,4 +55,4 @@ const routes = {
   },
 };
 
-app.setRoutes(routes, true);
+app.setRoutes(routes);

@@ -50,15 +50,9 @@ export class App {
     });
   }
 
-  setRoutes(routes, isHash) {
+  setRoutes(routes) {
     const router = () => {
-      let path;
-      if (isHash) {
-        path = window.location.hash.slice(2);
-      } else {
-        path = window.location.pathname.slice(1);
-      }
-    
+      const path = window.location.hash.slice(2);
       if (routes[path]) {
         routes[path]();
         this.update();
@@ -67,7 +61,7 @@ export class App {
       }
     };
 
-    window.addEventListener("popstate", router);
+    window.addEventListener("hashchange", router);
     this.router = router;
     this.router();
   }

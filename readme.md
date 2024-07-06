@@ -303,21 +303,30 @@ The `App` class also provides a method to traverse the virtual DOM, starting at 
 Set some routes for a single page application. Assuming `aAll` etc. are virtual anchor tags and that you've created an `App` called `app`,
 
 ```javascript
-location.hash = "";
-
 const routes = {
   "": function () {
-    aAll.addClass("selected");
+    aAll.removeClass("selected");
     aActive.removeClass("selected");
     aCompleted.removeClass("selected");
+
+    aAll.addClass("selected");
+    setTimeout(() => {
+      document.getElementById("aAll").blur(); // See Focus on filters, below
+    }, 32);
+
     todoList.children.forEach((todo) => {
       todo.show();
     });
   },
   active: function () {
     aAll.removeClass("selected");
-    aActive.addClass("selected");
+    aActive.removeClass("selected");
     aCompleted.removeClass("selected");
+
+    aActive.addClass("selected");
+    setTimeout(() => {
+      document.getElementById("aActive").blur();
+    }, 32);
 
     todoList.children.forEach((todo) => {
       if (todo.hasClass("completed")) {
@@ -330,7 +339,13 @@ const routes = {
   completed: function () {
     aAll.removeClass("selected");
     aActive.removeClass("selected");
+    aCompleted.removeClass("selected");
+
     aCompleted.addClass("selected");
+    setTimeout(() => {
+      document.getElementById("aCompleted").blur();
+    }, 32);
+
     todoList.children.forEach((todo) => {
       if (todo.hasClass("completed")) {
         todo.show();
@@ -341,10 +356,10 @@ const routes = {
   },
 };
 
-app.setRoutes(routes, true);
+app.setRoutes(routes);
 ```
 
-The second argument passed to `app.setRoutes` indicates whether a hash symbol will be used to divide the base URL from the fragment, as is the case for TodoMVC. You can access the hash at any time with `location.hash`, for example to tailor the behavior of event handlers. If you prefer to omit the hash symbol, make sure your server is configured to catch requests such as `/active` or `/completed`, and return `index.html`, in case a user arrives via one of these URLs.
+You can access the hash at any time with `location.hash`, for example to tailor the behavior of event handlers.
 
 ```javascript
 const hash = location.hash.slice(2);
@@ -355,7 +370,7 @@ if (route === "completed") {
 }
 ```
 
-Note that `setRoutes` has to register a `popstate` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
+Note that `setRoutes` has to register its `hashchange` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
 
 ### Sample structure
 
@@ -387,21 +402,7 @@ The TodoMVC spec says that the todo items should be persisted in local storage o
 
 ### Focus of filters
 
-Although spec says, "The base.css file should be referenced from the assets folder and should not be touched. If you need to change some styles, use the app.css file, but try to keep changes to a minimum," we chose to set `box-shadow` to `none` for the filters ("all", "active", "completed") in the single `index.css` file, thus:
-
-```css
-.filters li a {
-  color: inherit;
-  margin: 3px;
-  padding: 3px 7px;
-  text-decoration: none;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  box-shadow: none; /* Inserted to remove box-shadow bestowed by focus pseudo-class */
-}
-```
-
-This is to ensure that the filter loses focus after being clicked on. Otherwise it retains the thick red box-shadow supplied by the focus pseudoclass till something else is clicked on. Although many examples on TodoMVC do allow the box-shadow to remain, we guessed that this was not the intention of the projects' creators, or that they perhaps didn't anticipate the anomaly seen when the user changes filter by navigating with back or forward buttons and it stays focused even though a different filter is now highlighted by the "selected" class.
+We chose to blur (unfocus) a filter button after it's clicked on. Otherwise it retains the thick red box-shadow supplied by the focus pseudo-class till something else is clicked on. Although many examples on TodoMVC do allow the box-shadow to remain, we guessed that this was not the intention of the projects' creators, or that they perhaps didn't anticipate the anomaly seen when the user changes filter by navigating with back or forward buttons and it stays focused even though a different filter is now highlighted by the "selected" class.
 
 Of all the examples labeled "new" on TodoMVC, only Backbone and jQuery take our approach. The majority allow the anomaly. (Old examples have a quite different style and so can't be compared.) That said, the spec does recommend Backbone as a reference implementation.
 
@@ -425,11 +426,11 @@ To follow the TodoMVC spec more accurately, we could have persisted state using 
 
 ### Routing
 
-The simplest form of routing for a single-page application is hash-based. This is somewhat of a hack since the hash fragment is really intended as a link to a specific part of the page. The browser would normally scroll to an element whose id was equal to the hash, if such an element existed.
+We used the simplest form of routing for a single-page application, hash-based. Indeed the TodoMVC project includes hash symbols in their URLs, which made this a natural choice.
 
-More robust and versatile is history-based routing, which uses the browser's [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to associate a state object of your choice with a URL. This is better for SEO and server-side rendering.
+Now, hash-based routing is somewhat of a hack since the hash fragment is really intended as a link to a specific part of the page. The browser would normally scroll to an element whose id was equal to the hash, if such an element existed.
 
-Although the URLs in TodoMVC do include the hash symbol, we've implemented history-based routing with hash as an option. To take advantage of the purely history-based approach, you'll need to configure your server to handle requests for all pages in your app, in case a user arrives at a deep link.<sup id="ref-f2">[2](#f2)</sup>
+More robust and versatile is history-based routing, which uses the browser's [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to associate a state object of your choice with a URL. This is better for SEO and server-side rendering, but requires server-side coordination to redirect the client if they arrive at the site via a deep link or refresh the page while on one.
 
 For the future, an even better choice will likely be the [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), still experimental as of April 2024. (Supported in Chrome, but not yet Firefox or Safari.)
 
@@ -550,7 +551,7 @@ Ratiu5 offers an introduction to the idea of signals in [Implementing Signals fr
 
 <a id="f1" href="#ref-f1">1</a>: Following Jason Yu's terminology, in the talk listed in [Resources](#resources), above, I adopted the word "render" to mean the act of turning virtual DOM elements into actual DOM. Since then, I've learnt that React uses "render" to mean recreating a virtual DOM node and its descendents. In a React context, the process of matching actual DOM to virtual is called "reconciliation". [↩](#ref-f1)
 
-<a id="f2" href="#ref-f2">2</a>: Note the call to `app.update` in `app.setRoutes`, which is necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. We could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic. Another alternative would be to rely on the `state` property of the `popstate` event, fired when the user navigates between pages using the browser's Forward or Back buttons. This derives from the first argument passed to `history.pushState()`. [↩](#ref-f2)
+<a id="f2" href="#ref-f2">2</a>: Note the call to `app.update` in `router` in `app.setRoutes`, which is necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. We could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic. [↩](#ref-f2)
 
 <a id="f3" href="#ref-f3">3</a>: This is what I'd call the framework that might arise out of these ideas. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. It's arch-rivals, of course, would be R☠ (Adverse, aka Bad React) and Reflux (logo not shown for obvious reasons). [↩](#ref-f3)
 
