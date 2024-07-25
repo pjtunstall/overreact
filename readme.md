@@ -2,7 +2,7 @@
 
 > If a thing's worth doing, it's worth overdoing.
 
-[1. Context](#0-context)
+[1. Context](#1-context)
 
 [2. Features](#2-features)
 
