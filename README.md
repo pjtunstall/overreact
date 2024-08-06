@@ -71,7 +71,7 @@ Tell the framework the initial state of your app. The framework creates a proxy 
 
 In more detail: updates of the actual DOM happen automatically on change of state; that is, when the value of any property of your state object changes. A `diff` function compares the current virtual DOM with how it was on the last update. It returns a `patch` function that tells the actual DOM what to change. Assuming your `App` is called `app`, the `app.update` method passes your actual root node to the resulting `patch`, which performs the sync, rendering what needs to be rendered and mounting it at the appropriate place.
 
-A nuance is that, in the interests of efficiency, updates are batched to happen at most once per frame using `requestAnimationFrame`. In fact, making the update function an asynchronous callback in this way serves a double purpose. It also ensures that whatever event handler caused the change of state finishes running, and hence finishes its modifications to the virtual DOM before the actual DOM is adjusted to match it. (Trap methods of proxy objects are called synchronously.)
+A nuance is that, in the interests of efficiency, updates are batched to happen at most once per frame using `requestAnimationFrame`.<sup id="ref-f2">[2](#f2)</sup>
 
 ### Event handling
 
@@ -280,7 +280,7 @@ let $target = document.getElementsByClassName("todoapp")[0];
 let app = new App(vApp, $target, state);
 ```
 
-The `App` constructor renders your virtual DOM into a tree of actual `HTMLElement`s and attaches the result to the actual DOM. It creates a new proxy object from the state argument, which will automatically call `app.update()` when in response to any change of state.
+The `App` constructor renders your virtual DOM into a tree of actual `HTMLElement`s and attaches the result to the actual DOM. It creates a new proxy object from the state argument, which will automatically call `app.update()` in response to any change of state.
 
 It also initializes a central event register and traverses your virtual DOM to give each `VNode` a reference to it, so that it can be accessed by `VNode` methods such as `listenEvent`.
 
@@ -372,6 +372,26 @@ if (route === "completed") {
 
 Note that `setRoutes` has to register its `hashchange` event listener on the global object, `window`. Since `window` is outside of your app, it can't use the in-app [event delegation system](#event-handling).
 
+Note also the call to `app.update` in the `router` function in `app.setRoutes`, which is necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state:<sup id="ref-f3">[3](#f3)</sup>
+
+```javascript
+setRoutes(routes) {
+    const router = () => {
+      const path = window.location.hash.slice(2);
+      if (routes[path]) {
+        routes[path]();
+        this.update();
+      } else {
+        console.log(`Route ${path} not found`);
+      }
+    };
+
+    window.addEventListener("hashchange", router);
+    this.router = router;
+    this.router();
+  }
+```
+
 ### Sample structure
 
 ```
@@ -420,7 +440,7 @@ The style attribute really should be broken down into an object so that it's eas
 
 More error handling would be good. Another exercise would be to write tests to ensure that each feature continues to work as extras are added.
 
-It would be neat to add automatic batching of style reads before writes, in the mannner of (`fastDOM`)[https://github.com/wilsonpage/fastdom], to prevent (layout thrashing)[https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing].
+It would be neat to add automatic batching of style reads before writes, in the mannner of [`fastDOM`](https://github.com/wilsonpage/fastdom), to prevent [layout thrashing](https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing).
 
 ### Storage
 
@@ -456,11 +476,11 @@ Simulated propagation could be implemented to offer more flexibility.
 
 <div id="sensorium">
 
-### Sensorium<sup id="ref-f3">[3](#f3)</sup>
+### Sensorium<sup id="ref-f4">[4](#f4)</sup>
 
 </div>
 
-As we currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.<sup id="ref-f4">[4](#f4)</sup>
+As we currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.<sup id="ref-f5">[5](#f5)</sup>
 
 React, as I currently understand it, has various ways of handling state: props (arguments of components, immutable inside a component), `useState` (which allows state variables to be declared and mutated inside a component, at its top level), and `useContext` (for global state variables). The Preact library also allows use of signals, a slicker approach, discussed further below.
 
@@ -555,8 +575,10 @@ Ratiu5 offers an introduction to the idea of signals in [Implementing Signals fr
 
 <a id="f1" href="#ref-f1">1</a>: Following Jason Yu's terminology, in the talk listed in [Resources](#resources), above, I adopted the word "render" to mean the act of turning virtual DOM elements into actual DOM. Since then, I've learnt that React uses "render" to mean recreating a virtual DOM node and its descendents. In a React context, the process of matching actual DOM to virtual is called "reconciliation". [↩](#ref-f1)
 
-<a id="f2" href="#ref-f2">2</a>: Note the call to `app.update` in `router` in `app.setRoutes`, which is necessary to sync the actual DOM to these changes in the virtual DOM, given that they don't automatically trigger an update via a change of state. We could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic. [↩](#ref-f2)
+<a id="f2" href="#ref-f2">2</a>: In fact, making the update function an asynchronous callback in this way serves a double purpose. It also ensures that whatever event handler caused the change of state finishes running, and hence finishes its modifications to the virtual DOM before the actual DOM is adjusted to match it. This was necessary because we chose to call updates via a proxy object, representing state, and trap methods of proxy objects are called synchronously.[↩](#ref-f2)
 
-<a id="f3" href="#ref-f3">3</a>: This is what I'd call the framework that might arise out of these ideas. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. It's arch-rivals, of course, would be R☠ (Adverse, aka Bad React) and Reflux (logo not shown for obvious reasons). [↩](#ref-f3)
+<a id="f3" href="#ref-f3">3</a>: Alternatively, we could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic. [↩](#ref-f3)
 
-<a id="f4" href="#ref-f4">4</a>: An unanticipated effect of this practice of directly modifying the virtual DOM inside of event handlers was that, when we first introduced state management via a proxy object, we wouldn't see changes till the following user interaction, (or at least, not the full change), leading to accumulating inconsistencies. On AI advice, we placed the update function, with its diff and reconciliation, in a `requestAnimationFrame` callback, and that worked, but it wasn't till much later that we discovered the reason. It turns out that proxy traps are called synchronously! (I'd assumed they were asynchronous.) This meant that, if an event handler modified a state variable, the actual DOM would be updated immediately, so any changes the event handler then made to the virtual DOM would happen too late. [↩](#ref-f4)
+<a id="f4" href="#ref-f4">4</a>: This is what I'd call the framework that might arise out of these ideas. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. It's arch-rivals, of course, would be R☠ (Adverse, aka Bad React) and Reflux (logo not shown for obvious reasons). [↩](#ref-f4)
+
+<a id="f5" href="#ref-f5">5</a>: An unanticipated effect of this practice of directly modifying the virtual DOM inside of event handlers was that, when we first introduced state management via a proxy object, we wouldn't see changes till the following user interaction, (or at least, not the full change), leading to accumulating inconsistencies. On AI advice, we placed the update function, with its diff and reconciliation, in a `requestAnimationFrame` callback, and that worked, but it wasn't till much later that we discovered the reason. It turns out that proxy traps are called synchronously! (I'd assumed they were asynchronous.) This meant that, if an event handler modified a state variable, the actual DOM would be updated immediately, so any changes the event handler then made to the virtual DOM would happen too late. [↩](#ref-f5)
