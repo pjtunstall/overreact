@@ -575,7 +575,7 @@ Ratiu5 offers an introduction to the idea of signals in [Implementing Signals fr
 
 <a id="f1" href="#ref-f1">1</a>: Following Jason Yu's terminology, in the talk listed in [Resources](#resources), above, I adopted the word "render" to mean the act of turning virtual DOM elements into actual DOM. Since then, I've learnt that React uses "render" to mean recreating a virtual DOM node and its descendents. In a React context, the process of matching actual DOM to virtual is called "reconciliation". [↩](#ref-f1)
 
-<a id="f2" href="#ref-f2">2</a>: In fact, making the update function an asynchronous callback in this way serves a double purpose. It also ensures that whatever event handler caused the change of state finishes running, and hence finishes its modifications to the virtual DOM before the actual DOM is adjusted to match it. This was necessary because we chose to call updates via a proxy object, representing state, and trap methods of proxy objects are called synchronously.[↩](#ref-f2)
+<a id="f2" href="#ref-f2">2</a>: In fact, making the update function an asynchronous callback in this way serves a double purpose. It also ensures that whatever event handler caused the change of state finishes running, and hence finishes its modifications to the virtual DOM before the actual DOM is adjusted to match it. This was necessary because we chose to call updates via a proxy object, representing state, and trap methods of proxy objects are called synchronously. [↩](#ref-f2)
 
 <a id="f3" href="#ref-f3">3</a>: Alternatively, we could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic. [↩](#ref-f3)
 
