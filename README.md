@@ -43,7 +43,7 @@
 
 ## 1. Context
 
-This is our take on the [mini-framework](https://learn.01founders.co/git/root/public/src/branch/master/subjects/mini-framework) project for 01Founders, part of the [01 Edu](https://01-edu.org/) network of coding bootcamps. The exercise is to design a miniature frontend framework, with features as listed in the next section, and use it to make a [TodoMVC](https://todomvc.com/)--that is, a simple todo-list app of a standard design that can be used to compare how different frameworks accomplish the same task.
+This is my take on the [mini-framework](https://learn.01founders.co/git/root/public/src/branch/master/subjects/mini-framework) project for 01Founders, part of the [01 Edu](https://01-edu.org/) network of coding bootcamps. The exercise is to design a miniature frontend framework, with features as listed in the next section, and use it to make a [TodoMVC](https://todomvc.com/)--that is, a simple todo-list app of a standard design that can be used to compare how different frameworks accomplish the same task.
 
 ## 2. Features
 
@@ -59,7 +59,7 @@ This is our take on the [mini-framework](https://learn.01founders.co/git/root/pu
 
 You build a tree of virtual DOM nodes, representing the structure of your app. The framework renders<sup id="ref-f1">[1](#f1)</sup> it into actual HTML elements and appends the root to the actual HTML element of your choice.
 
-A note on notation: a virtual node is an instance of the class `VNode`. Where we think it might help to avoid confusion, we follow the convention of prefixing nodes of the actual DOM with a dollar sign, thus `$node` versus `vNode` for instances of actual and virtual nodes respectively. In our todo-list app, we use the name `app` for an instance of the framework's `App` class, which encapsulates the whole structure. It has fields `app.vApp` and `app.$app` for the root nodes of its virtual and actual DOMs. See, for example, [Build and mount an app](#build-and-mount-an-app).
+A note on notation: a virtual node is an instance of the class `VNode`. Where I think it might help to avoid confusion, I follow the convention of prefixing nodes of the actual DOM with a dollar sign, thus `$node` versus `vNode` for instances of actual and virtual nodes respectively. In my todo-list app, I use the name `app` for an instance of the framework's `App` class, which encapsulates the whole structure. It has fields `app.vApp` and `app.$app` for the root nodes of its virtual and actual DOMs. See, for example, [Build and mount an app](#build-and-mount-an-app).
 
 ### Routing system
 
@@ -408,7 +408,7 @@ app
 └──routes.js
 ```
 
-For the TodoMVC app, we define three principle subcomponents--`footer`, `header`, and `main`--in modules of their own. These are imported into `todoapp`, where they're used to define the root component of the virtual DOM. `init` imports this root and defines the state object. It then passes root and state to the `App` constructor along with a reference to the actual DOM element whose place will be taken by the rendered root.
+For the TodoMVC app, I define three principle subcomponents--`footer`, `header`, and `main`--in modules of their own. These are imported into `todoapp`, where they're used to define the root component of the virtual DOM. `init` imports this root and defines the state object. It then passes root and state to the `App` constructor along with a reference to the actual DOM element whose place will be taken by the rendered root.
 
 The top-level module `app` imports the resulting instance of `App` from `init`. Next, `app` performs a side-effect import of the `routes` module. This is so that `routes` can specify functions to instruct the UI on how to change in response to each change of route.
 
@@ -418,17 +418,17 @@ Finally, `app` imports the `addTodo` event handler from `events` and sets it as 
 
 ### Persistence
 
-The TodoMVC spec says that the todo items should be persisted in local storage or whatever other means of storage your framework has. Although easy to implement, we chose not to do this to avoid the inconvenience of having to continually clear local storage while testing, and because few, if any, of the examples do so.
+The TodoMVC spec says that the todo items should be persisted in local storage or whatever other means of storage your framework has. Although easy to implement, I chose not to do this to avoid the inconvenience of having to continually clear local storage while testing, and because few, if any, of the examples do so.
 
 ### Focus of filters
 
-We chose to blur (unfocus) a filter button after it's clicked on. Otherwise it retains the thick red box-shadow supplied by the focus pseudo-class till something else is clicked on. Although many examples on TodoMVC do allow the box-shadow to remain, we guessed that this was not the intention of the projects' creators, or that they perhaps didn't anticipate the anomaly seen when the user changes filter by navigating with back or forward buttons and it stays focused even though a different filter is now highlighted by the "selected" class.
+I chose to blur (unfocus) a filter button after it's clicked on. Otherwise it retains the thick red box-shadow supplied by the focus pseudo-class till something else is clicked on. Although many examples on TodoMVC do allow the box-shadow to remain, I guessed that this was not the intention of the projects' creators, or that they perhaps didn't anticipate the anomaly seen when the user changes filter by navigating with back or forward buttons and it stays focused even though a different filter is now highlighted by the "selected" class.
 
-Of all the examples labeled "new" on TodoMVC, only Backbone and jQuery take our approach. The majority allow the anomaly. (Old examples have a quite different style and so can't be compared.) That said, the spec does recommend Backbone as a reference implementation.
+Of all the examples labeled "new" on TodoMVC, only Backbone and jQuery take my approach. The majority allow the anomaly. (Old examples have a quite different style and so can't be compared.) That said, the spec does recommend Backbone as a reference implementation.
 
 ### Quotes
 
-The spec advocates single quotes in JavaScript, but we chose to stick to our normal default double quotes.
+The spec advocates single quotes in JavaScript, but I chose to stick to my normal default double quotes.
 
 ## 6. Further
 
@@ -444,11 +444,11 @@ It would be neat to add automatic batching of style reads before writes, in the 
 
 ### Storage
 
-At present, we ask users to give items a unique id (so that they play a role similar to keys in React), but if items were persisted, we'd really need some extra logic to ensure distinct ids for each item, either by switching to UUIDs or by saving the current value of an iterator. This value would then constitute a hidden aspect of state: governing internal structure, although it wouldn't need to trigger any update itself, given that an update is already triggered by a change in the total number of items.
+At present, I ask users to give items a unique id (so that they play a role similar to keys in React), but if items were persisted, I'd really need some extra logic to ensure distinct ids for each item, either by switching to UUIDs or by saving the current value of an iterator. This value would then constitute a hidden aspect of state: governing internal structure, although it wouldn't need to trigger any update itself, given that an update is already triggered by a change in the total number of items.
 
 ### Routing
 
-We used the simplest form of routing for a single-page application, hash-based. Indeed the TodoMVC project includes hash symbols in their URLs, which made this a natural choice.
+I used the simplest form of routing for a single-page application, hash-based. Indeed the TodoMVC project includes hash symbols in their URLs, which made this a natural choice.
 
 Now, hash-based routing is somewhat of a hack since the hash fragment is really intended as a link to a specific part of the page. The browser would normally scroll to an element whose id was equal to the hash, if such an element existed.
 
@@ -458,19 +458,19 @@ For the future, an even better choice will likely be the [Navigation API](https:
 
 ### Components
 
-The key players in our framework are `VNode`s. The obvious next step would be to integrate components as a third type of node in the virtual DOM along with element nodes and text nodes. Rather than letting event handlers modify the virtual DOM directly, we could restrict event handlers to modifying state variables (whether global or local to a component). A change in a state variable, could trigger components that rely on it to be called and the `VNode` that each returns to be appended.
+The key players in my framework are `VNode`s. The obvious next step would be to integrate components as a third type of node in the virtual DOM along with element nodes and text nodes. Rather than letting event handlers modify the virtual DOM directly, I could restrict event handlers to modifying state variables (whether global or local to a component). A change in a state variable, could trigger components that rely on it to be called and the `VNode` that each returns to be appended.
 
-In our TodoMVC, event handlers were defined all in one `events` module, but it might be more readable to define event handlers together with the relevant component.
+In my TodoMVC, event handlers were defined all in one `events` module, but it might be more readable to define event handlers together with the relevant component.
 
 Dependence on state could be built into component definitions. (See below, [Sensorium](#sensorium)).
 
 ### Templating
 
-At present, we have just a nod towards templating in the form of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals; along with a function to perform the inverse operation of converting a `VNode` into HTML. But these ideas could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components. Interesting reading in this regard is Rahul Sharma's article [How to create JSX template engine from scratch](https://dev.to/devsmitra/how-to-create-the-app-using-jsx-without-react-k08) and Rodrigo Pombo's [Build your own React](https://pomb.us/build-your-own-react/), which shows how to use Babel to transpile actual JSX into your own `createElement` function.
+At present, I have just a nod towards templating in the form of a function to write a `VNode` using HTML, with the option to embed JavaScript expressions in string literals; along with a function to perform the inverse operation of converting a `VNode` into HTML. But these ideas could be developed further into a true DSL (domain-specific language) like JSX, with extra logic to interpret non-standard HTML syntax, making it easier to create and nest components. Interesting reading in this regard is Rahul Sharma's article [How to create JSX template engine from scratch](https://dev.to/devsmitra/how-to-create-the-app-using-jsx-without-react-k08) and Rodrigo Pombo's [Build your own React](https://pomb.us/build-your-own-react/), which shows how to use Babel to transpile actual JSX into your own `createElement` function.
 
 ### Events
 
-As yet, we only handle one event type per node, like the old `onchange`, `onclick` etc. property of Vanilla JS. More syntactic sugar could be added to simulate the way one can attach multiple event listeners to the same node for the same event type with `addEventListener`.
+As yet, I only handle one event type per node, like the old `onchange`, `onclick` etc. property of Vanilla JS. More syntactic sugar could be added to simulate the way one can attach multiple event listeners to the same node for the same event type with `addEventListener`.
 
 Simulated propagation could be implemented to offer more flexibility.
 
@@ -480,15 +480,15 @@ Simulated propagation could be implemented to offer more flexibility.
 
 </div>
 
-As we currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.<sup id="ref-f5">[5](#f5)</sup>
+As I currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.<sup id="ref-f5">[5](#f5)</sup>
 
 React, as I currently understand it, has various ways of handling state: props (arguments of components, immutable inside a component), `useState` (which allows state variables to be declared and mutated inside a component, at its top level), and `useContext` (for global state variables). The Preact library also allows use of signals, a slicker approach, discussed further below.
 
-Our framework calls an actual update (with a diff of the whole virtual DOM) every frame in which a state property changes, albeit the only virtual nodes that cause changes in actual nodes are those that have changed since the previous update. The obvious next step would be a system where components can be selective about which properties they're sensitive to, and where diffing is restricted to the relevant subtrees.
+My framework calls an actual update (with a diff of the whole virtual DOM) every frame in which a state property changes, albeit the only virtual nodes that cause changes in actual nodes are those that have changed since the previous update. The obvious next step would be a system where components can be selective about which properties they're sensitive to, and where diffing is restricted to the relevant subtrees.
 
 Alternatively, by analogy with event delegation, a sensory register could keep track of what sort of update is required by whom, in response to a change in which aspect of state. I gather React uses this technique in some cases as an optimization, although it mainly stores dependency data in the components themselves. Signals offer a neat take on this idea whereby components are registered automatically when they access a signal value.
 
-TodoMVC has a really simple state with just two properties. Our approach could be generalized, in various ways, to handle more complex states. For nested state objects, we could make nested proxies recursively. If one knows the structure of the state object won't change, this could be done once at the outset. But if even the structure of state is dynamic, nested proxies might have to be built in response to structural changes. In either case, performance might benefit from lazy initialization: those nested proxies could be created on-the-fly as the relevant properties are accessed through the getters of parent objects. How useful such nesting would be, though, I don't know.
+TodoMVC has a really simple state with just two properties. My approach could be generalized, in various ways, to handle more complex states. For nested state objects, I could make nested proxies recursively. If one knows the structure of the state object won't change, this could be done once at the outset. But if even the structure of state is dynamic, nested proxies might have to be built in response to structural changes. In either case, performance might benefit from lazy initialization: those nested proxies could be created on-the-fly as the relevant properties are accessed through the getters of parent objects. How useful such nesting would be, though, I don't know.
 
 JavaScript offers other trap methods on [proxy objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy), besides `get` and `set`, which could be useful here, such as `defineProperty` and `deleteProperty`, `has`, and `ownKeys`.
 
@@ -565,7 +565,7 @@ setInterval(() => setCount(count() + 1), 1000);
 
 ## 7. Resources
 
-Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). Our `diff`, `render`, and `VNode`-creation functions are closely based on this.
+Thanks to Jason Yu for his presentation [Building a Simple Virtual DOM from Scratch](https://www.youtube.com/watch?v=85gJMUEcnkc). My `diff`, `render`, and `VNode`-creation functions are closely based on this.
 
 I didn't know about this till after the project was finished in its present form, but Rodrigo Pombo's article [Build your own React](https://pomb.us/build-your-own-react/) would have been really useful. He shows how to use a fiber tree, which is modern React's take on the idea of a virtual DOM, how to perform updates asynchronously (using `requestIdleCallback`), how to manage state with a React-style `useState`, and how to transpile JSX into your own code using Babel.
 
@@ -575,10 +575,10 @@ Ratiu5 offers an introduction to the idea of signals in [Implementing Signals fr
 
 <a id="f1" href="#ref-f1">1</a>: Following Jason Yu's terminology, in the talk listed in [Resources](#resources), above, I adopted the word "render" to mean the act of turning virtual DOM elements into actual DOM. Since then, I've learnt that React uses "render" to mean recreating a virtual DOM node and its descendents. In a React context, the process of matching actual DOM to virtual is called "reconciliation". [↩](#ref-f1)
 
-<a id="f2" href="#ref-f2">2</a>: In fact, making the update function an asynchronous callback in this way serves a double purpose. It also ensures that whatever event handler caused the change of state finishes running, and hence finishes its modifications to the virtual DOM before the actual DOM is adjusted to match it. This was necessary because we chose to call updates via a proxy object, representing state, and trap methods of proxy objects are called synchronously. [↩](#ref-f2)
+<a id="f2" href="#ref-f2">2</a>: In fact, making the update function an asynchronous callback in this way serves a double purpose. It also ensures that whatever event handler caused the change of state finishes running, and hence finishes its modifications to the virtual DOM before the actual DOM is adjusted to match it. This was necessary because I chose to call updates via a proxy object, representing state, and trap methods of proxy objects are called synchronously. [↩](#ref-f2)
 
-<a id="f3" href="#ref-f3">3</a>: Alternatively, we could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but we chose to make it automatic. [↩](#ref-f3)
+<a id="f3" href="#ref-f3">3</a>: Alternatively, I could have left it to the framework user to pass a state variable, representing the filter, to the `App` constructor, but I chose to make it automatic. [↩](#ref-f3)
 
 <a id="f4" href="#ref-f4">4</a>: This is what I'd call the framework that might arise out of these ideas. Its S would be its [emblem](https://en.wikipedia.org/wiki/Blazon): two snakes, argent and sable, ouroborée, eyes yin-yangée, as a figure 8 or Infinity Rampant. Most like, on its home page, it'd be animated, ripples in the one reflected in the other, as if to echo the echoing of the virtual by the actual DOM. It's arch-rivals, of course, would be R☠ (Adverse, aka Bad React) and Reflux (logo not shown for obvious reasons). [↩](#ref-f4)
 
-<a id="f5" href="#ref-f5">5</a>: An unanticipated effect of this practice of directly modifying the virtual DOM inside of event handlers was that, when we first introduced state management via a proxy object, we wouldn't see changes till the following user interaction, (or at least, not the full change), leading to accumulating inconsistencies. On AI advice, we placed the update function, with its diff and reconciliation, in a `requestAnimationFrame` callback, and that worked, but it wasn't till much later that we discovered the reason. It turns out that proxy traps are called synchronously! (I'd assumed they were asynchronous.) This meant that, if an event handler modified a state variable, the actual DOM would be updated immediately, so any changes the event handler then made to the virtual DOM would happen too late. [↩](#ref-f5)
+<a id="f5" href="#ref-f5">5</a>: An unanticipated effect of this practice of directly modifying the virtual DOM inside of event handlers was that, when I first introduced state management via a proxy object, I wouldn't see changes till the following user interaction, (or at least, not the full change), leading to accumulating inconsistencies. On AI advice, I placed the update function, with its diff and reconciliation, in a `requestAnimationFrame` callback, and that worked, but it wasn't till much later that I discovered the reason. It turns out that proxy traps are called synchronously! (I'd assumed they were asynchronous.) This meant that, if an event handler modified a state variable, the actual DOM would be updated immediately, so any changes the event handler then made to the virtual DOM would happen too late. [↩](#ref-f5)
