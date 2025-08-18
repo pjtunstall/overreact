@@ -18,7 +18,7 @@
 - [Create and nest elements](#create-and-nest-elements)
 - [Convert HTML to a `VNode` and vice versa](#convert-html-to-a-vnode-and-vice-versa)
 - [Add an attribute](#add-an-attribute)
-- [Create an event](#create-an-event)
+- [Listen for an event](#listen-for-an-event)
 - [Initialize state](#initialize-state)
 - [Build and mount an app](#build-and-mount-an-app)
 - [Find a node](#find-a-node)
@@ -238,7 +238,7 @@ input.addAttribute("placeholder", "What's on your mind?");
 
 The `class` and `style` attributes can be manipulated with more specific methods: `addClass`, `removeClass`, `hasClass`; `addStyle`, `removeStyle`. The `hide` and `show` methods add and remove the `"display: none"` style.
 
-### Create an event
+### Listener for an event
 
 After [building and initializing](#build-and-mount-an-app) a new app, say you want to an event handler called `addTodo` to be called when a `keypress` event occurs at a node called `newTodo`. The syntax is as follows:
 
@@ -249,7 +249,7 @@ newTodo.listenEvent("onkeypress", addTodo);
 
 The first argument is the event type, prefixed with `on`. The second argument is your event handler. Write it just as you would a normal event handler. The framework takes care of the rest.
 
-(Please note that, under the hood, when the node is rendered, `listenEvent` does not attach on old-fashioned on-event listener. Rather, it skips rendering such an attribute and instead adds your event listener to a register that maps event types to maps from node ids to specific event handlers such as `addTodo`.)
+(Note that, under the hood, when the node is rendered, `listenEvent` does not attach on old-fashioned on-event listener. Rather, it skips rendering such an attribute and instead adds your event listener to a register that maps event types to maps from node ids to specific event handlers such as `addTodo`.)
 
 You can also `unlistenEvent`, or `clearEvents` if you want to remove all event handlers from a node.
 
