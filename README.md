@@ -238,7 +238,7 @@ input.addAttribute("placeholder", "What's on your mind?");
 
 The `class` and `style` attributes can be manipulated with more specific methods: `addClass`, `removeClass`, `hasClass`; `addStyle`, `removeStyle`. The `hide` and `show` methods add and remove the `"display: none"` style.
 
-### Listener for an event
+### Listen for an event
 
 After [building and initializing](#build-and-mount-an-app) a new app, say you want to an event handler called `addTodo` to be called when a `keypress` event occurs at a node called `newTodo`. The syntax is as follows:
 
