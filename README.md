@@ -240,7 +240,7 @@ The `class` and `style` attributes can be manipulated with more specific methods
 
 ### Listen for an event
 
-After [building and initializing](#build-and-mount-an-app) a new app, say you want to an event handler called `addTodo` to be called when a `keypress` event occurs at a node called `newTodo`. The syntax is as follows:
+After [building and initializing](#build-and-mount-an-app) a new app, say you want an event handler called `addTodo` to be called when a `keypress` event occurs at a node called `newTodo`. The syntax is as follows:
 
 ```javascript
 const newTodo = app.getVNodeById("newTodo");
