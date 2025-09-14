@@ -43,7 +43,7 @@
 
 ## 1. Context
 
-This is my take on the [mini-framework](https://learn.01founders.co/git/root/public/src/branch/master/subjects/mini-framework) project for 01Founders, part of the [01 Edu](https://01-edu.org/) network of coding bootcamps. The exercise is to design a miniature frontend framework, with features as listed in the next section, and use it to make a [TodoMVC](https://todomvc.com/)--that is, a simple todo-list app of a standard design that can be used to compare how different frameworks accomplish the same task.
+This is my take on the [mini-framework](https://github.com/01-edu/public/tree/master/subjects/mini-framework) project for 01Founders, part of the [01 Edu](https://01-edu.org/) network of coding bootcamps. The exercise is to design a miniature frontend framework, with features as listed in the next section, and use it to make a [TodoMVC](https://todomvc.com/)--that is, a simple todo-list app of a standard design that can be used to compare how different frameworks accomplish the same task.
 
 ## 2. Features
 
@@ -482,7 +482,7 @@ Simulated propagation could be implemented to offer more flexibility.
 
 As I currently have it, event handlers play multiple roles: they modify virtual nodes, set state properties, and make new virtual nodes, as well as setting further event listeners. Greater separation of concerns could be achieved if even the effect of event handlers on the virtual DOM was mediated through state.<sup id="ref-f5">[5](#f5)</sup>
 
-React, as I currently understand it, has various ways of handling state: props (arguments of components, immutable inside a component), `useState` (which allows state variables to be declared and mutated inside a component, at its top level), and `useContext` (for global state variables). The Preact library also allows use of signals, a slicker approach, discussed further below.
+React itself has various ways of managing state, principly `useState` (which creates variables local to a component, that can be accessed there and mutated to trigger a re-render), and `useContext` (for global state variables). The Preact library also allows use of signals, a slicker approach, discussed further below.
 
 My framework calls an actual update (with a diff of the whole virtual DOM) every frame in which a state property changes, albeit the only virtual nodes that cause changes in actual nodes are those that have changed since the previous update. The obvious next step would be a system where components can be selective about which properties they're sensitive to, and where diffing is restricted to the relevant subtrees.
 
