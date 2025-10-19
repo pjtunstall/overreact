@@ -458,11 +458,13 @@ For the future, an even better choice will likely be the [Navigation API](https:
 
 ### Components
 
-The key players in my framework are `VNode`s. The obvious next step would be to integrate components as a third type of node in the virtual DOM along with element nodes and text nodes. Rather than letting event handlers modify the virtual DOM directly, I could restrict event handlers to modifying state variables (whether global or local to a component). A change in a state variable, could trigger components that rely on it to be called and the `VNode` that each returns to be appended.
+The key players in my framework are `VNode`s. The obvious next step would be to integrate components as a third type of node in the virtual DOM, along with element nodes and text nodes. Rather than letting event handlers modify the virtual DOM directly, I could restrict event handlers to modifying state variables (whether global or local to a component). A change in a state variable, could trigger components that rely on it to be called and the `VNode` that each returns to be appended.
 
 In my TodoMVC, event handlers were defined all in one `events` module, but it might be more readable to define event handlers together with the relevant component.
 
 Dependence on state could be built into component definitions. (See below, [Sensorium](#sensorium)).
+
+I could perhaps make use of [web components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components).
 
 ### Templating
 
